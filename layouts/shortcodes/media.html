@@ -1,0 +1,101 @@
+{{- $kind := lower (.Get "type" | default "book") -}}
+{{- $isbn := .Get "isbn" | default (.Get "ISBN") -}}
+{{- $imdb := .Get "imdb" | default (.Get "imdb_id") -}}
+{{- $manualURL := .Get "url" -}}
+{{- $manualCover := .Get "cover" -}}
+{{- $title := .Get "title" | default (.Get "name") | default (cond $isbn (printf "ISBN %s" $isbn) (cond $imdb (printf "IMDb %s" $imdb) "Untitled")) -}}
+{{- $subtitle := .Get "subtitle" | default (.Get "original") -}}
+{{- $desc := .Get "desc" | default (.Get "description") | default (.Inner | strings.TrimSpace) -}}
+{{- $manualRating := .Get "rating" -}}
+{{- $manualRatingLabel := .Get "ratingLabel" | default (.Get "rating_label") -}}
+{{- $source := .Get "source" | default (cond (eq $kind "movie") "IMDb" "Manual") -}}
+{{- $meta := slice -}}
+{{- range (slice (.Get "meta1") (.Get "meta2") (.Get "meta3") (.Get "meta4")) -}}
+  {{- with . -}}
+    {{- $meta = $meta | append . -}}
+  {{- end -}}
+{{- end -}}
+{{- $tags := slice -}}
+{{- with (.Get "tags") -}}
+  {{- range split . "," -}}
+    {{- $tag := . | strings.TrimSpace -}}
+    {{- if $tag -}}
+      {{- $tags = $tags | append $tag -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $primaryMeta := "" -}}
+{{- $identifierMeta := "" -}}
+{{- if gt (len $meta) 0 -}}
+  {{- $primaryMeta = index $meta 0 -}}
+{{- end -}}
+{{- if and (eq $kind "book") $isbn -}}
+  {{- $identifierMeta = printf "ISBN: %s" $isbn -}}
+{{- else if and (ne $kind "book") $imdb -}}
+  {{- $identifierMeta = printf "IMDb: %s" $imdb -}}
+{{- end -}}
+{{- $displayTags := first 4 $tags -}}
+{{- $url := $manualURL -}}
+{{- if and (not $url) $imdb -}}
+  {{- $url = printf "https://www.imdb.com/title/%s/" $imdb -}}
+{{- end -}}
+{{- if and (not $url) $isbn -}}
+  {{- $url = printf "https://openlibrary.org/isbn/%s" $isbn -}}
+{{- end -}}
+{{- if not $url -}}
+  {{- $url = "#" -}}
+{{- end -}}
+
+<a
+  class="media-card media-card--{{ $kind }}{{ if $manualCover }} media-card--has-cover{{ end }}"
+  href="{{ $url }}"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Open {{ $title }}"
+>
+  {{- with $manualCover -}}
+    <div class="media-card__cover-wrap">
+      <img
+        class="media-card__cover no-zoom"
+        src="{{ . }}"
+        alt="{{ $title }}"
+        loading="lazy"
+        decoding="async"
+      >
+    </div>
+  {{- end -}}
+
+  <div class="media-card__body">
+    <div class="media-card__header">
+      <div class="media-card__title">{{ $title }}</div>
+      {{- with $manualRating -}}
+        <div class="media-card__rating-badge" aria-label="Rating {{ . }}">
+          <span class="media-card__rating-value">{{ . }}</span>
+          {{- with $manualRatingLabel -}}
+            <span class="media-card__rating-label">{{ . }}</span>
+          {{- end -}}
+        </div>
+      {{- end -}}
+    </div>
+
+    {{- with $primaryMeta -}}
+      <div class="media-card__primary-meta">{{ . }}</div>
+    {{- end -}}
+
+    {{- with $identifierMeta -}}
+      <div class="media-card__identifier">{{ . }}</div>
+    {{- end -}}
+
+    {{- if gt (len $displayTags) 0 -}}
+      <div class="media-card__categories">
+        {{- range $displayTags -}}
+          <span class="media-card__category">{{ . }}</span>
+        {{- end -}}
+      </div>
+    {{- end -}}
+
+    {{- with $desc -}}
+      <div class="media-card__desc">{{ . }}</div>
+    {{- end -}}
+  </div>
+</a>

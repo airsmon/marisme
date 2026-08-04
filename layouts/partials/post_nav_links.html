@@ -1,0 +1,49 @@
+{{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections -}}
+{{- if and (gt (len $pages) 1) (in $pages .) -}}
+  {{- $prevPage := $pages.Next . -}}
+  {{- $nextPage := $pages.Prev . -}}
+
+  {{- with .Params.series -}}
+    {{- $seriesName := index . 0 -}}
+    {{- $seriesPages := where $pages ".Params.series" "intersect" (slice $seriesName) -}}
+    {{- if gt (len $seriesPages) 1 -}}
+      {{- $orderedPages := sort $seriesPages "Weight" "asc" -}}
+      {{- $currentIndex := -1 -}}
+
+      {{- range $idx, $page := $orderedPages -}}
+        {{- if eq $page.RelPermalink $.RelPermalink -}}
+          {{- $currentIndex = $idx -}}
+        {{- end -}}
+      {{- end -}}
+
+      {{- if ge $currentIndex 0 -}}
+        {{- if gt $currentIndex 0 -}}
+          {{- $prevPage = index $orderedPages (sub $currentIndex 1) -}}
+        {{- else -}}
+          {{- $prevPage = false -}}
+        {{- end -}}
+
+        {{- if lt (add $currentIndex 1) (len $orderedPages) -}}
+          {{- $nextPage = index $orderedPages (add $currentIndex 1) -}}
+        {{- else -}}
+          {{- $nextPage = false -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+
+<nav class="paginav">
+  {{- with $prevPage -}}
+  <a class="prev" href="{{ .Permalink }}">
+    <span class="title">« {{ i18n "prev_page" }}</span>
+    <span>{{- .Name -}}</span>
+  </a>
+  {{- end -}}
+  {{- with $nextPage -}}
+  <a class="next" href="{{ .Permalink }}">
+    <span class="title">{{ i18n "next_page" }} »</span>
+    <span>{{- .Name -}}</span>
+  </a>
+  {{- end -}}
+</nav>
+{{- end -}}

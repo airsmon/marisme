@@ -1,0 +1,59 @@
+:root {
+    --article-link: inherit;
+    --article-link-hover: var(--primary);
+    --article-link-underline: #d4d4d4;
+    --article-link-underline-hover: #6f7682;
+}
+
+:root[data-theme="dark"] {
+    --article-link: inherit;
+    --article-link-hover: var(--primary);
+    --article-link-underline: #5a5f69;
+    --article-link-underline-hover: #c4ccd8;
+}
+
+/* Optimize article-body links only; keep nav/menu/footer links untouched. */
+.post-content a:not(.anchor),
+.md-content a:not(.anchor) {
+    color: var(--article-link);
+    font-weight: 400;
+    text-decoration-line: underline !important;
+    text-decoration-style: dashed !important;
+    text-decoration-color: var(--article-link-underline) !important;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    border-bottom: none;
+    transition: text-decoration-color 0.18s ease, color 0.18s ease;
+}
+
+.post-content a:not(.anchor):hover,
+.md-content a:not(.anchor):hover {
+    color: var(--article-link-hover);
+    text-decoration-color: var(--article-link-underline-hover) !important;
+}
+
+.post-content a:not(.anchor):focus-visible,
+.md-content a:not(.anchor):focus-visible {
+    outline: none;
+    color: var(--article-link-hover);
+    text-decoration-color: var(--article-link-underline-hover) !important;
+    box-shadow: none;
+}
+
+/* Keep linked inline code visually integrated with the link. */
+.post-content a:not(.anchor) code,
+.md-content a:not(.anchor) code {
+    color: inherit;
+    background: none;
+    border: none;
+    padding-left: 0;
+    padding-right: 0;
+    box-shadow: none;
+    transition: color 0.18s ease;
+}
+
+.post-content a:not(.anchor):hover code,
+.md-content a:not(.anchor):hover code {
+    background: none;
+    border: none;
+}

@@ -1,0 +1,253 @@
+/* Minimal table styles aligned with PaperMod */
+
+:root {
+    --table-border-style: 1px dashed var(--border);
+    --table-head-bg: rgba(0, 0, 0, 0.025);
+    --table-row-hover: rgba(0, 0, 0, 0.015);
+}
+
+:root[data-theme="dark"] {
+    --table-head-bg: rgba(255, 255, 255, 0.045);
+    --table-row-hover: rgba(255, 255, 255, 0.025);
+}
+
+/* Default strategy: keep article width, overflow horizontally when needed */
+.post-content .table-scroll,
+.md-content .table-scroll {
+    width: 100%;
+    max-width: 100%;
+    margin: 1.15rem 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border: var(--table-border-style);
+    border-radius: 8px;
+    background: transparent;
+}
+
+.post-content table:not(.highlighttable, .highlight table, .gist .highlight table),
+.md-content table:not(.highlighttable, .highlight table, .gist .highlight table) {
+    display: table;
+    width: 100%;
+    min-width: max-content;
+    max-width: none;
+    margin: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    background: transparent;
+    font-size: 0.92rem;
+    line-height: 1.55;
+}
+
+.post-content .table-scroll.is-overflow-table,
+.md-content .table-scroll.is-overflow-table {
+    cursor: zoom-in;
+}
+
+.post-content .table-scroll.is-overflow-table:hover,
+.md-content .table-scroll.is-overflow-table:hover {
+    border-color: color-mix(in srgb, var(--primary) 18%, var(--border));
+}
+
+.post-content table:not(.highlighttable, .highlight table, .gist .highlight table) thead,
+.md-content table:not(.highlighttable, .highlight table, .gist .highlight table) thead {
+    background: var(--table-head-bg);
+}
+
+.post-content table:not(.highlighttable, .highlight table, .gist .highlight table) thead th,
+.md-content table:not(.highlighttable, .highlight table, .gist .highlight table) thead th {
+    font-weight: 700;
+    color: var(--primary);
+    background: transparent;
+    font-size: 0.88rem;
+}
+
+.post-content table:not(.highlighttable, .highlight table, .gist .highlight table) th,
+.post-content table:not(.highlighttable, .highlight table, .gist .highlight table) td,
+.md-content table:not(.highlighttable, .highlight table, .gist .highlight table) th,
+.md-content table:not(.highlighttable, .highlight table, .gist .highlight table) td {
+    min-width: 80px;
+    padding: 0.56rem 0.72rem;
+    text-align: left;
+    vertical-align: top;
+    border-right: var(--table-border-style);
+    border-bottom: var(--table-border-style);
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+.post-content table:not(.highlighttable, .highlight table, .gist .highlight table) th:last-child,
+.post-content table:not(.highlighttable, .highlight table, .gist .highlight table) td:last-child,
+.md-content table:not(.highlighttable, .highlight table, .gist .highlight table) th:last-child,
+.md-content table:not(.highlighttable, .highlight table, .gist .highlight table) td:last-child {
+    border-right: none;
+}
+
+.post-content table:not(.highlighttable, .highlight table, .gist .highlight table) tbody tr:last-child td,
+.md-content table:not(.highlighttable, .highlight table, .gist .highlight table) tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.post-content table:not(.highlighttable, .highlight table, .gist .highlight table) tbody tr:hover,
+.md-content table:not(.highlighttable, .highlight table, .gist .highlight table) tbody tr:hover {
+    background: var(--table-row-hover);
+}
+
+.post-content table:not(.highlighttable, .highlight table, .gist .highlight table) td,
+.md-content table:not(.highlighttable, .highlight table, .gist .highlight table) td {
+    color: var(--content);
+}
+
+.post-content table:not(.highlighttable, .highlight table, .gist .highlight table) td code:only-child,
+.md-content table:not(.highlighttable, .highlight table, .gist .highlight table) td code:only-child {
+    white-space: nowrap;
+    font-size: 0.86em;
+}
+
+/* Optional strategy 2: force wrapping instead of horizontal scrolling */
+.post-content .table-wrap table,
+.md-content .table-wrap table,
+.post-content table.table-wrap,
+.md-content table.table-wrap {
+    table-layout: fixed;
+}
+
+.post-content .table-wrap table th,
+.post-content .table-wrap table td,
+.md-content .table-wrap table th,
+.md-content .table-wrap table td,
+.post-content table.table-wrap th,
+.post-content table.table-wrap td,
+.md-content table.table-wrap th,
+.md-content table.table-wrap td {
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 768px) {
+    .post-content table:not(.highlighttable, .highlight table, .gist .highlight table),
+    .md-content table:not(.highlighttable, .highlight table, .gist .highlight table) {
+        font-size: 0.88rem;
+    }
+
+    .post-content table:not(.highlighttable, .highlight table, .gist .highlight table) th,
+    .post-content table:not(.highlighttable, .highlight table, .gist .highlight table) td,
+    .md-content table:not(.highlighttable, .highlight table, .gist .highlight table) th,
+    .md-content table:not(.highlighttable, .highlight table, .gist .highlight table) td {
+        padding: 0.52rem 0.68rem;
+    }
+}
+
+.table-preview-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(0.8px) saturate(101%);
+    -webkit-backdrop-filter: blur(0.8px) saturate(101%);
+    z-index: 9999;
+    pointer-events: none;
+    animation: table-preview-fade-in 0.14s ease-out;
+}
+
+:root[data-theme="dark"] .table-preview-overlay {
+    background: rgba(12, 12, 16, 0.12);
+}
+
+.table-preview-dialog {
+    position: relative;
+    max-height: min(86vh, 940px);
+    padding: 0;
+    border: var(--table-border-style);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--theme) 90%, transparent);
+    box-shadow: 0 20px 56px rgba(15, 23, 42, 0.12);
+    pointer-events: auto;
+    animation: table-preview-zoom-in 0.14s ease-out;
+}
+
+:root[data-theme="dark"] .table-preview-dialog {
+    background: color-mix(in srgb, var(--theme) 84%, transparent);
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.3);
+}
+
+.table-preview-scroll {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-width: 100%;
+    max-height: min(86vh, 940px);
+    border-radius: 16px;
+}
+
+.table-preview-table {
+    display: table !important;
+    width: 100% !important;
+    min-width: 100%;
+    max-width: 100% !important;
+    table-layout: fixed;
+    margin: 0;
+    overflow: visible !important;
+    background: color-mix(in srgb, var(--theme) 96%, transparent);
+    border: none;
+}
+
+.table-preview-table th,
+.table-preview-table td {
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.table-preview-table thead {
+    background: color-mix(in srgb, var(--theme) 94%, var(--primary) 6%);
+}
+
+.table-preview-table thead th {
+    font-weight: 700;
+    color: var(--primary);
+    border-bottom: 1px dashed color-mix(in srgb, var(--primary) 16%, var(--border));
+}
+
+.table-preview-table tbody tr + tr td {
+    border-top: 1px dashed color-mix(in srgb, var(--border) 82%, transparent);
+}
+
+.table-preview-table th + th,
+.table-preview-table td + td {
+    border-left: 1px dashed color-mix(in srgb, var(--border) 82%, transparent);
+}
+
+.table-preview-table tbody tr:hover {
+    background: color-mix(in srgb, var(--primary) 3%, transparent);
+}
+
+:root[data-theme="dark"] .table-preview-table {
+    border-color: color-mix(in srgb, var(--border) 92%, transparent);
+}
+
+:root[data-theme="dark"] .table-preview-table thead {
+    background: color-mix(in srgb, var(--theme) 92%, var(--primary) 8%);
+}
+
+@keyframes table-preview-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes table-preview-zoom-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.985);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}

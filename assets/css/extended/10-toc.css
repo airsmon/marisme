@@ -1,0 +1,304 @@
+/* ================================
+   PaperMod Floating TOC
+   Learn from diygod.cc style
+
+   默认横线，hover 显示目录文字
+   滚动到对应锚点时：
+   - 当前 TOC 横线变黑加粗
+   - hover 后当前 TOC 文字黑色加粗
+   ================================ */
+
+.paper-floating-toc {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .paper-floating-toc {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: calc(100% + 44px);
+    width: 170px;
+    pointer-events: none;
+    z-index: 30;
+  }
+
+  .paper-floating-toc-panel {
+    position: fixed;
+    top: 112px;
+    width: 170px;
+    pointer-events: auto;
+  }
+
+  .paper-floating-toc-panel #TableOfContents,
+  .paper-floating-toc-panel #TableOfContents ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .paper-floating-toc-panel #TableOfContents li {
+    margin: 0;
+    padding: 0;
+  }
+
+  .paper-floating-toc-panel #TableOfContents > ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.12rem;
+  }
+
+  .paper-floating-toc-panel #TableOfContents ul ul {
+    margin-top: 0.08rem;
+  }
+
+  .paper-floating-toc-panel #TableOfContents > ul > li > .paper-floating-toc-link {
+    padding-left: 0;
+  }
+
+  .paper-floating-toc-panel #TableOfContents > ul > li > ul > li > .paper-floating-toc-link {
+    padding-left: 0.75rem;
+  }
+
+  .paper-floating-toc-panel #TableOfContents > ul > li > ul > li > ul > li > .paper-floating-toc-link {
+    padding-left: 1.25rem;
+  }
+
+  .paper-floating-toc-panel #TableOfContents > ul > li > ul > li > ul > li > ul > li > .paper-floating-toc-link {
+    padding-left: 1.75rem;
+  }
+
+  .paper-floating-toc-link {
+    position: relative;
+    display: block;
+    --toc-fade-width: 1.5rem;
+    --toc-fade-mid-stop: 65%;
+
+    width: 100%;
+    min-height: 13px;
+    padding: 0.06rem 0.25rem 0.06rem 0;
+
+    font-family: inherit;
+    font-feature-settings: inherit;
+    font-variation-settings: inherit;
+    letter-spacing: inherit;
+
+    font-size: 0.75rem;
+    line-height: 0.9rem;
+    text-align: left;
+    text-decoration: none;
+
+    color: transparent;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    transition:
+      color 0.15s ease,
+      font-weight 0.15s ease;
+  }
+
+  .paper-floating-toc-link::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: var(--toc-fade-width);
+    height: 100%;
+    pointer-events: none;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0.58) var(--toc-fade-mid-stop),
+      rgba(255, 255, 255, 0.9) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.16s ease;
+  }
+
+  .paper-floating-toc-link:hover {
+    text-decoration: none;
+  }
+
+  .paper-floating-toc-link::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 3px;
+    transform: translateY(-50%);
+
+    border-radius: 999px;
+    opacity: 0.8;
+
+    background: rgba(212, 212, 212, 0.9);
+
+    transition:
+      opacity 0.2s ease,
+      width 0.2s ease,
+      background 0.2s ease,
+      height 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .paper-floating-toc-panel #TableOfContents > ul > li > .paper-floating-toc-link::before {
+    width: 3rem;
+  }
+
+  .paper-floating-toc-panel #TableOfContents ul ul .paper-floating-toc-link::before {
+    width: 2rem;
+  }
+
+  .paper-floating-toc-link {
+    max-width: 170px;
+    padding-right: 1rem;
+  }
+
+  .paper-floating-toc-label {
+    display: inline-flex;
+    align-items: center;
+    min-width: 100%;
+    padding-right: 0.85rem;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  .paper-floating-toc-link code {
+    padding: 0;
+    margin: 0;
+    font-size: inherit;
+    font-family: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    box-shadow: none;
+  }
+
+  .paper-floating-toc-panel:hover .paper-floating-toc-link {
+    color: rgb(115, 115, 115);
+  }
+
+  .paper-floating-toc-panel:hover .paper-floating-toc-link[data-toc-overflow="true"]::after {
+    opacity: 1;
+  }
+
+  .paper-floating-toc-panel:hover .paper-floating-toc-link::before {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-2px);
+  }
+
+  .paper-floating-toc-link:hover {
+    color: rgb(10, 10, 10);
+    font-weight: 600;
+  }
+
+  .paper-floating-toc-panel:hover .paper-floating-toc-link:hover {
+    color: rgb(23, 23, 23);
+    font-weight: 600;
+  }
+
+  .paper-floating-toc-link[aria-current="true"]::before,
+  .paper-floating-toc-link[data-active="true"]::before {
+    height: 4px;
+    opacity: 1;
+    background: rgb(23, 23, 23);
+  }
+
+  .paper-floating-toc-link[aria-current="true"],
+  .paper-floating-toc-link[data-active="true"] {
+    color: transparent;
+    font-weight: 600;
+  }
+
+  .paper-floating-toc-panel:hover .paper-floating-toc-link[aria-current="true"]::before,
+  .paper-floating-toc-panel:hover .paper-floating-toc-link[data-active="true"]::before {
+    opacity: 0;
+  }
+
+  .paper-floating-toc-panel:hover .paper-floating-toc-link[aria-current="true"],
+  .paper-floating-toc-panel:hover .paper-floating-toc-link[data-active="true"] {
+    color: rgb(23, 23, 23);
+    font-weight: 600;
+  }
+
+  .dark .paper-floating-toc-link::before,
+  [data-theme="dark"] .paper-floating-toc-link::before {
+    background: rgba(64, 64, 64, 0.8);
+  }
+
+  .dark .paper-floating-toc-link::after,
+  [data-theme="dark"] .paper-floating-toc-link::after {
+    background: linear-gradient(
+      to right,
+      rgba(24, 24, 27, 0),
+      rgba(24, 24, 27, 0.62) var(--toc-fade-mid-stop),
+      rgba(24, 24, 27, 0.9) 100%
+    );
+  }
+
+  .dark .paper-floating-toc-link,
+  [data-theme="dark"] .paper-floating-toc-link {
+    color: transparent;
+  }
+
+  .dark .paper-floating-toc-link:hover,
+  [data-theme="dark"] .paper-floating-toc-link:hover {
+    color: rgb(250, 250, 250);
+  }
+
+  .dark .paper-floating-toc-panel:hover .paper-floating-toc-link:hover,
+  [data-theme="dark"] .paper-floating-toc-panel:hover .paper-floating-toc-link:hover {
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+  }
+
+  .dark .paper-floating-toc-panel:hover .paper-floating-toc-link,
+  [data-theme="dark"] .paper-floating-toc-panel:hover .paper-floating-toc-link {
+    color: rgb(163, 163, 163);
+  }
+
+  .dark .paper-floating-toc-link[aria-current="true"]::before,
+  .dark .paper-floating-toc-link[data-active="true"]::before,
+  [data-theme="dark"] .paper-floating-toc-link[aria-current="true"]::before,
+  [data-theme="dark"] .paper-floating-toc-link[data-active="true"]::before {
+    background: rgb(255, 255, 255);
+  }
+
+  .dark .paper-floating-toc-link[aria-current="true"],
+  .dark .paper-floating-toc-link[data-active="true"],
+  [data-theme="dark"] .paper-floating-toc-link[aria-current="true"],
+  [data-theme="dark"] .paper-floating-toc-link[data-active="true"] {
+    color: transparent;
+    font-weight: 600;
+  }
+
+  .dark .paper-floating-toc-panel:hover .paper-floating-toc-link[aria-current="true"],
+  .dark .paper-floating-toc-panel:hover .paper-floating-toc-link[data-active="true"],
+  [data-theme="dark"] .paper-floating-toc-panel:hover .paper-floating-toc-link[aria-current="true"],
+  [data-theme="dark"] .paper-floating-toc-panel:hover .paper-floating-toc-link[data-active="true"] {
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .paper-floating-toc-link,
+    .paper-floating-toc-link::before,
+    .paper-floating-toc-link::after,
+    .paper-floating-toc-label {
+      transition: none;
+    }
+  }
+}
+
+@media (max-width: 1279px) {
+  .paper-floating-toc {
+    display: none;
+  }
+}

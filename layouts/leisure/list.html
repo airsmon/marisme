@@ -1,0 +1,179 @@
+{{- define "main" }}
+
+{{- $entries := .RegularPages.ByDate.Reverse -}}
+{{- $pageSize := 20 -}}
+{{- $paginator := .Paginate $entries $pageSize -}}
+{{- $currentPage := $paginator.PageNumber -}}
+{{- $startIndex := mul (sub $currentPage 1) $pageSize -}}
+{{- $endIndex := add $startIndex $pageSize -}}
+{{- $filterScratch := newScratch -}}
+{{- $filterScratch.Set "bookCount" 0 -}}
+{{- $filterScratch.Set "movieCount" 0 -}}
+{{- range $entries -}}
+  {{- $typeHint := lower (printf "%v" (.Param "mediaType" | default (.Param "type") | default (.Param "kind") | default "")) -}}
+  {{- $externalUrl := lower (printf "%v" (.Params.externalUrl | default "")) -}}
+  {{- $hasBookMeta := or .Params.isbn .Params.ISBN .Params.publisher .Params.author -}}
+  {{- $mediaType := "book" -}}
+  {{- if or (eq $typeHint "movie") (eq $typeHint "film") (eq $typeHint "tv") (eq $typeHint "series") (in $externalUrl "movie.douban.com") (in $externalUrl "tv.douban.com") (in $externalUrl "themoviedb.org") (in $externalUrl "imdb.com/title") -}}
+    {{- $mediaType = "movie" -}}
+  {{- else if or (eq $typeHint "book") $hasBookMeta (in $externalUrl "book.douban.com") -}}
+    {{- $mediaType = "book" -}}
+  {{- end -}}
+  {{- if eq $mediaType "movie" -}}
+    {{- $filterScratch.Add "movieCount" 1 -}}
+  {{- else -}}
+    {{- $filterScratch.Add "bookCount" 1 -}}
+  {{- end -}}
+{{- end -}}
+{{- $bookCount := $filterScratch.Get "bookCount" -}}
+{{- $movieCount := $filterScratch.Get "movieCount" -}}
+
+<script>
+  document.documentElement.classList.add('has-leisure-reveal');
+</script>
+
+<header class="page-header leisure-shelf-page__header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>{{ .Title }}</h1>
+</header>
+
+<section
+  class="leisure-shelf-page"
+  aria-label="{{ .Title }}"
+  data-leisure-page-size="{{ $pageSize }}"
+  data-leisure-current-page="{{ $currentPage }}"
+  data-leisure-show-page-nums="{{ if (.Param "ShowPageNums") }}true{{ else }}false{{ end }}"
+  data-leisure-prev-label="{{ i18n "prev_page" }}"
+  data-leisure-next-label="{{ i18n "next_page" }}">
+  {{- if gt (len $entries) 0 }}
+  <nav class="leisure-filter" aria-label="Leisure media filters">
+    <button class="leisure-filter__tab is-active" type="button" data-leisure-filter="all" aria-pressed="true">
+      全部
+      <span class="leisure-filter__count">{{ len $entries }}</span>
+    </button>
+    <button class="leisure-filter__tab" type="button" data-leisure-filter="book" aria-pressed="false">
+      图书
+      <span class="leisure-filter__count">{{ $bookCount }}</span>
+    </button>
+    <button class="leisure-filter__tab" type="button" data-leisure-filter="movie" aria-pressed="false">
+      影视
+      <span class="leisure-filter__count">{{ $movieCount }}</span>
+    </button>
+  </nav>
+  <div class="leisure-pagination-map" hidden aria-hidden="true">
+    {{- range $paginator.Pagers }}
+    <a data-leisure-page-link="{{ .PageNumber }}" href="{{ .URL | absURL }}">{{ .PageNumber }}</a>
+    {{- end }}
+  </div>
+  <div class="leisure-shelf-grid">
+    {{- range $index, $page := $entries }}
+    {{- $isInitiallyVisible := and (ge $index $startIndex) (lt $index $endIndex) -}}
+    {{- with $page }}
+    {{- $title := .Title | default "Untitled" -}}
+    {{- $externalUrl := .Params.externalUrl -}}
+    {{- $url := $externalUrl | default .Permalink -}}
+    {{- $cover := .Params.bookCover -}}
+    {{- $typeHint := lower (printf "%v" (.Param "mediaType" | default (.Param "type") | default (.Param "kind") | default "")) -}}
+    {{- $externalUrlLower := lower (printf "%v" ($externalUrl | default "")) -}}
+    {{- $hasBookMeta := or .Params.isbn .Params.ISBN .Params.publisher .Params.author -}}
+    {{- $mediaType := "book" -}}
+    {{- if or (eq $typeHint "movie") (eq $typeHint "film") (eq $typeHint "tv") (eq $typeHint "series") (in $externalUrlLower "movie.douban.com") (in $externalUrlLower "tv.douban.com") (in $externalUrlLower "themoviedb.org") (in $externalUrlLower "imdb.com/title") -}}
+      {{- $mediaType = "movie" -}}
+    {{- else if or (eq $typeHint "book") $hasBookMeta (in $externalUrlLower "book.douban.com") -}}
+      {{- $mediaType = "book" -}}
+    {{- end -}}
+    {{- $author := .Params.author | default "暂无" -}}
+    {{- $rating := .Params.rating -}}
+    {{- $source := .Params.source | default "Shelf" -}}
+    {{- $isbn := .Params.isbn | default .Params.ISBN | default "暂无" -}}
+    {{- $tmdbFromUrl := replaceRE `^.*?/(movie|tv)/([0-9]+).*$` "$2" $externalUrlLower -}}
+    {{- if eq $tmdbFromUrl $externalUrlLower }}{{ $tmdbFromUrl = "暂无" }}{{ end -}}
+    {{- $tmdb := .Param "tmdb" | default $tmdbFromUrl | default "暂无" -}}
+    {{- $identifierLabel := "ISBN" -}}
+    {{- $identifierValue := $isbn -}}
+    {{- if eq $mediaType "movie" -}}
+      {{- $identifierLabel = "TMDB" -}}
+      {{- $identifierValue = $tmdb -}}
+    {{- end -}}
+    {{- $categories := slice -}}
+    {{- with .Params.categories }}{{ $categories = . }}{{ end -}}
+    {{- if eq (len $categories) 0 -}}
+      {{- with .Params.tags }}{{ $categories = . }}{{ end -}}
+    {{- end -}}
+    {{- $categoryText := delimit $categories " / " -}}
+    {{- if not $categoryText }}{{ $categoryText = "暂无" }}{{ end -}}
+    {{- $summary := .Params.summary | default (.Summary | plainify | htmlUnescape) | default "暂无简介" -}}
+    <article class="leisure-shelf-item" data-media-type="{{ $mediaType }}"{{ if not $isInitiallyVisible }} hidden style="display: none;"{{ end }}>
+      {{- if $url }}<a class="leisure-shelf-item__link" href="{{ $url }}"{{ if $externalUrl }} target="_blank" rel="noopener noreferrer"{{ end }} aria-label="Open {{ $title }}">{{ end }}
+        <div class="leisure-shelf-item__cover-shell">
+          {{- with $cover }}
+          <img
+            class="leisure-shelf-item__cover"
+            src="{{ . }}"
+            alt="{{ $title }}"
+            loading="lazy"
+            decoding="async">
+          {{- else }}
+          <div class="leisure-shelf-item__cover leisure-shelf-item__cover--placeholder" aria-hidden="true">
+            <span>{{ slicestr $title 0 1 }}</span>
+          </div>
+          {{- end }}
+        </div>
+        <div class="leisure-shelf-item__expand" aria-hidden="true">
+          <div class="leisure-shelf-item__expand-cover">
+            {{- with $cover }}
+            <img
+              class="leisure-shelf-item__cover"
+              src="{{ . }}"
+              alt="{{ $title }}"
+              loading="lazy"
+              decoding="async">
+            {{- else }}
+            <div class="leisure-shelf-item__cover leisure-shelf-item__cover--placeholder" aria-hidden="true">
+              <span>{{ slicestr $title 0 1 }}</span>
+            </div>
+            {{- end }}
+          </div>
+          <div class="leisure-shelf-item__expand-body">
+            <div class="leisure-shelf-item__expand-head">
+              <div class="leisure-shelf-item__expand-title">{{ $title }}</div>
+              {{- with $rating }}
+              <div class="leisure-shelf-item__expand-rating">
+                <span class="leisure-shelf-item__expand-rating-value">{{ . }}</span>
+                <span class="leisure-shelf-item__expand-rating-source">{{ $source }}</span>
+              </div>
+              {{- end }}
+            </div>
+            <div class="leisure-shelf-item__expand-meta"><span>作者</span><strong>{{ $author }}</strong></div>
+            <div class="leisure-shelf-item__expand-meta"><span>{{ $identifierLabel }}</span><strong>{{ $identifierValue }}</strong></div>
+            <div class="leisure-shelf-item__expand-meta"><span>分类</span><strong>{{ $categoryText }}</strong></div>
+            <p class="leisure-shelf-item__expand-summary">{{ $summary }}</p>
+          </div>
+        </div>
+      {{- if $url }}</a>{{ end }}
+    </article>
+    {{- end }}
+    {{- end }}
+  </div>
+  <div class="leisure-shelf-empty leisure-shelf-empty--filtered" data-leisure-empty hidden>当前分类下还没有条目。</div>
+  {{- else }}
+  <div class="leisure-shelf-empty">这里还没有书籍条目，后续可以直接在 `content/leisure/_index.md` 里继续添加。</div>
+  {{- end }}
+</section>
+
+<footer class="page-footer">
+  <nav class="pagination" data-leisure-pagination{{ if le (len $entries) $pageSize }} hidden{{ end }}>
+    {{- if $paginator.HasPrev }}
+    <a class="prev" data-leisure-prev href="{{ $paginator.Prev.URL | absURL }}">«&nbsp;{{ i18n "prev_page" }}</a>
+    {{- else }}
+    <a class="prev" data-leisure-prev hidden>«&nbsp;{{ i18n "prev_page" }}</a>
+    {{- end }}
+    {{- if $paginator.HasNext }}
+    <a class="next" data-leisure-next href="{{ $paginator.Next.URL | absURL }}">{{ i18n "next_page" }}&nbsp;»</a>
+    {{- else }}
+    <a class="next" data-leisure-next hidden>{{ i18n "next_page" }}&nbsp;»</a>
+    {{- end }}
+  </nav>
+</footer>
+
+{{- end }}

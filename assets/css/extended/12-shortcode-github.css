@@ -1,0 +1,261 @@
+/* GitHub repository card shortcode for article content */
+.post-content .github-card,
+.md-content .github-card {
+  --github-card-accent: #5f7cff;
+  --github-card-accent-soft: color-mix(in srgb, var(--github-card-accent) 10%, transparent);
+  --github-card-surface: color-mix(in srgb, var(--entry) 92%, var(--theme));
+  --github-card-muted-surface: color-mix(in srgb, var(--code-bg) 70%, var(--theme));
+
+  position: relative;
+  display: block;
+  margin: 1.45rem 0;
+  padding: 1rem 1.05rem 0.98rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--border) 88%, var(--github-card-accent) 12%);
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, var(--github-card-accent-soft), transparent 42%),
+    var(--github-card-surface);
+  color: var(--primary);
+  text-decoration: none !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.post-content a.github-card,
+.md-content a.github-card,
+.post-content a.github-card:hover,
+.md-content a.github-card:hover,
+.post-content a.github-card:focus-visible,
+.md-content a.github-card:focus-visible {
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+  border-bottom: none !important;
+}
+
+.post-content .github-card:hover,
+.md-content .github-card:hover {
+  border-color: color-mix(in srgb, var(--github-card-accent) 34%, var(--border));
+  box-shadow:
+    0 14px 30px rgba(15, 23, 42, 0.1),
+    0 3px 10px rgba(15, 23, 42, 0.05);
+}
+
+.post-content .github-card:focus-visible,
+.md-content .github-card:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--github-card-accent) 36%, transparent);
+  outline-offset: 3px;
+}
+
+.github-card__main {
+  min-width: 0;
+}
+
+.github-card__top {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.82rem;
+}
+
+.github-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  border-radius: 10px;
+  background: var(--github-card-muted-surface);
+  color: var(--primary);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.38);
+}
+
+.github-card__icon svg {
+  width: 1.16rem;
+  height: 1.16rem;
+}
+
+.github-card__title-wrap {
+  min-width: 0;
+}
+
+.github-card__eyebrow {
+  margin-bottom: 0.18rem;
+  color: var(--secondary);
+  font-size: 0.7rem;
+  font-weight: 650;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.github-card__title {
+  min-width: 0;
+  color: var(--primary);
+  font-size: 1.02rem;
+  font-weight: 650;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.github-card__owner {
+  color: color-mix(in srgb, var(--primary) 68%, var(--secondary));
+  font-weight: 540;
+}
+
+.github-card__slash {
+  margin: 0 0.16rem;
+  color: var(--secondary);
+  font-weight: 480;
+}
+
+.github-card__name {
+  color: var(--primary);
+}
+
+.github-card__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.28rem;
+  min-height: 2rem;
+  padding: 0 0.68rem;
+  border: 1px solid color-mix(in srgb, var(--border) 84%, var(--github-card-accent) 16%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--theme) 80%, transparent);
+  color: var(--secondary);
+  font-size: 0.78rem;
+  font-weight: 560;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.github-card:hover .github-card__action {
+  border-color: color-mix(in srgb, var(--github-card-accent) 34%, var(--border));
+  background: color-mix(in srgb, var(--github-card-accent) 9%, var(--theme));
+  color: var(--primary);
+}
+
+.github-card__action-icon {
+  font-size: 0.86rem;
+  line-height: 1;
+}
+
+.github-card__desc {
+  margin-top: 0.78rem;
+  max-width: 58rem;
+  color: var(--secondary);
+  font-size: 0.94rem;
+  line-height: 1.68;
+}
+
+.github-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.86rem;
+}
+
+.github-card__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.36rem;
+  min-height: 1.75rem;
+  max-width: 100%;
+  padding: 0.18rem 0.58rem;
+  border: 1px solid color-mix(in srgb, var(--border) 86%, transparent);
+  border-radius: 999px;
+  background: var(--github-card-muted-surface);
+  color: var(--secondary);
+  font-size: 0.78rem;
+  line-height: 1.2;
+}
+
+.github-card__lang-dot {
+  width: 0.52rem;
+  height: 0.52rem;
+  border-radius: 999px;
+  background: var(--github-card-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--github-card-accent) 14%, transparent);
+}
+
+:root[data-theme="dark"] .post-content .github-card,
+:root[data-theme="dark"] .md-content .github-card {
+  --github-card-accent: #8ea0ff;
+  --github-card-surface: color-mix(in srgb, var(--entry) 56%, #0c0d10);
+  --github-card-muted-surface: rgba(255, 255, 255, 0.045);
+
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--github-card-accent) 11%, transparent), transparent 46%),
+    var(--github-card-surface);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.26);
+}
+
+:root[data-theme="dark"] .post-content .github-card:hover,
+:root[data-theme="dark"] .md-content .github-card:hover {
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.36),
+    0 2px 10px color-mix(in srgb, var(--github-card-accent) 13%, transparent);
+}
+
+:root[data-theme="dark"] .github-card__icon {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+@media (max-width: 640px) {
+  .post-content .github-card,
+  .md-content .github-card {
+    margin: 1.25rem 0;
+    padding: 0.88rem 0.86rem 0.9rem;
+    border-radius: 12px;
+  }
+
+  .github-card__top {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: flex-start;
+    gap: 0.68rem;
+  }
+
+  .github-card__icon {
+    width: 2.05rem;
+    height: 2.05rem;
+    border-radius: 9px;
+  }
+
+  .github-card__title {
+    font-size: 0.98rem;
+  }
+
+  .github-card__action {
+    display: none;
+  }
+
+  .github-card__desc {
+    margin-top: 0.7rem;
+    font-size: 0.9rem;
+    line-height: 1.62;
+  }
+
+  .github-card__meta {
+    gap: 0.42rem;
+  }
+
+  .github-card__pill {
+    min-height: 1.68rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-content .github-card,
+  .md-content .github-card,
+  .github-card__action {
+    transition: none;
+  }
+}

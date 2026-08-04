@@ -1,0 +1,45 @@
+{{- $hidePostLicense := .Param "hidePostLicense" | default false -}}
+{{- $hideUsageNotice := .Param "hideUsageNotice" | default false -}}
+{{- $licenseName := .Param "licenseName" | default site.Params.articleLicense.name -}}
+{{- $licenseURL := .Param "licenseURL" | default site.Params.articleLicense.url -}}
+{{- $licenseNotice := .Param "licenseNotice" | default site.Params.articleLicense.notice -}}
+{{- $usageTitle := .Param "usageNoticeTitle" | default site.Params.articleUsageNotice.title -}}
+{{- $usageMark := .Param "usageNoticeMark" | default site.Params.articleUsageNotice.mark -}}
+{{- $usageText := .Param "usageNoticeText" | default site.Params.articleUsageNotice.text -}}
+{{- $showLicense := and (not $hidePostLicense) $licenseName $licenseURL -}}
+{{- $showUsage := and (not $hideUsageNotice) $usageText -}}
+
+{{- if or $showLicense $showUsage }}
+<section class="post-license" aria-label="文章附注">
+  {{- if $showLicense }}
+  <div class="post-license-item">
+    <div class="post-license-mark" aria-hidden="true">CC</div>
+    <div class="post-license-body">
+      <div class="post-license-head">
+        <h2 class="post-license-title">许可授权</h2>
+      </div>
+      <p class="post-license-text">
+        {{- if $licenseNotice -}}
+        {{ $licenseNotice }}
+        {{- else -}}
+        本文采用
+        {{- end -}}
+        <a href="{{ $licenseURL }}" target="_blank" rel="noopener noreferrer">{{ $licenseName }}</a>
+        许可协议，转载请保留署名并注明出处。
+      </p>
+    </div>
+  </div>
+  {{- end }}
+  {{- if $showUsage }}
+  <div class="post-license-item post-license-item-note">
+    <div class="post-license-mark" aria-hidden="true">{{ $usageMark | default "注" }}</div>
+    <div class="post-license-body">
+      <div class="post-license-head">
+        <h2 class="post-license-title">{{ $usageTitle | default "使用前提" }}</h2>
+      </div>
+      <p class="post-license-text">{{ $usageText }}</p>
+    </div>
+  </div>
+  {{- end }}
+</section>
+{{- end }}

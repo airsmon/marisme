@@ -1,0 +1,31 @@
+User-agent: *
+Allow: /
+
+{{- if hugo.IsProduction | or (eq site.Params.env "production") }}
+Disallow: /search/
+Disallow: /tags/
+Disallow: /categories/
+{{- else }}
+Disallow: /
+{{- end }}
+
+# AI Crawlers
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+Sitemap: {{ "sitemap.xml" | absURL }}

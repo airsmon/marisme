@@ -1,0 +1,11 @@
+# macOS metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Hugo-generated files
+/public/
+/resources/_gen/
+/.hugo_build.lock
+/hugo_stats.json

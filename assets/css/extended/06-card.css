@@ -1,0 +1,269 @@
+/* ============================
+   PaperMod 卡片 · 活泼动感版
+   ============================ */
+
+/* ---------- 普通卡片 ---------- */
+.post-entry {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px dashed transparent;
+  border-radius: 1rem;
+  padding: 1.5rem 1.5rem 1.25rem;
+  background: var(--entry);
+  cursor: pointer;
+
+  transition:
+    transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.28s ease,
+    border-color 0.28s ease;
+}
+
+.post-entry > :not(.entry-link) {
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 渐变光晕蒙层（hover 时亮起） */
+.post-entry::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(129, 140, 248, 0.07) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.post-entry:hover,
+.post-entry:focus-within {
+  transform: scale(1.01);
+  border-color: rgba(129, 140, 248, 0.5);
+  box-shadow:
+    0 16px 40px rgba(129, 140, 248, 0.18),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.post-entry:hover > :not(.entry-link),
+.post-entry:focus-within > :not(.entry-link) {
+  transform: translateY(-4px);
+}
+
+.post-entry:hover::after {
+  opacity: 1;
+}
+
+/* 左侧弹入强调线（双轴缩放，更弹） */
+/* .post-entry::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1.25rem;
+  bottom: 1.25rem;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(180deg, #818cf8, #a78bfa);
+  opacity: 0;
+  transform: scaleY(0.4) scaleX(0);
+  transform-origin: center left;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+} */
+
+/* .post-entry:hover::before {
+  opacity: 1;
+  transform: scaleY(1) scaleX(1);
+} */
+
+/* ---------- 标题 ---------- */
+.entry-header .entry-hint-parent {
+  position: relative;
+  overflow: hidden !important;
+  display: block !important;
+  max-height: calc(1.4em * 1) !important;
+  line-height: 1.4;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  transition: color 0.25s ease;
+}
+
+/* 渐隐遮罩 */
+.entry-header .entry-hint-parent::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 40%;
+  height: 1.4em;
+  background: linear-gradient(to right, transparent, var(--entry));
+  pointer-events: none;
+  transition: background 0.25s ease;
+}
+
+.post-entry:hover .entry-header .entry-hint-parent {
+  color: #818cf8;
+}
+
+/* hover 时遮罩颜色跟着卡片背景变 */
+.post-entry:hover .entry-header .entry-hint-parent::after {
+  background: linear-gradient(to right, transparent, var(--entry));
+}
+
+/* 暗色模式 */
+.dark .entry-header .entry-hint-parent::after {
+  background: linear-gradient(to right, transparent, var(--entry));
+}
+
+/* ---------- 摘要 ---------- */
+.entry-content {
+  color: var(--secondary);
+  line-height: 1.75;
+  margin-top: 0.4rem;
+  min-height: calc(1.75em * 2);
+}
+
+.entry-content p {
+  margin: 0;
+}
+
+/* ---------- footer meta + 阅读按钮 ---------- */
+.entry-footer {
+  display: flex;
+  align-items: center;
+  /* justify-content: space-between; */
+  margin-top: 1rem;
+  margin-top: auto;
+  font-size: 0.82rem;
+  opacity: 0.75;
+}
+
+/* 「阅读 →」浮现徽章 */
+.entry-footer::after {
+  content: "阅读 →";
+  margin-left: auto;
+  font-size: 0.78rem;
+  padding: 2px 10px;
+  border-radius: 99px;
+  background: rgba(129, 140, 248, 0.1);
+  color: #818cf8;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateX(6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.post-entry:hover .entry-footer::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ---------- 暗色模式 ---------- */
+.dark .post-entry {
+  background: rgba(255, 255, 255, 0.035);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+.dark .post-entry:hover {
+  border-color: rgba(129, 140, 248, 0.55);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.5),
+    0 2px 8px rgba(129, 140, 248, 0.15);
+}
+
+.dark .post-entry::after {
+  background: linear-gradient(135deg, rgba(129, 140, 248, 0.06) 0%, transparent 60%);
+}
+
+.dark .post-entry:hover .entry-header h2 {
+  color: #a5b4fc;
+}
+
+.dark .entry-footer::after {
+  background: rgba(165, 180, 252, 0.12);
+  color: #a5b4fc;
+}
+
+/* ---------- 移动端 ---------- */
+@media (max-width: 768px) {
+  .post-entry {
+    padding: 1.25rem;
+    border-radius: 0.875rem;
+  }
+
+  /* 移动端去掉弹簧感，改用平滑上移 */
+  .post-entry:hover,
+  .post-entry:focus-within {
+    transform: scale(1.005);
+  }
+
+  .post-entry:hover > :not(.entry-link),
+  .post-entry:focus-within > :not(.entry-link) {
+    transform: translateY(-2px);
+  }
+
+  .post-entry::before {
+    top: 1rem;
+    bottom: 1rem;
+  }
+}
+
+/* ---------- 减少动效（无障碍） ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .post-entry,
+  .post-entry::before,
+  .post-entry::after,
+  .entry-header h2,
+  .entry-footer::after {
+    transition: none;
+  }
+
+  .post-entry:hover {
+    transform: none;
+  }
+
+  .post-entry:hover > :not(.entry-link),
+  .post-entry:focus-within > :not(.entry-link) {
+    transform: none;
+  }
+}
+
+/* 方案二 */
+
+/* 通用动效基础 */
+/* .post-entry {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+} */
+
+/* / 卡片：蓝色系 (假设你的 URL 包含 /) */
+/* .post-entry:has(a[href*="/"]):hover {
+    transform: translateY(-5px);
+    border-left: 5px solid #818cf8;
+    box-shadow: 0 10px 20px rgba(129, 140, 248, 0.2);
+} */
+
+/* 播客卡片：橙色系 */
+/* .post-entry:has(a[href*="/musing/"]):hover {
+    transform: translateY(-5px);
+    border-left: 5px solid #ff7e5f;
+    box-shadow: 0 10px 20px rgba(255, 126, 95, 0.2);
+} */
+
+/* Technology 卡片：蓝色系 (假设你的 URL 包含 /technology/) */
+/* .post-entry:has(a[href*="/tech/"]):hover {
+    transform: translateY(-5px);
+    border-left: 5px solid #818cf8;
+    box-shadow: 0 10px 20px rgba(129, 140, 248, 0.2);
+} */
+
+/* Code 卡片：蓝色系 (假设你的 URL 包含 /code/) */
+/* .post-entry:has(a[href*="/articles/code/"]):hover {
+    transform: translateY(-5px);
+    border-left: 5px solid #818cf8;
+    box-shadow: 0 10px 20px rgba(129, 140, 248, 0.2);
+} */
+
+/* Ops 卡片：绿色/青色系 (假设你的 URL 包含 /ops/) */
+/* .post-entry:has(a[href*="/articles/ops/"]):hover {
+    transform: translateY(-5px);
+    border-left: 5px solid #34d399;
+    box-shadow: 0 10px 20px rgba(52, 211, 153, 0.2);
+} */

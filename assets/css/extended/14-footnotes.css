@@ -1,0 +1,125 @@
+:root {
+    --footnote-border: color-mix(in srgb, var(--border) 82%, transparent);
+    --footnote-ref-color: var(--secondary);
+    --footnote-ref-hover-color: var(--primary);
+}
+
+.post-content sup:has(> .footnote-ref),
+.md-content sup:has(> .footnote-ref) {
+    vertical-align: baseline;
+    position: relative;
+    top: -0.42em;
+    margin-left: 0.08em;
+}
+
+.post-content .footnote-ref,
+.md-content .footnote-ref {
+    display: inline;
+    color: var(--footnote-ref-color) !important;
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1;
+    text-decoration: none !important;
+    transition: color 0.16s ease;
+}
+
+.post-content .footnote-ref::before,
+.md-content .footnote-ref::before {
+    content: "[";
+}
+
+.post-content .footnote-ref::after,
+.md-content .footnote-ref::after {
+    content: "]";
+}
+
+.post-content .footnote-ref:hover,
+.md-content .footnote-ref:hover,
+.post-content .footnote-ref:focus-visible,
+.md-content .footnote-ref:focus-visible {
+    color: var(--footnote-ref-hover-color) !important;
+    outline: none;
+}
+
+.post-content .footnotes,
+.md-content .footnotes {
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--footnote-border);
+    color: var(--secondary);
+    font-size: 0.92rem;
+}
+
+.post-content .footnotes hr,
+.md-content .footnotes hr {
+    display: none;
+}
+
+.post-content .footnotes ol,
+.md-content .footnotes ol {
+    margin: 0.7rem 0 0;
+    padding-left: 1.25rem;
+}
+
+.post-content .footnotes li,
+.md-content .footnotes li {
+    margin: 0.64rem 0;
+    padding-left: 0.1rem;
+}
+
+.post-content .footnotes li::marker,
+.md-content .footnotes li::marker {
+    color: var(--secondary);
+    font-size: 0.84rem;
+}
+
+.post-content .footnotes li p,
+.md-content .footnotes li p {
+    margin: 0.24rem 0;
+    line-height: 1.7;
+}
+
+.post-content .footnotes li + li,
+.md-content .footnotes li + li {
+    padding-top: 0.55rem;
+    border-top: 1px dashed color-mix(in srgb, var(--border) 55%, transparent);
+}
+
+.post-content .footnotes a:not(.footnote-backref),
+.md-content .footnotes a:not(.footnote-backref) {
+    text-decoration-color: color-mix(in srgb, var(--article-link-underline) 90%, transparent) !important;
+}
+
+.post-content .footnote-backref,
+.md-content .footnote-backref {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0.28rem;
+    color: var(--secondary) !important;
+    text-decoration: none !important;
+    font-size: 0.84em;
+    transition: color 0.16s ease, transform 0.16s ease;
+}
+
+.post-content .footnote-backref:hover,
+.md-content .footnote-backref:hover,
+.post-content .footnote-backref:focus-visible,
+.md-content .footnote-backref:focus-visible {
+    color: var(--primary) !important;
+    transform: translateX(-1px);
+    outline: none;
+}
+
+@media (max-width: 768px) {
+    .post-content .footnotes,
+    .md-content .footnotes {
+        margin-top: 2rem;
+        font-size: 0.92rem;
+    }
+
+    .post-content .footnotes ol,
+    .md-content .footnotes ol {
+        padding-left: 1.2rem;
+    }
+}

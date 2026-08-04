@@ -1,0 +1,103 @@
+{{- $title := .Get "title" | default (.Get "name") | default "Sponsor" -}}
+{{- $label := .Get "label" | default "赞助推荐" -}}
+{{- $desc := .Get "desc" | default (.Get "description") | default (.Inner | strings.TrimSpace) -}}
+{{- $url := .Get "url" | default (.Get "href") -}}
+{{- $logo := .Get "logo" | default (.Get "image") -}}
+{{- $alt := .Get "alt" | default "" -}}
+{{- $preview := .Get "preview" | default (.Get "cover") | default (.Get "banner") -}}
+{{- $previewAlt := .Get "previewAlt" | default (.Get "coverAlt") | default (.Get "bannerAlt") | default $alt -}}
+{{- $previewMode := .Get "previewMode" | default (.Get "imageMode") | default "inline" | lower -}}
+{{- $previewIsBg := or (eq $previewMode "background") (eq $previewMode "bg") (eq $previewMode "half") -}}
+{{- $mark := .Get "mark" | default "AD" -}}
+{{- $cta := .Get "cta" | default "了解详情" -}}
+{{- $disclosure := .Get "disclosure" | default "推广内容" -}}
+{{- $tagsRaw := .Get "tags" | default (.Get "tag") -}}
+{{- $accent := .Get "accent" -}}
+{{- $cardClass := "ad-card" -}}
+{{- if $preview -}}
+  {{- $cardClass = printf "%s ad-card--has-preview" $cardClass -}}
+{{- end -}}
+{{- if and $preview $previewIsBg -}}
+  {{- $cardClass = printf "%s ad-card--preview-bg" $cardClass -}}
+{{- end -}}
+{{- $style := "" -}}
+{{- if $accent -}}
+  {{- $style = printf "--ad-card-accent: %s;" $accent -}}
+{{- end -}}
+
+{{- if $url -}}
+<a
+  class="{{ $cardClass }}"
+  href="{{ $url | safeURL }}"
+  target="_blank"
+  rel="noopener noreferrer sponsored"
+  aria-label="{{ printf "%s，%s：%s" $disclosure $label $title }}"
+  {{ with $style }}style="{{ . | safeCSS }}"{{ end }}
+>
+{{- else -}}
+<div
+  class="{{ $cardClass }}"
+  aria-label="{{ printf "%s，%s：%s" $disclosure $label $title }}"
+  {{ with $style }}style="{{ . | safeCSS }}"{{ end }}
+>
+{{- end -}}
+  {{- if and $preview $previewIsBg -}}
+    <div class="ad-card__preview" aria-hidden="true">
+      <img src="{{ $preview | safeURL }}" alt="" loading="lazy" decoding="async">
+    </div>
+  {{- end -}}
+
+  <div class="ad-card__main">
+    <div class="ad-card__ribbon">
+      <span class="ad-card__disclosure">{{ $disclosure }}</span>
+      <span class="ad-card__ribbon-sep" aria-hidden="true"></span>
+      <span class="ad-card__eyebrow">{{ $label }}</span>
+    </div>
+
+    <div class="ad-card__top">
+      <span class="ad-card__icon" aria-hidden="true">
+        {{- if $logo -}}
+          <img src="{{ $logo | safeURL }}" alt="{{ $alt }}" loading="lazy" decoding="async">
+        {{- else -}}
+          <span class="ad-card__mark">{{ $mark }}</span>
+        {{- end -}}
+      </span>
+
+      <div class="ad-card__title-wrap">
+        <div class="ad-card__title">{{ $title }}</div>
+      </div>
+
+      {{- if $url -}}
+        <span class="ad-card__action" aria-hidden="true">
+          <span class="ad-card__action-text">{{ $cta }}</span>
+          <span class="ad-card__action-icon">↗</span>
+        </span>
+      {{- end -}}
+    </div>
+
+    {{- if $desc -}}
+      <div class="ad-card__desc">{{ $desc }}</div>
+    {{- end -}}
+
+    {{- if and $preview (not $previewIsBg) -}}
+      <div class="ad-card__preview">
+        <img src="{{ $preview | safeURL }}" alt="{{ $previewAlt }}" loading="lazy" decoding="async">
+      </div>
+    {{- end -}}
+
+    {{- if $tagsRaw -}}
+      <div class="ad-card__meta" aria-label="Ad metadata">
+        {{- range split $tagsRaw "," -}}
+          {{- $tag := . | strings.TrimSpace -}}
+          {{- if $tag -}}
+            <span class="ad-card__pill">{{ $tag }}</span>
+          {{- end -}}
+        {{- end -}}
+      </div>
+    {{- end -}}
+  </div>
+{{- if $url -}}
+</a>
+{{- else -}}
+</div>
+{{- end -}}

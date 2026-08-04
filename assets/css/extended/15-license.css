@@ -1,0 +1,114 @@
+.post-license {
+    margin: 2.5rem 0 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.post-license-item {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 0.9rem;
+}
+
+.post-license-item + .post-license-item {
+    margin-top: 0.9rem;
+}
+
+.post-license-head {
+    margin-bottom: 0.45rem;
+}
+
+.post-license-mark {
+    grid-area: mark;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--secondary);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.post-license-body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.post-license-head {
+    grid-area: head;
+}
+
+.post-license-item-note .post-license-mark {
+    font-size: 0.78rem;
+    letter-spacing: 0;
+}
+
+.post-license-title {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.post-license-text {
+    grid-area: text;
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.8;
+    color: var(--secondary);
+}
+
+.post-license-text a {
+    color: var(--article-link, inherit);
+    font-weight: 400;
+    text-decoration-line: underline !important;
+    text-decoration-style: dashed !important;
+    text-decoration-color: var(--article-link-underline, #d4d4d4) !important;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    border-bottom: none;
+    transition: text-decoration-color 0.18s ease, color 0.18s ease;
+}
+
+.post-license-text a:hover {
+    color: var(--article-link-hover, inherit);
+    text-decoration-color: var(--article-link-underline-hover, #a8a8a8) !important;
+}
+
+@media (max-width: 640px) {
+    .post-license-item {
+        display: grid;
+        grid-template-columns: 1.85rem minmax(0, 1fr);
+        grid-template-areas:
+            "mark head"
+            "text text";
+        gap: 0.35rem 0.55rem;
+    }
+
+    .post-license-head {
+        display: block;
+        margin-bottom: 0.35rem;
+    }
+
+    .post-license-mark {
+        min-width: 1.85rem;
+        height: 1.85rem;
+        font-size: 0.68rem;
+    }
+
+    .post-license-body {
+        display: contents;
+        width: 100%;
+    }
+
+    .post-license-text {
+        padding-left: 0;
+    }
+}

@@ -1,0 +1,164 @@
+@media screen and (max-width: 800px) {
+    body.menu-open::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.6);
+        z-index: 999;
+    }
+
+    :root[data-theme="dark"] body.menu-open::before {
+        background: rgba(10, 10, 12, 0.6);
+    }
+
+    .header-nav {
+        position: relative;
+        padding: 0 1rem;
+        min-height: var(--header-height);
+        z-index: 1001;
+    }
+
+    .logo {
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo-switches {
+        position: relative;
+        gap: 0.55rem;
+    }
+
+    #mobile-menu-toggle {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 999px;
+        cursor: pointer;
+        color: var(--primary);
+        background: transparent;
+        transition: background-color 0.18s ease, color 0.18s ease;
+
+        --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 7h16M4 12h16M4 17h16'/%3E%3C/svg%3E");
+        -webkit-mask-image: var(--svg);
+        mask-image: var(--svg);
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        -webkit-mask-size: 18px 18px;
+        mask-size: 18px 18px;
+        background-color: currentColor;
+    }
+
+    #mobile-menu-toggle:hover,
+    #mobile-menu-toggle:active,
+    body.menu-open #mobile-menu-toggle {
+        color: var(--primary);
+        background-color: color-mix(in srgb, var(--primary) 8%, transparent);
+    }
+
+    body.menu-open #mobile-menu-toggle {
+        --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 6l12 12M18 6L6 18'/%3E%3C/svg%3E");
+    }
+
+    #menu {
+        display: flex !important;
+        flex-direction: column;
+        align-items: stretch;
+        position: fixed;
+        top: 4.6rem;
+        left: 0.75rem;
+        right: 0.75rem;
+        width: auto;
+        margin: 0;
+        padding: 0.55rem;
+        list-style: none;
+        white-space: normal;
+        column-gap: 0;
+        border: 1px dashed color-mix(in srgb, var(--border) 92%, var(--primary) 8%);
+        border-radius: 16px;
+        background: color-mix(in srgb, var(--theme) 82%, transparent);
+        backdrop-filter: blur(18px) saturate(140%);
+        -webkit-backdrop-filter: blur(18px) saturate(140%);
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(-0.45rem) scale(0.985);
+        transform-origin: top center;
+        transition:
+            opacity 0.18s ease,
+            transform 0.18s ease,
+            visibility 0.18s ease;
+        overflow: hidden;
+        z-index: 1000;
+    }
+
+    :root[data-theme="dark"] #menu {
+        border-color: color-mix(in srgb, var(--border) 86%, var(--primary) 14%);
+        background: color-mix(in srgb, var(--theme) 78%, transparent);
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.24);
+    }
+
+    #menu.show {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(0) scale(1);
+    }
+
+    #menu li {
+        margin: 0;
+        padding: 0;
+        line-height: 1.2;
+        position: relative;
+        z-index: 1;
+    }
+
+    #menu li + li {
+        margin-top: 0.12rem;
+    }
+
+    #menu li a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 0.68rem 0.9rem;
+        border: none;
+        border-radius: 12px;
+        font-size: 0.92rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: var(--secondary);
+        background: transparent;
+        text-align: center;
+        text-decoration: none !important;
+        transition: background-color 0.16s ease, color 0.16s ease;
+    }
+
+    #menu li a:hover,
+    #menu li a:active {
+        background: transparent;
+        color: var(--primary);
+    }
+
+    #menu li a span.active {
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    #menu li a svg {
+        width: 0.78rem;
+        height: 0.78rem;
+        margin-left: 0.18rem;
+    }
+}
+/* Center regular article images without affecting inline images. */
+.post-content.md-content img:not(.in-text) {
+    display: block;
+    margin: 1rem auto;
+}

@@ -1,0 +1,101 @@
+/* Newsbox 容器 */
+.newsbox {
+    position: relative;
+    padding: 2px;
+    margin: 20px 0;
+    max-width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    background: var(--border); /* 备用背景 */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* 标题样式 */
+.newsbox-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* 每一行动态 */
+.newsbox-line {
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: flex;                 /* 使用 flex 让日期和文字对齐 */
+}
+
+/* 日期样式：固定宽度确保对齐，支持颜色闪烁 */
+.newsbox-line-date {
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    /* min-width: 75px; */
+    white-space: nowrap;
+    flex-shrink: 0;
+    /* 渐变文字 */
+    background: linear-gradient(90deg, #818cf8, #a78bfa, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: ai-pulse 1.5s ease-in-out infinite;
+}
+
+/* 链接样式 */
+.newsbox-line a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity 0.2s;
+}
+
+.newsbox-line a:hover {
+    opacity: 0.7;
+}
+
+/* 内部内容层 */
+.newsbox-content {
+    position: relative;
+    z-index: 1; /* 确保文字在光效上方 */
+    background: var(--theme); /* 适配主题背景色（深色模式自动变黑） */
+    padding: 20px;
+    border-radius: 10px; /* 比外层稍微小一点 */
+}
+
+/* 核心：流动的光效 */
+.newsbox::before {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    left: -50%;
+    top: -50%;
+    width: 200%;
+    height: 200%;
+    background-color: transparent;
+    /* 定义光的颜色，可以改 #818cf8 等 */
+    background-image: conic-gradient(
+        transparent, 
+        #818cf8, 
+        #c084fc, 
+        transparent 30%
+    );
+    /* 动画名称 速度 匀速 无限循环 */
+    animation: border-rotate 4s linear infinite;
+}
+
+/* 旋转动画 */
+@keyframes border-rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

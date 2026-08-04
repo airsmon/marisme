@@ -1,0 +1,15 @@
+/* Mermaid 图表只在外层处理版面，颜色交给 Mermaid 内置主题。 */
+pre.mermaid {
+    background: transparent !important;
+    border-radius: var(--radius);
+    margin: 1.75rem 0;
+    overflow-x: auto;
+    padding: 0.25rem 0;
+}
+
+pre.mermaid svg {
+    display: block;
+    height: auto;
+    margin: 0 auto;
+    max-width: 100%;
+}

@@ -1,0 +1,279 @@
+baseURL: "https://marisme.com/"
+title: Måris ✦ me 🎐
+theme: PaperMod
+
+enableInlineShortcodes: true
+enableRobotsTXT: true
+buildDrafts: false
+buildFuture: false
+buildExpired: false
+enableEmoji: true
+pygmentsUseClasses: true
+
+# googleAnalytics: "G-LQR3F59SMD"
+
+minify:
+  disableXML: true
+  minifyOutput: true
+
+pagination:
+  disableAliases: true
+  pagerSize: 7
+
+outputFormats:
+  llms:
+    mediaType: "text/plain"
+    baseName: "llms"
+    isPlainText: true
+    notAlternative: true
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+    - llms
+
+params:
+  env: production
+  title: Mårisme
+  description: "Mårisme is a personal space for infrastructure, code, automation, and quiet technical notes."
+  keywords:
+    - Infra
+    - Code
+    - Notes
+    - Linux
+    - Kubernetes
+    - DevOps
+    - Automation
+    - 运维
+    - 开源
+  author: "Y'Jie"
+  articleLicense:
+    name: "CC BY-NC-SA 4.0"
+    url: "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans"
+    notice: "本文采用"
+  articleUsageNotice:
+    title: "使用前提"
+    mark: "注"
+    text: "博客中涉及的 GitHub 仓库及第三方软件均有其独立的开源许可证。在部署或使用前，请自行查阅对应仓库的 LICENSE 文件，确认许可类型（如 MIT、Apache 2.0、GPL 等）及其附加条款。"
+  followProfiles:
+    enabled: true
+    title: "关注更新"
+    arialabel: "关注方式"
+    items:
+      - name: "微信公众号"
+        label: "公众号"
+        description: "扫码关注，第一时间查看更新。"
+        qrimage: "/qrcode.jpg"
+        qralt: "微信公众号二维码"
+        hovercolor: "#07c160"
+      # - name: "小红书"
+      #   label: "小红书"
+      #   description: "扫码查看最新动态。"
+      #   qrimage: "/images/xiaohongshu-qrcode.png"
+      #   qralt: "小红书二维码"
+      #   hovercolor: "#ff2442"
+      # - name: "微博"
+      #   label: "微博"
+      #   description: "扫码查看最新动态。"
+      #   qrimage: "/images/weibo-qrcode.png"
+      #   qralt: "微博二维码"
+      #   hovercolor: "#e6162d"
+      # - name: "Bilibili"
+      #   label: "Bilibili"
+      #   description: "扫码查看最新动态。"
+      #   qrimage: "/images/bilibili-qrcode.png"
+      #   qralt: "Bilibili 二维码"
+      #   hovercolor: "#00a1d6"
+  defaultTheme: auto
+  images: ["avatar/avatar.webp"]
+  DateFormat: "January 2, 2006"
+  disableThemeToggle: false
+  ShowPageNums: true
+  ShowReadingTime: true
+  ShowShareButtons: false
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: true
+  ShowCodeCopyButtons: true
+  ShowWordCount: true
+  ShowRssButtonInSectionTermList: true
+  UseHugoToc: true
+  disableSpecial1stPost: false
+  disableScrollToTop: false
+  comments: false
+  hidemeta: false
+  hideSummary: false
+  showtoc: true
+  tocopen: false
+
+  footer:
+    logo:
+      enabled: false
+      url: "/"            # 点击图标跳转的链接
+      src: "/favicon-16x16.png" # 图标路径
+      alt: "logo"
+      width: 20
+      opacity: 0.6
+    ai:
+      enabled: true
+
+  assets:
+    disableHLJS: true
+    disableFingerprinting: true
+    favicon: "/favicon.ico"
+    favicon16x16: "/favicon-16x16.png"
+    favicon32x32: "/favicon-32x32.png"
+    apple_touch_icon: "/apple-touch-icon.png"
+    safari_pinned_tab: "/safari-pinned-tab.svg"
+
+  label:
+    text: "Home"
+    icon: ""
+    iconHeight: 35
+
+  # profile-mode
+  profileMode:
+    enabled: false  
+    title: Måris ✦ me
+    subtitle: "祈人生心境平和、不惧艰难、无恙而终！"
+    imageUrl: "/avatar/avatar.webp"
+    imageWidth: 120
+    imageHeight: 120
+    imageTitle: Mårisme
+    buttons:
+      - name: articles
+        url: articles
+  # home-info mode
+  homeInfoParams:
+    Title: "Måris ✦ me 🎐"
+    Content: |
+      A personal space for infrastructure, code, automation, and quiet technical notes.
+
+      🍀 🎻 祈人生心境平和、不惧艰难、无恙而终！[Leisure](/leisure/)
+
+      - Linux, Kubernetes, networking, and open-source operations.
+      - Deployment records, debugging notes, and automation workflows.
+      - Occasional thoughts on work, life, anime, reading, and building things.
+      - Meet the person behind the notes on [About](/about/).
+      - Platform status: [Analytics](https://cloud.umami.is/analytics/us/share/JiIu9Kmp1e1I3Euf).
+      - Explore [About](/about/), [Musing](/musing/), [Tags](/tags/), or [Timeline](/archives/).
+
+
+  socialIcons:
+    - name: email
+      url: "mailto:airsmon@gmail.com"
+    - name: qq
+      url: "https://wpa.qq.com/msgrd?v=3&uin=576170271&site=qq&menu=yes"
+    # - name: x
+    #   url: "https://x.com/"
+    # - name: stackoverflow
+    #   url: "https://stackoverflow.com"
+    - name: github
+      url: "https://github.com/orgs/MarismeCom/repositories"
+
+  analytics:
+    google:
+      SiteVerificationTag: ""
+    bing:
+      SiteVerificationTag: ""
+    # yandex:
+    #   SiteVerificationTag: ""
+
+  cover:
+    hidden: true # hide everywhere but not in structured data
+    # hiddenInList: true # hide on list pages and home
+    # hiddenInSingle: true # hide on single page
+    responsiveImages: true
+    linkFullImages: false
+
+  # for search
+  # https://fusejs.io/api/options.html
+  fuseOpts:
+    isCaseSensitive: false
+    shouldSort: true
+    location: 0
+    distance: 1000
+    threshold: 0.35
+    minMatchCharLength: 2
+    limit: 10
+    keys: ["title", "permalink", "summary", "tags", "categories"]
+  
+  mainSections:
+    - "articles"
+    - "podcast"
+    
+menu:
+  main:
+    - identifier: search
+      name: 🫧 Search
+      url: /search/
+      weight: 10
+    # - identifier: tech
+    #   name: Technology
+    #   url: /articles/
+    #   weight: 20
+    # - identifier: code
+    #   name: Code
+    #   url: /articles/code/
+    #   weight: 20
+    # - identifier: operation
+    #   name: Ops
+    #   url: /articles/ops/
+    #   weight: 30
+    - identifier: musing
+      name: 🌳 Musing
+      url: /musing/
+      weight: 40
+    - identifier: leisure
+      name: 🍵 Leisure
+      url: /leisure/
+      weight: 50
+    # - identifier: about
+    #   name: 🍃 About
+    #   url: /about/
+    #   weight: 50
+    # - identifier: series
+    #   name: Series
+    #   url: /series/
+    #   weight: 55
+    - identifier: categories
+      name: 💭 Categories
+      url: /categories/
+      weight: 60
+    - identifier: tags
+      name: 🌾 Tags
+      url: /tags/
+      weight: 70
+    - identifier: archives
+      name: 🍄 Timeline
+      url: /archives/
+      weight: 80
+
+markup:
+  highlight:
+    noClasses: false
+    anchorLineNos: false
+    codeFences: true
+    guessSyntax: false
+    lineNos: true
+    style: nord
+    tabWidth: 4
+    wrapperClass: highlight
+  goldmark:
+    renderer:
+      unsafe: true
+
+permalinks:
+  articles: "/articles/:slug/"
+  categories: "/categories/:slug/"
+  tags: "/tags/:slug/"
+  series: "/series/:slug/"
+  musing: "/musing/:slug/"
+
+taxonomies:
+  category: categories
+  tag: tags
+  series: series
+
+uglyurls: false

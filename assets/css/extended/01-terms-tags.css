@@ -1,0 +1,105 @@
+/* ===== Categories / Tags 页面优化 ===== */
+
+.terms-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .65rem;
+  padding: 0;
+  list-style: none;
+}
+
+.terms-tags li a {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .45rem 1rem;
+  background: var(--entry);
+  /* border: 1px dashed var(--border); */
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--secondary);
+  text-decoration: none;
+  transition:
+    transform .28s cubic-bezier(.34, 1.56, .64, 1),
+    border-color .22s ease,
+    color .22s ease,
+    box-shadow .22s ease;
+}
+
+.terms-tags li a:hover {
+  transform: translateY(-3px) scale(1.04);
+  border-color: rgba(129, 140, 248, .55);
+  color: #818cf8;
+  box-shadow: 0 6px 18px rgba(129, 140, 248, .15);
+}
+
+/* 把嵌套 sup 改造成行内徽章 */
+.terms-tags li a sup {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background: rgba(129, 140, 248, .12);
+  color: #818cf8;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  transition: background .22s ease;
+}
+
+/* 去掉多余的嵌套层级影响 */
+.terms-tags li a sup strong,
+.terms-tags li a sup strong sup {
+  font-weight: 700;
+  font-size: inherit;
+  color: inherit;
+  vertical-align: baseline;
+}
+
+.terms-tags li a:hover sup {
+  background: rgba(129, 140, 248, .22);
+}
+
+/* 暗色模式 */
+.dark .terms-tags li a {
+  color: var(--secondary);
+  border-color: rgba(255, 255, 255, .08);
+}
+
+.dark .terms-tags li a:hover {
+  border-color: rgba(129, 140, 248, .55);
+  color: #a5b4fc;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .4);
+}
+
+.dark .terms-tags li a sup {
+  background: rgba(165, 180, 252, .12);
+  color: #a5b4fc;
+}
+
+.dark .terms-tags li a:hover sup {
+  background: rgba(165, 180, 252, .22);
+}
+
+/* 移动端 */
+@media (max-width: 768px) {
+  .terms-tags li a {
+    padding: .4rem .85rem;
+    font-size: 13px;
+  }
+
+  .terms-tags li a:hover {
+    transform: translateY(-2px) scale(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .terms-tags li a { transition: none; }
+  .terms-tags li a:hover { transform: none; }
+}
