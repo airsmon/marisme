@@ -15,8 +15,38 @@
     -webkit-text-fill-color: transparent;
 }
 
+.archive-infinite-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 1.5em;
+    margin: 20px 0 32px;
+    color: var(--secondary);
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.archive-infinite-status::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--tertiary);
+}
+
+.archive-infinite-status.is-complete {
+    opacity: 0.72;
+}
+
 /* 手机端细节：防止过度修饰导致的排版位移 */
 @media screen and (max-width: 768px) {
+    .archive-infinite-status {
+        margin: 16px 0 24px;
+    }
+
     .archive-entry .archive-meta {
         font-size: 12px;
         letter-spacing: 0.04em;
