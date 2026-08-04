@@ -157,16 +157,16 @@ params:
   homeInfoParams:
     Title: "Måris ✦ me 🎐"
     Content: |
-      一个记录基础设施、代码、自动化与技术笔记的个人空间。
+      A personal space for infrastructure, code, automation, and quiet technical notes.
 
-      🍀 🎻 祈人生心境平和、不惧艰难、无恙而终！[闲暇](/leisure/)
+      🍀 🎻 祈人生心境平和、不惧艰难、无恙而终！[Leisure](/leisure/)
 
-      - Linux、Kubernetes、网络与开源运维实践。
-      - 部署记录、故障排查与自动化工作流。
-      - 偶尔记录工作、生活、动漫、阅读与动手实践。
-      - 在[关于我](/about/)了解这些笔记背后的作者。
-      - 站点状态：[访问分析](https://cloud.umami.is/analytics/us/share/JiIu9Kmp1e1I3Euf)。
-      - 浏览[关于我](/about/)、[随想](/musing/)、[标签](/tags/)或[时间线](/archives/)。
+      - Linux, Kubernetes, networking, and open-source operations.
+      - Deployment records, debugging notes, and automation workflows.
+      - Occasional thoughts on work, life, anime, reading, and building things.
+      - Meet the person behind the notes on [About](/about/).
+      - Platform status: [Analytics](https://cloud.umami.is/analytics/us/share/JiIu9Kmp1e1I3Euf).
+      - Explore [About](/about/), [Musing](/musing/), [Tags](/tags/), or [Timeline](/archives/).
 
 
   socialIcons:
@@ -245,10 +245,10 @@ menu:
     #   name: Series
     #   url: /series/
     #   weight: 55
-    - identifier: categories
-      name: 💭 分类
-      url: /categories/
-      weight: 60
+    # - identifier: categories
+    #   name: 💭 分类
+    #   url: /categories/
+    #   weight: 60
     - identifier: tags
       name: 🌾 标签
       url: /tags/
