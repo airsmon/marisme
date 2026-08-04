@@ -64,7 +64,7 @@
     {{- $groups = $groups | append (dict
         "id" "other"
         "title" "其他主题"
-        "description" "尚未归入固定阅读路径，但已经关联多篇内容的标签。"
+        "description" "一些横跨现有方向、已经积累多篇内容的主题。"
         "items" $unmappedRegular
     ) }}
 {{- end }}
@@ -75,7 +75,7 @@
             <div>
                 <p class="tags-eyebrow">标签索引 · 知识航图</p>
                 <h1>按主题，找到<br>下一篇<span>文章</span></h1>
-                <p class="tags-hero__description">不再从一整面标签墙里寻找方向。先进入一条主题路径，再沿着相关概念继续阅读。</p>
+                <p class="tags-hero__description">从基础设施、系统与工具，到动画、阅读与生活随想，沿着主题发现相关笔记。</p>
             </div>
             <dl class="tags-stats" aria-label="标签统计">
                 <div>
@@ -109,10 +109,10 @@
     <section class="tags-popular" data-tags-popular aria-labelledby="tags-popular-title">
         <header class="tags-section-heading">
             <div>
-                <span>按热度浏览</span>
+                <span>从这里开始</span>
                 <h2 id="tags-popular-title">常用主题</h2>
             </div>
-            <p>用真实文章数量建立视觉优先级。这里保留排名，不使用随机字号或不同颜色。</p>
+            <p>这些主题积累了更多文章，是了解本站内容的快捷入口。</p>
         </header>
         <ol class="tags-popular__list">
             {{- range $popularTerms }}
@@ -147,7 +147,7 @@
         <div class="tags-directory__content">
             <header class="tags-directory__intro">
                 <h2 id="tags-directory-title">全部主题路径</h2>
-                <p>标签按内容语义归入阅读路径，而不是按字母或创建顺序排列。点击左侧路径可快速跳转。</p>
+                <p>六条路径串起技术实践、工具创作与生活记录，选择感兴趣的方向继续阅读。</p>
             </header>
 
             {{- range $groups }}
@@ -184,13 +184,13 @@
     <section class="tags-long-tail" data-tags-long-tail>
         <details data-tags-long-tail-details>
             <summary>
-                <span>其他标签 <small>尚未归入主题路径的长尾标签 · {{ len $longTail }} 个</small></span>
+                <span>更多标签 <small>更具体的关键词 · {{ len $longTail }} 个</small></span>
                 <span class="tags-long-tail__action">展开查看
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
                 </span>
             </summary>
             <div class="tags-long-tail__content">
-                <p>这些标签目前只关联一篇内容，仍可通过搜索或下方完整列表访问。</p>
+                <p>一些更具体、目前收录较少的关键词，也可以直接搜索或展开浏览。</p>
                 <ul>
                     {{- range $longTail }}
                     <li data-tag-item data-tag-name="{{ .search }}">

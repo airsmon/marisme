@@ -87,7 +87,7 @@ groups:
 
   - id: leisure
     title: "影视与阅读"
-    description: "按照题材与阅读兴趣进入闲暇内容，让技术之外的主题保持自己的节奏。"
+    description: "从动画、影视到阅读记录，浏览技术之外的兴趣与闲暇。"
     tags:
       - 动画
       - 奇幻
@@ -108,7 +108,7 @@ groups:
 
   - id: thinking-life
     title: "思考与生活"
-    description: "商业、组织、教育与个人经验，作为随想文章的横向索引。"
+    description: "关于商业、组织、教育与个人经验的观察和随想。"
     tags:
       - 企业架构
       - 创业
