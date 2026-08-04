@@ -1,0 +1,215 @@
+{{- define "main" }}
+
+{{- $configuredGroups := hugo.Data.tag_groups.groups | default slice }}
+{{- $allTerms := .Data.Terms.Alphabetical }}
+{{- $popularTerms := first 6 .Data.Terms.ByCount }}
+{{- $mappedPaths := dict }}
+{{- $groups := slice }}
+{{- $exactTermCounts := newScratch }}
+
+{{- range site.RegularPages }}
+    {{- range .GetTerms "tags" }}
+        {{- $exactTermCounts.Add .RelPermalink 1 }}
+    {{- end }}
+{{- end }}
+
+{{- range $configuredGroups }}
+    {{- $items := slice }}
+    {{- range .tags }}
+        {{- $slug := . }}
+        {{- with site.GetPage (printf "/tags/%s" $slug) }}
+            {{- $item := dict
+                "page" .
+                "name" .LinkTitle
+                "count" ($exactTermCounts.Get .RelPermalink | default 0)
+                "search" (lower .LinkTitle)
+            }}
+            {{- $items = $items | append $item }}
+            {{- $mappedPaths = merge $mappedPaths (dict .RelPermalink true) }}
+        {{- end }}
+    {{- end }}
+    {{- if gt (len $items) 0 }}
+        {{- $groups = $groups | append (dict
+            "id" .id
+            "title" .title
+            "description" .description
+            "items" $items
+        ) }}
+    {{- end }}
+{{- end }}
+
+{{- $unmappedRegular := slice }}
+{{- $longTail := slice }}
+{{- range $allTerms }}
+    {{- $term := . }}
+    {{- with site.GetPage (printf "/tags/%s" $term.Name) }}
+        {{- if not (isset $mappedPaths .RelPermalink) }}
+            {{- $count := $exactTermCounts.Get .RelPermalink | default 0 }}
+            {{- $item := dict
+                "page" .
+                "name" .LinkTitle
+                "count" $count
+                "search" (lower .LinkTitle)
+            }}
+            {{- if gt $count 1 }}
+                {{- $unmappedRegular = $unmappedRegular | append $item }}
+            {{- else }}
+                {{- $longTail = $longTail | append $item }}
+            {{- end }}
+        {{- end }}
+    {{- end }}
+{{- end }}
+
+{{- if gt (len $unmappedRegular) 0 }}
+    {{- $groups = $groups | append (dict
+        "id" "other"
+        "title" "其他主题"
+        "description" "尚未归入固定阅读路径，但已经关联多篇内容的标签。"
+        "items" $unmappedRegular
+    ) }}
+{{- end }}
+
+<article class="tags-page" data-tags-page data-tag-total="{{ len $allTerms }}">
+    <header class="tags-hero">
+        <div class="tags-hero__grid">
+            <div>
+                <p class="tags-eyebrow">标签索引 · 知识航图</p>
+                <h1>按主题，找到<br>下一篇<span>文章</span></h1>
+                <p class="tags-hero__description">不再从一整面标签墙里寻找方向。先进入一条主题路径，再沿着相关概念继续阅读。</p>
+            </div>
+            <dl class="tags-stats" aria-label="标签统计">
+                <div>
+                    <dt>全部标签</dt>
+                    <dd>{{ len $allTerms }}</dd>
+                </div>
+                <div>
+                    <dt>主题路径</dt>
+                    <dd>{{ len $groups }}</dd>
+                </div>
+            </dl>
+        </div>
+    </header>
+
+    <section class="tags-search" aria-label="搜索标签">
+        <div class="tags-search__row">
+            <div class="tags-search__field">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="11" cy="11" r="6.5"></circle>
+                    <path d="m16 16 4 4"></path>
+                </svg>
+                <label class="tags-page__visually-hidden" for="tag-search-input">搜索标签</label>
+                <input id="tag-search-input" type="search" autocomplete="off" placeholder="搜索标签，例如 Hugo、TLS、动画……">
+                <span class="tags-search__shortcut" aria-hidden="true"><kbd>⌘</kbd><kbd>K</kbd></span>
+                <button class="tags-search__clear" type="button" hidden>清除</button>
+            </div>
+            <p class="tags-search__status" aria-live="polite">共 <strong>{{ len $allTerms }}</strong> 个标签</p>
+        </div>
+    </section>
+
+    <section class="tags-popular" data-tags-popular aria-labelledby="tags-popular-title">
+        <header class="tags-section-heading">
+            <div>
+                <span>按热度浏览</span>
+                <h2 id="tags-popular-title">常用主题</h2>
+            </div>
+            <p>用真实文章数量建立视觉优先级。这里保留排名，不使用随机字号或不同颜色。</p>
+        </header>
+        <ol class="tags-popular__list">
+            {{- range $popularTerms }}
+                {{- $term := . }}
+                {{- with site.GetPage (printf "/tags/%s" $term.Name) }}
+                {{- $count := $exactTermCounts.Get .RelPermalink | default 0 }}
+                <li data-tag-item data-tag-name="{{ lower .LinkTitle }}">
+                    <a href="{{ .RelPermalink }}" aria-label="{{ .LinkTitle }}，{{ $count }} 篇文章">
+                        <span class="tags-popular__name" data-tag-label>{{ .LinkTitle }}</span>
+                        <span class="tags-popular__count">{{ $count }} 篇 <i aria-hidden="true">↗</i></span>
+                    </a>
+                </li>
+                {{- end }}
+            {{- end }}
+        </ol>
+    </section>
+
+    <section class="tags-directory" aria-labelledby="tags-directory-title">
+        <aside class="tags-routes" aria-label="主题路径导航">
+            <p>主题路径</p>
+            <ul>
+                {{- range $index, $group := $groups }}
+                <li>
+                    <button type="button" data-tags-target="{{ $group.id }}" aria-current="{{ if eq $index 0 }}true{{ else }}false{{ end }}">
+                        {{ $group.title }}<small>{{ len $group.items }}</small>
+                    </button>
+                </li>
+                {{- end }}
+            </ul>
+        </aside>
+
+        <div class="tags-directory__content">
+            <header class="tags-directory__intro">
+                <h2 id="tags-directory-title">全部主题路径</h2>
+                <p>标签按内容语义归入阅读路径，而不是按字母或创建顺序排列。点击左侧路径可快速跳转。</p>
+            </header>
+
+            {{- range $groups }}
+            <section class="tags-group" id="tags-group-{{ .id }}" data-tags-group>
+                <header>
+                    <div>
+                        <h3>{{ .title }}</h3>
+                        <span>{{ len .items }} 个标签</span>
+                    </div>
+                    <p>{{ .description }}</p>
+                </header>
+                <ul class="tags-group__list">
+                    {{- range .items }}
+                    <li data-tag-item data-tag-name="{{ .search }}">
+                        <a href="{{ .page.RelPermalink }}" aria-label="{{ .name }}，{{ .count }} 篇文章">
+                            <span data-tag-label>{{ .name }}</span>
+                            <small>{{ .count }}</small>
+                        </a>
+                    </li>
+                    {{- end }}
+                </ul>
+            </section>
+            {{- end }}
+        </div>
+    </section>
+
+    <section class="tags-empty" data-tags-empty hidden>
+        <span aria-hidden="true">∅</span>
+        <h2>没有找到这个标签</h2>
+        <p>试试缩短关键词，或搜索相邻概念，例如“证书”“模型”“系统”。</p>
+    </section>
+
+    {{- if gt (len $longTail) 0 }}
+    <section class="tags-long-tail" data-tags-long-tail>
+        <details data-tags-long-tail-details>
+            <summary>
+                <span>其他标签 <small>尚未归入主题路径的长尾标签 · {{ len $longTail }} 个</small></span>
+                <span class="tags-long-tail__action">展开查看
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+                </span>
+            </summary>
+            <div class="tags-long-tail__content">
+                <p>这些标签目前只关联一篇内容，仍可通过搜索或下方完整列表访问。</p>
+                <ul>
+                    {{- range $longTail }}
+                    <li data-tag-item data-tag-name="{{ .search }}">
+                        <a href="{{ .page.RelPermalink }}" aria-label="{{ .name }}，{{ .count }} 篇文章">
+                            <span data-tag-label>{{ .name }}</span>
+                            <small>{{ .count }}</small>
+                        </a>
+                    </li>
+                    {{- end }}
+                </ul>
+            </div>
+        </details>
+    </section>
+    {{- end }}
+</article>
+
+{{- with resources.Get "js/tags-page.js" }}
+    {{- $tagsScript := . | minify | fingerprint }}
+    <script src="{{ $tagsScript.RelPermalink }}" integrity="{{ $tagsScript.Data.Integrity }}" defer></script>
+{{- end }}
+
+{{- end }}

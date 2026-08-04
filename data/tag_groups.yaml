@@ -1,0 +1,127 @@
+groups:
+  - id: ai
+    title: "AI 与模型"
+    description: "从本地模型服务、统一入口，到模型治理与成本观测。"
+    tags:
+      - llmops
+      - ai-gateway
+      - 模型治理
+      - 大语言模型
+      - ollama
+      - openai-compatible-api
+      - open-webui
+      - new-api
+      - one-api
+      - tokscale
+      - finops
+      - nvidia
+
+  - id: systems
+    title: "操作系统与存储"
+    description: "理解系统如何分配资源、组织数据，并把故障定位到正确的一层。"
+    tags:
+      - 操作系统
+      - macos
+      - linux
+      - 虚拟内存
+      - raid
+      - 文件系统
+      - 进程
+      - 并发
+      - cpu调度
+      - nvme
+      - sata
+      - vmware
+      - proxmox
+      - arm64
+      - 磁盘
+      - 裸金属
+
+  - id: cloud-network
+    title: "云原生与网络"
+    description: "围绕连接、证书、容器与服务暴露，建立可排查的基础设施路径。"
+    tags:
+      - tls
+      - docker
+      - https
+      - kubernetes
+      - ssl
+      - tcp
+      - 故障排查
+      - cloudflare
+      - kubectl
+      - 证书
+      - 抓包分析
+      - nginx
+      - "Let's Encrypt"
+      - pod
+      - service
+      - dns
+      - dhcp
+      - vlan
+      - traefik
+      - 网站安全
+
+  - id: tools-writing
+    title: "工具与创作"
+    description: "从写作语法、博客构建，到终端与编辑器的个人工作流。"
+    tags:
+      - hugo
+      - papermod
+      - markdown
+      - 技术写作
+      - css
+      - nord
+      - 终端
+      - python
+      - shortcode
+      - mermaid
+      - homebrew
+      - iterm2
+      - securecrt
+      - vim
+      - github-actions
+      - 技术笔记
+      - 知识管理
+      - 静态站点
+
+  - id: leisure
+    title: "影视与阅读"
+    description: "按照题材与阅读兴趣进入闲暇内容，让技术之外的主题保持自己的节奏。"
+    tags:
+      - 动画
+      - 奇幻
+      - 剧情
+      - 家庭
+      - 冒险
+      - 喜剧
+      - 历史
+      - 爱情
+      - 非虚构
+      - 育儿
+      - tmdb
+      - douban
+      - 读书
+      - 科技史
+      - 战争
+      - 治愈
+
+  - id: thinking-life
+    title: "思考与生活"
+    description: "商业、组织、教育与个人经验，作为随想文章的横向索引。"
+    tags:
+      - 企业架构
+      - 创业
+      - 商业
+      - 组织
+      - 组织文化
+      - 批判性思维
+      - 思想
+      - 逻辑
+      - 中国经济
+      - 政府
+      - 财政
+      - 创新
+      - 教育
+      - 心理学
+      - 亲子
