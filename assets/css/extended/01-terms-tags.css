@@ -67,23 +67,23 @@
 }
 
 /* 暗色模式 */
-.dark .terms-tags li a {
+:root[data-theme="dark"] .terms-tags li a {
   color: var(--secondary);
   border-color: rgba(255, 255, 255, .08);
 }
 
-.dark .terms-tags li a:hover {
+:root[data-theme="dark"] .terms-tags li a:hover {
   border-color: rgba(129, 140, 248, .55);
   color: #a5b4fc;
   box-shadow: 0 6px 18px rgba(0, 0, 0, .4);
 }
 
-.dark .terms-tags li a sup {
+:root[data-theme="dark"] .terms-tags li a sup {
   background: rgba(165, 180, 252, .12);
   color: #a5b4fc;
 }
 
-.dark .terms-tags li a:hover sup {
+:root[data-theme="dark"] .terms-tags li a:hover sup {
   background: rgba(165, 180, 252, .22);
 }
 

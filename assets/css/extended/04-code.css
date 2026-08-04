@@ -5,7 +5,7 @@
 }
 
 /* dark mode */
-.dark .post-content :not(pre) > code {
+:root[data-theme="dark"] .post-content :not(pre) > code {
   color: #a89ce8;
   background: rgba(168, 156, 232, 0.12);
 }

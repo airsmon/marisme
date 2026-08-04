@@ -1,0 +1,42 @@
+{{- $module := site.Params.followProfiles -}}
+{{- $hideFollowProfiles := .Param "hideFollowProfiles" | default false -}}
+{{- $items := $module.items -}}
+{{- $count := len $items -}}
+{{- if and (not $hideFollowProfiles) $module.enabled (gt (len $items) 0) (or .IsPage .IsSection) -}}
+<section class="follow-profiles" aria-label="{{ $module.arialabel | default "关注方式" }}">
+  {{- if gt $count 1 -}}
+  {{- with $module.title }}
+  <p class="follow-profiles-title">{{ . }}</p>
+  {{- end }}
+  {{- end -}}
+  <ul class="follow-profiles-list">
+    {{- range $items }}
+    {{- $qrImage := .qrimage | default .qrImage -}}
+    {{- $qrAlt := .qralt | default .qrAlt -}}
+    {{- $qrPath := strings.TrimPrefix "/" $qrImage -}}
+    {{- $qrFile := printf "static/%s" $qrPath -}}
+    {{- $hasQr := and $qrImage (fileExists $qrFile) -}}
+    {{- $label := .label | default .name | default .title | default "关注" -}}
+    <li class="follow-profile{{ if eq $count 1 }} is-single{{ end }}"{{ with .hovercolor }} style="--follow-accent: {{ . }};"{{ end }}>
+      <button class="follow-profile-trigger" type="button" aria-label="{{ .name | default $label }}" aria-expanded="false">
+        <span class="follow-profile-text">{{ $label }}</span>
+      </button>
+      <div class="follow-profile-panel">
+        {{- if $hasQr -}}
+        <img
+          class="follow-profile-qr"
+          src="{{ $qrImage | absURL }}"
+          alt="{{ $qrAlt | default (printf "%s 二维码" (.name | default "关注")) }}"
+          loading="lazy"
+          decoding="async">
+        <p class="follow-profile-note">{{ .description | default "扫码关注，查看最新更新。" }}</p>
+        {{- else -}}
+        <div class="follow-profile-placeholder">二维码图片未配置</div>
+        <p class="follow-profile-note">请将二维码图片放到 <code>{{ $qrFile }}</code>。</p>
+        {{- end -}}
+      </div>
+    </li>
+    {{- end }}
+  </ul>
+</section>
+{{- end -}}

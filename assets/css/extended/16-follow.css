@@ -88,10 +88,6 @@
     transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
 }
 
-.follow-profile-panel-mobile {
-    display: none;
-}
-
 .follow-profile-panel::before {
     content: "";
     position: absolute;
@@ -171,11 +167,7 @@
         z-index: 1;
     }
 
-    .follow-profile-panel-desktop {
-        display: none !important;
-    }
-
-    .follow-profile-panel-mobile {
+    .follow-profile-panel {
         position: static;
         left: auto;
         top: auto;
@@ -199,8 +191,8 @@
         transform: none;
     }
 
-    .follow-profile.is-open .follow-profile-panel-mobile,
-    .follow-profile:focus-within .follow-profile-panel-mobile {
+    .follow-profile.is-open .follow-profile-panel,
+    .follow-profile:focus-within .follow-profile-panel {
         display: flex;
         left: auto;
         top: auto;
@@ -225,7 +217,7 @@
         margin-right: auto;
     }
 
-    .follow-profile-panel-mobile::before {
+    .follow-profile-panel::before {
         display: none;
     }
 }

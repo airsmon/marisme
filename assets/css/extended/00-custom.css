@@ -7,10 +7,6 @@
     padding: 10px;
 }
 
-.chroma {
-  background-color: unset;
-}
-
 .menu .active {
     text-decoration: none !important;
 }

@@ -1,0 +1,26 @@
+{{- if ne .TableOfContents "<nav id=\"TableOfContents\"></nav>" }}
+  <aside
+    class="paper-floating-toc"
+    aria-label="文章目录"
+    data-toc-open="{{ if (.Param "TocOpen") }}true{{ else }}false{{ end }}"
+  >
+    <p class="paper-floating-toc-heading">文章目录</p>
+    <button
+      class="paper-floating-toc-toggle"
+      type="button"
+      aria-controls="TableOfContents"
+      aria-expanded="true"
+      hidden
+    >文章目录</button>
+
+    <div class="paper-floating-toc-panel"{{ if not (.Param "TocOpen") }} hidden{{ end }}>
+      {{- .TableOfContents -}}
+      <div class="paper-floating-toc-preview" aria-hidden="true">
+        <strong class="paper-floating-toc-preview-title"></strong>
+      </div>
+    </div>
+    <noscript>
+      <style>.paper-floating-toc-panel[hidden] { display: block !important; }</style>
+    </noscript>
+  </aside>
+{{- end }}

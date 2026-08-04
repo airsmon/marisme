@@ -1,0 +1,150 @@
+{{- $isSingle := and .IsPage (ne .Layout "archives") (ne .Layout "search") -}}
+{{- $content := "" -}}
+{{- if $isSingle -}}
+  {{- $content = printf "%s" .Content -}}
+{{- end -}}
+{{- $hasToc := and $isSingle (.Param "ShowToc") (ne .TableOfContents `<nav id="TableOfContents"></nav>`) -}}
+{{- $hasTable := and $isSingle (gt (len (findRE `(?i)<table(?:\s|>)` $content 1)) 0) -}}
+{{- $hasMedia := and $isSingle (.HasShortcode "media") -}}
+{{- $hasLeisure := and .IsSection (eq .Section "leisure") -}}
+{{- $hasZoom := and $isSingle (gt (len (findRE `(?i)<img(?:\s|>)` $content 1)) 0) -}}
+{{- $followProfiles := site.Params.followProfiles -}}
+{{- $hasFollowProfiles := and $isSingle (not (.Param "hideFollowProfiles")) $followProfiles.enabled (gt (len $followProfiles.items) 0) -}}
+
+{{- if $hasToc }}
+<script src="/js/toc-active.js" defer></script>
+{{- end }}
+{{- if $hasTable }}
+<script src="/js/table-preview.js" defer></script>
+{{- end }}
+{{- if $hasMedia }}
+<script src="/js/media-card-reveal.js" defer></script>
+{{- end }}
+{{- if $hasLeisure }}
+<script src="/js/leisure-filter.js" defer></script>
+<script src="/js/leisure-reveal.js" defer></script>
+{{- end }}
+{{- if eq .Layout "archives" }}
+<script src="/js/archive-infinite.js" defer></script>
+{{- end }}
+
+{{- if $hasZoom }}
+<script src="/js/medium-zoom.min.js" defer></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (typeof mediumZoom === 'function') {
+      mediumZoom('.post-content img:not(.no-zoom)', {
+        margin: 70,
+        background: 'rgba(0,0,0,0.8)',
+        scrollOffset: 40,
+      });
+    }
+  });
+</script>
+{{- end }}
+
+{{- if $hasFollowProfiles }}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const items = document.querySelectorAll('.follow-profile');
+    const mobileQuery = window.matchMedia('(max-width: 640px)');
+
+    function closeItem(item) {
+      item.classList.remove('is-open');
+      const trigger = item.querySelector('.follow-profile-trigger');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    function closeAll() {
+      items.forEach(closeItem);
+    }
+
+    items.forEach((item) => {
+      const trigger = item.querySelector('.follow-profile-trigger');
+      if (!trigger) return;
+
+      trigger.addEventListener('click', function (event) {
+        if (!mobileQuery.matches) return;
+        event.preventDefault();
+        const isOpen = item.classList.contains('is-open');
+
+        closeAll();
+
+        if (!isOpen) {
+          item.classList.add('is-open');
+          trigger.setAttribute('aria-expanded', 'true');
+        } else {
+          trigger.blur();
+        }
+      });
+
+      trigger.addEventListener('focus', function () {
+        if (!mobileQuery.matches) trigger.setAttribute('aria-expanded', 'true');
+      });
+
+      trigger.addEventListener('blur', function () {
+        if (!mobileQuery.matches) trigger.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    document.addEventListener('click', function (event) {
+      items.forEach((item) => {
+        if (item.contains(event.target)) return;
+        closeItem(item);
+      });
+    });
+
+    mobileQuery.addEventListener('change', function () {
+      closeAll();
+      const active = document.activeElement;
+      if (active && active.classList.contains('follow-profile-trigger')) active.blur();
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key !== 'Escape') return;
+      closeAll();
+      const active = document.activeElement;
+      if (active && active.classList.contains('follow-profile-trigger')) active.blur();
+    });
+  });
+</script>
+{{- end }}
+
+{{- if gt (len site.Menus.main) 0 }}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggle = document.getElementById('mobile-menu-toggle');
+    const menu = document.getElementById('menu');
+    const mobileMenuQuery = window.matchMedia('(max-width: 800px)');
+
+    if (!toggle || !menu) return;
+
+    function closeMenu() {
+      menu.classList.remove('show');
+      document.body.classList.remove('menu-open');
+      document.body.style.overflow = '';
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    toggle.addEventListener('click', function (event) {
+      event.stopPropagation();
+      const isOpen = menu.classList.toggle('show');
+      document.body.classList.toggle('menu-open', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+      toggle.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    document.addEventListener('click', function (event) {
+      if (!menu.contains(event.target) && event.target !== toggle) closeMenu();
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') closeMenu();
+    });
+
+    mobileMenuQuery.addEventListener('change', function (event) {
+      if (!event.matches) closeMenu();
+    });
+  });
+</script>
+{{- end }}

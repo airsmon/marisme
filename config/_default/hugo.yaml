@@ -2,13 +2,24 @@ baseURL: "https://marisme.com/"
 title: Måris ✦ me 🎐
 theme: PaperMod
 
-enableInlineShortcodes: true
+defaultContentLanguage: zh-cn
+defaultContentLanguageInSubdir: false
+
+languages:
+  zh-cn:
+    direction: ltr
+    disabled: false
+    hasCJKLanguage: true
+    label: 简体中文
+    locale: zh-CN
+    title: Måris ✦ me 🎐
+    weight: 1
+
 enableRobotsTXT: true
 buildDrafts: false
 buildFuture: false
 buildExpired: false
 enableEmoji: true
-pygmentsUseClasses: true
 
 # googleAnalytics: "G-LQR3F59SMD"
 
@@ -37,7 +48,7 @@ outputs:
 params:
   env: production
   title: Mårisme
-  description: "Mårisme is a personal space for infrastructure, code, automation, and quiet technical notes."
+  description: "Mårisme 是一个记录基础设施、代码、自动化与技术笔记的个人空间。"
   keywords:
     - Infra
     - Code
@@ -88,7 +99,7 @@ params:
       #   hovercolor: "#00a1d6"
   defaultTheme: auto
   images: ["avatar/avatar.webp"]
-  DateFormat: "January 2, 2006"
+  DateFormat: "2006年1月2日"
   disableThemeToggle: false
   ShowPageNums: true
   ShowReadingTime: true
@@ -119,16 +130,14 @@ params:
       enabled: true
 
   assets:
-    disableHLJS: true
     disableFingerprinting: true
     favicon: "/favicon.ico"
     favicon16x16: "/favicon-16x16.png"
     favicon32x32: "/favicon-32x32.png"
     apple_touch_icon: "/apple-touch-icon.png"
-    safari_pinned_tab: "/safari-pinned-tab.svg"
 
   label:
-    text: "Home"
+    text: "首页"
     icon: ""
     iconHeight: 35
 
@@ -142,22 +151,22 @@ params:
     imageHeight: 120
     imageTitle: Mårisme
     buttons:
-      - name: articles
+      - name: 文章
         url: articles
   # home-info mode
   homeInfoParams:
     Title: "Måris ✦ me 🎐"
     Content: |
-      A personal space for infrastructure, code, automation, and quiet technical notes.
+      一个记录基础设施、代码、自动化与技术笔记的个人空间。
 
-      🍀 🎻 祈人生心境平和、不惧艰难、无恙而终！[Leisure](/leisure/)
+      🍀 🎻 祈人生心境平和、不惧艰难、无恙而终！[闲暇](/leisure/)
 
-      - Linux, Kubernetes, networking, and open-source operations.
-      - Deployment records, debugging notes, and automation workflows.
-      - Occasional thoughts on work, life, anime, reading, and building things.
-      - Meet the person behind the notes on [About](/about/).
-      - Platform status: [Analytics](https://cloud.umami.is/analytics/us/share/JiIu9Kmp1e1I3Euf).
-      - Explore [About](/about/), [Musing](/musing/), [Tags](/tags/), or [Timeline](/archives/).
+      - Linux、Kubernetes、网络与开源运维实践。
+      - 部署记录、故障排查与自动化工作流。
+      - 偶尔记录工作、生活、动漫、阅读与动手实践。
+      - 在[关于我](/about/)了解这些笔记背后的作者。
+      - 站点状态：[访问分析](https://cloud.umami.is/analytics/us/share/JiIu9Kmp1e1I3Euf)。
+      - 浏览[关于我](/about/)、[随想](/musing/)、[标签](/tags/)或[时间线](/archives/)。
 
 
   socialIcons:
@@ -170,7 +179,7 @@ params:
     # - name: stackoverflow
     #   url: "https://stackoverflow.com"
     - name: github
-      url: "https://github.com/orgs/MarismeCom/repositories"
+      url: "https://github.com/airsmon"
 
   analytics:
     google:
@@ -201,12 +210,11 @@ params:
   
   mainSections:
     - "articles"
-    - "podcast"
     
 menu:
   main:
     - identifier: search
-      name: 🫧 Search
+      name: 🫧 搜索
       url: /search/
       weight: 10
     # - identifier: tech
@@ -222,11 +230,11 @@ menu:
     #   url: /articles/ops/
     #   weight: 30
     - identifier: musing
-      name: 🌳 Musing
+      name: 🌳 随想
       url: /musing/
       weight: 40
     - identifier: leisure
-      name: 🍵 Leisure
+      name: 🍵 闲暇
       url: /leisure/
       weight: 50
     # - identifier: about
@@ -238,15 +246,15 @@ menu:
     #   url: /series/
     #   weight: 55
     - identifier: categories
-      name: 💭 Categories
+      name: 💭 分类
       url: /categories/
       weight: 60
     - identifier: tags
-      name: 🌾 Tags
+      name: 🌾 标签
       url: /tags/
       weight: 70
     - identifier: archives
-      name: 🍄 Timeline
+      name: 🍄 时间线
       url: /archives/
       weight: 80
 

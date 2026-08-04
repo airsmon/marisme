@@ -1,37 +1,144 @@
-/* ================================
-   PaperMod Floating TOC
-   Learn from diygod.cc style
-
-   默认横线，hover 显示目录文字
-   滚动到对应锚点时：
-   - 当前 TOC 横线变黑加粗
-   - hover 后当前 TOC 文字黑色加粗
-   ================================ */
-
+/* Codex-like article TOC: inline fallback on narrow screens, rail on wide screens. */
 .paper-floating-toc {
+  margin-bottom: var(--content-gap);
+  overflow: hidden;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.paper-floating-toc-heading,
+.paper-floating-toc-toggle {
+  width: 100%;
+  margin: 0;
+  padding: 0.55rem 1rem;
+  color: var(--primary);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.paper-floating-toc-toggle {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.paper-floating-toc.is-enhanced .paper-floating-toc-heading {
   display: none;
 }
 
-@media (min-width: 1280px) {
+.paper-floating-toc.is-enhanced .paper-floating-toc-toggle:not([hidden]) {
+  display: block;
+}
+
+.paper-floating-toc-toggle:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -3px;
+}
+
+.paper-floating-toc-panel {
+  position: relative;
+  padding: 0.7rem 1rem 0.85rem;
+  border-top: 1px solid var(--border);
+}
+
+.paper-floating-toc-panel #TableOfContents ul {
+  margin: 0;
+  padding-inline-start: 1.1rem;
+}
+
+.paper-floating-toc-panel #TableOfContents > ul {
+  padding-inline-start: 1rem;
+}
+
+.paper-floating-toc-panel #TableOfContents li {
+  margin: 0.15rem 0;
+}
+
+.paper-floating-toc-panel #TableOfContents a {
+  display: inline-block;
+  padding: 0.12rem 0;
+  color: var(--secondary);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.paper-floating-toc-panel #TableOfContents a:hover,
+.paper-floating-toc-panel #TableOfContents a[aria-current="location"] {
+  color: var(--primary);
+}
+
+.paper-floating-toc-panel #TableOfContents a[aria-current="location"] {
+  font-weight: 600;
+}
+
+.paper-floating-toc-panel #TableOfContents a:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.paper-floating-toc-preview {
+  display: none;
+}
+
+@media (min-width: 1360px) {
   .paper-floating-toc {
-    display: block;
     position: absolute;
-    top: 0;
-    left: calc(100% + 44px);
-    width: 170px;
-    pointer-events: none;
     z-index: 30;
+    inset-block: 0;
+    inset-inline-start: calc(100% + 8px);
+    width: 260px;
+    margin: 0;
+    overflow: visible;
+    pointer-events: none;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .paper-floating-toc-heading,
+  .paper-floating-toc-toggle {
+    display: none !important;
   }
 
   .paper-floating-toc-panel {
-    position: fixed;
-    top: 112px;
-    width: 170px;
+    --toc-preview-y: 12px;
+
+    position: sticky;
+    top: 96px;
+    width: 260px;
+    height: min(540px, calc(100vh - 136px));
+    padding: 0;
     pointer-events: auto;
+    background: transparent;
+    border: 0;
   }
 
-  .paper-floating-toc-panel #TableOfContents,
-  .paper-floating-toc-panel #TableOfContents ul {
+  .paper-floating-toc-panel[hidden] {
+    display: block !important;
+  }
+
+  .paper-floating-toc-panel #TableOfContents {
+    width: 48px;
+    height: 100%;
+    padding: 12px 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+
+  .paper-floating-toc-panel #TableOfContents::-webkit-scrollbar {
+    display: none;
+  }
+
+  .paper-floating-toc-panel #TableOfContents ul,
+  .paper-floating-toc-panel #TableOfContents > ul {
     margin: 0;
     padding: 0;
     list-style: none;
@@ -42,263 +149,119 @@
     padding: 0;
   }
 
-  .paper-floating-toc-panel #TableOfContents > ul {
-    display: flex;
-    flex-direction: column;
-    gap: 0.12rem;
-  }
+  .paper-floating-toc-panel #TableOfContents a {
+    --toc-marker-scale: 1;
 
-  .paper-floating-toc-panel #TableOfContents ul ul {
-    margin-top: 0.08rem;
-  }
-
-  .paper-floating-toc-panel #TableOfContents > ul > li > .paper-floating-toc-link {
-    padding-left: 0;
-  }
-
-  .paper-floating-toc-panel #TableOfContents > ul > li > ul > li > .paper-floating-toc-link {
-    padding-left: 0.75rem;
-  }
-
-  .paper-floating-toc-panel #TableOfContents > ul > li > ul > li > ul > li > .paper-floating-toc-link {
-    padding-left: 1.25rem;
-  }
-
-  .paper-floating-toc-panel #TableOfContents > ul > li > ul > li > ul > li > ul > li > .paper-floating-toc-link {
-    padding-left: 1.75rem;
-  }
-
-  .paper-floating-toc-link {
     position: relative;
     display: block;
-    --toc-fade-width: 1.5rem;
-    --toc-fade-mid-stop: 65%;
-
-    width: 100%;
-    min-height: 13px;
-    padding: 0.06rem 0.25rem 0.06rem 0;
-
-    font-family: inherit;
-    font-feature-settings: inherit;
-    font-variation-settings: inherit;
-    letter-spacing: inherit;
-
-    font-size: 0.75rem;
-    line-height: 0.9rem;
-    text-align: left;
-    text-decoration: none;
-
+    width: 46px;
+    height: 12px;
+    padding: 0;
+    overflow: hidden;
     color: transparent;
+    font-size: 0;
+    line-height: 0;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .paper-floating-toc-panel #TableOfContents a::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 17px;
+    width: 6px;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--tertiary);
+    transform: translateY(-50%) scaleX(var(--toc-marker-scale));
+    transform-origin: left center;
+    transition:
+      height 140ms ease,
+      background-color 140ms ease,
+      opacity 140ms ease,
+      transform 140ms ease;
+  }
+
+  .paper-floating-toc-panel #TableOfContents a:hover::before,
+  .paper-floating-toc-panel #TableOfContents a:focus-visible::before {
+    background: var(--secondary);
+  }
+
+  .paper-floating-toc-panel #TableOfContents a:hover,
+  .paper-floating-toc-panel #TableOfContents a:focus-visible,
+  .paper-floating-toc-panel #TableOfContents a[aria-current="location"] {
+    --toc-marker-scale: 2;
+  }
+
+  .paper-floating-toc-panel #TableOfContents a[aria-current="location"]::before {
+    background: var(--primary);
+  }
+
+  .paper-floating-toc-panel #TableOfContents a:focus-visible {
+    border-radius: 4px;
+    outline: 2px solid var(--primary);
+    outline-offset: -2px;
+  }
+
+  .paper-floating-toc-panel #TableOfContents a code {
+    padding: 0;
+    color: transparent;
+    font-size: 0;
     background: transparent;
     border: 0;
-    cursor: pointer;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: clip;
-
-    -webkit-text-size-adjust: 100%;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-font-smoothing: antialiased;
-    transition:
-      color 0.15s ease,
-      font-weight 0.15s ease;
-  }
-
-  .paper-floating-toc-link::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: var(--toc-fade-width);
-    height: 100%;
-    pointer-events: none;
-    background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0),
-      rgba(255, 255, 255, 0.58) var(--toc-fade-mid-stop),
-      rgba(255, 255, 255, 0.9) 100%
-    );
-    opacity: 0;
-    transition: opacity 0.16s ease;
-  }
-
-  .paper-floating-toc-link:hover {
-    text-decoration: none;
-  }
-
-  .paper-floating-toc-link::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    height: 3px;
-    transform: translateY(-50%);
-
-    border-radius: 999px;
-    opacity: 0.8;
-
-    background: rgba(212, 212, 212, 0.9);
-
-    transition:
-      opacity 0.2s ease,
-      width 0.2s ease,
-      background 0.2s ease,
-      height 0.2s ease,
-      transform 0.2s ease;
-  }
-
-  .paper-floating-toc-panel #TableOfContents > ul > li > .paper-floating-toc-link::before {
-    width: 3rem;
-  }
-
-  .paper-floating-toc-panel #TableOfContents ul ul .paper-floating-toc-link::before {
-    width: 2rem;
-  }
-
-  .paper-floating-toc-link {
-    max-width: 170px;
-    padding-right: 1rem;
-  }
-
-  .paper-floating-toc-label {
-    display: inline-flex;
-    align-items: center;
-    min-width: 100%;
-    padding-right: 0.85rem;
-    transform: translate3d(0, 0, 0);
-    will-change: transform;
-    backface-visibility: hidden;
-  }
-
-  .paper-floating-toc-link code {
-    padding: 0;
-    margin: 0;
-    font-size: inherit;
-    font-family: inherit;
-    color: inherit;
-    background: none;
-    border: none;
     box-shadow: none;
   }
 
-  .paper-floating-toc-panel:hover .paper-floating-toc-link {
-    color: rgb(115, 115, 115);
-  }
-
-  .paper-floating-toc-panel:hover .paper-floating-toc-link[data-toc-overflow="true"]::after {
-    opacity: 1;
-  }
-
-  .paper-floating-toc-panel:hover .paper-floating-toc-link::before {
+  .paper-floating-toc-preview {
+    position: absolute;
+    inset-block-start: var(--toc-preview-y);
+    inset-inline-start: 52px;
+    display: flex;
+    width: 196px;
+    min-height: 40px;
+    padding: 8px 12px;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    color: var(--primary);
+    background: var(--entry);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 10px 24px rgb(0 0 0 / 8%);
     opacity: 0;
-    transform: translateY(-50%) translateX(-2px);
+    pointer-events: none;
+    transform: translateX(-4px);
+    transition:
+      inset-block-start 160ms ease,
+      opacity 140ms ease,
+      transform 160ms ease;
   }
 
-  .paper-floating-toc-link:hover {
-    color: rgb(10, 10, 10);
-    font-weight: 600;
-  }
-
-  .paper-floating-toc-panel:hover .paper-floating-toc-link:hover {
-    color: rgb(23, 23, 23);
-    font-weight: 600;
-  }
-
-  .paper-floating-toc-link[aria-current="true"]::before,
-  .paper-floating-toc-link[data-active="true"]::before {
-    height: 4px;
+  .paper-floating-toc.has-preview .paper-floating-toc-preview {
     opacity: 1;
-    background: rgb(23, 23, 23);
+    transform: translateX(0);
   }
 
-  .paper-floating-toc-link[aria-current="true"],
-  .paper-floating-toc-link[data-active="true"] {
-    color: transparent;
+  .paper-floating-toc-preview-title {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 0.8rem;
     font-weight: 600;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
 
-  .paper-floating-toc-panel:hover .paper-floating-toc-link[aria-current="true"]::before,
-  .paper-floating-toc-panel:hover .paper-floating-toc-link[data-active="true"]::before {
-    opacity: 0;
-  }
-
-  .paper-floating-toc-panel:hover .paper-floating-toc-link[aria-current="true"],
-  .paper-floating-toc-panel:hover .paper-floating-toc-link[data-active="true"] {
-    color: rgb(23, 23, 23);
-    font-weight: 600;
-  }
-
-  .dark .paper-floating-toc-link::before,
-  [data-theme="dark"] .paper-floating-toc-link::before {
-    background: rgba(64, 64, 64, 0.8);
-  }
-
-  .dark .paper-floating-toc-link::after,
-  [data-theme="dark"] .paper-floating-toc-link::after {
-    background: linear-gradient(
-      to right,
-      rgba(24, 24, 27, 0),
-      rgba(24, 24, 27, 0.62) var(--toc-fade-mid-stop),
-      rgba(24, 24, 27, 0.9) 100%
-    );
-  }
-
-  .dark .paper-floating-toc-link,
-  [data-theme="dark"] .paper-floating-toc-link {
-    color: transparent;
-  }
-
-  .dark .paper-floating-toc-link:hover,
-  [data-theme="dark"] .paper-floating-toc-link:hover {
-    color: rgb(250, 250, 250);
-  }
-
-  .dark .paper-floating-toc-panel:hover .paper-floating-toc-link:hover,
-  [data-theme="dark"] .paper-floating-toc-panel:hover .paper-floating-toc-link:hover {
-    color: rgb(255, 255, 255);
-    font-weight: 600;
-  }
-
-  .dark .paper-floating-toc-panel:hover .paper-floating-toc-link,
-  [data-theme="dark"] .paper-floating-toc-panel:hover .paper-floating-toc-link {
-    color: rgb(163, 163, 163);
-  }
-
-  .dark .paper-floating-toc-link[aria-current="true"]::before,
-  .dark .paper-floating-toc-link[data-active="true"]::before,
-  [data-theme="dark"] .paper-floating-toc-link[aria-current="true"]::before,
-  [data-theme="dark"] .paper-floating-toc-link[data-active="true"]::before {
-    background: rgb(255, 255, 255);
-  }
-
-  .dark .paper-floating-toc-link[aria-current="true"],
-  .dark .paper-floating-toc-link[data-active="true"],
-  [data-theme="dark"] .paper-floating-toc-link[aria-current="true"],
-  [data-theme="dark"] .paper-floating-toc-link[data-active="true"] {
-    color: transparent;
-    font-weight: 600;
-  }
-
-  .dark .paper-floating-toc-panel:hover .paper-floating-toc-link[aria-current="true"],
-  .dark .paper-floating-toc-panel:hover .paper-floating-toc-link[data-active="true"],
-  [data-theme="dark"] .paper-floating-toc-panel:hover .paper-floating-toc-link[aria-current="true"],
-  [data-theme="dark"] .paper-floating-toc-panel:hover .paper-floating-toc-link[data-active="true"] {
-    color: rgb(255, 255, 255);
-    font-weight: 600;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .paper-floating-toc-link,
-    .paper-floating-toc-link::before,
-    .paper-floating-toc-link::after,
-    .paper-floating-toc-label {
-      transition: none;
-    }
+  [data-theme="dark"] .paper-floating-toc-preview {
+    box-shadow: 0 12px 28px rgb(0 0 0 / 24%);
   }
 }
 
-@media (max-width: 1279px) {
-  .paper-floating-toc {
-    display: none;
+@media (prefers-reduced-motion: reduce) {
+  .paper-floating-toc-panel #TableOfContents a::before,
+  .paper-floating-toc-preview {
+    transition: none;
   }
 }

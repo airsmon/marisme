@@ -13,20 +13,9 @@
     background: linear-gradient(135deg, #4f46e5, #9333ea);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    /* animation: ai-pulse 3s ease-in-out infinite; */
 }
 
-/* 6. 动画定义 */
-@keyframes archive-date-pulse {
-    0%, 100% {
-        filter: brightness(1) drop-shadow(0 0 0px rgba(167, 139, 250, 0));
-    }
-    50% {
-        filter: brightness(1.2) drop-shadow(0 0 2px rgba(167, 139, 250, 0.4));
-    }
-}
-
-/* 7. 手机端细节：防止过度修饰导致的排版位移 */
+/* 手机端细节：防止过度修饰导致的排版位移 */
 @media screen and (max-width: 768px) {
     .archive-entry .archive-meta {
         font-size: 12px;
