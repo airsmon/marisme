@@ -137,7 +137,7 @@ params:
     apple_touch_icon: "/apple-touch-icon.png"
 
   label:
-    text: "首页"
+    text: "Home"
     icon: ""
     iconHeight: 35
 

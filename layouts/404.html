@@ -1,0 +1,56 @@
+{{- define "main" }}
+<section class="error-404" aria-labelledby="error-404-title">
+    <h1 class="error-404__title" id="error-404-title">404 页面未找到</h1>
+    <div class="error-404__visual" data-error-404-visual>
+        <img
+            class="error-404__poster"
+            src="{{ "animations/page-not-found-404.png" | relURL }}"
+            width="640"
+            height="640"
+            alt=""
+        >
+        <dotlottie-wc
+            class="error-404__animation"
+            src="{{ "animations/page-not-found-404.lottie" | relURL }}"
+            autoplay
+            loop
+            aria-hidden="true"
+        ></dotlottie-wc>
+    </div>
+</section>
+
+<script type="module">
+    const visual = document.querySelector('[data-error-404-visual]');
+    const player = visual?.querySelector('dotlottie-wc');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    if (visual && player) {
+        if (reduceMotion.matches) {
+            player.removeAttribute('autoplay');
+            player.removeAttribute('loop');
+        }
+
+        const showAnimation = () => visual.classList.add('is-ready');
+
+        import('https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-wc@0.9.17/dist/dotlottie-wc.js')
+            .then(() => customElements.whenDefined('dotlottie-wc'))
+            .then(() => {
+                const animation = player.dotLottie;
+                if (!animation) return;
+
+                if (animation.isLoaded) {
+                    if (reduceMotion.matches) animation.setFrame(0);
+                    showAnimation();
+                } else {
+                    animation.addEventListener('load', () => {
+                        if (reduceMotion.matches) animation.setFrame(0);
+                        showAnimation();
+                    }, { once: true });
+                }
+            })
+            .catch(() => {
+                // Keep the local poster visible when the player cannot be loaded.
+            });
+    }
+</script>
+{{- end }}
