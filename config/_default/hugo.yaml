@@ -151,7 +151,7 @@ params:
     imageHeight: 120
     imageTitle: Mårisme
     buttons:
-      - name: 文章
+      - name: articles
         url: articles
   # home-info mode
   homeInfoParams:

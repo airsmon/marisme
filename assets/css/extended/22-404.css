@@ -17,6 +17,7 @@
 
 .error-404__visual {
     position: relative;
+    overflow: hidden;
     width: min(
         100%,
         46rem,
@@ -64,6 +65,8 @@
     display: block;
     width: 100%;
     height: 100%;
+    transform: scale(1.2);
+    transform-origin: center;
 }
 
 .error-404__visual.is-loading .error-404__poster {
@@ -89,6 +92,12 @@
     }
     to {
         transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@media (max-width: 640px) {
+    .error-404__player {
+        transform: scale(1.08);
     }
 }
 

@@ -34,6 +34,8 @@
     const visual = document.querySelector('[data-error-404-visual]');
     const mount = visual?.querySelector('[data-error-404-animation]');
     const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    // Loop only while the complete composition is visible.
+    const visibleSegment = [78, 136];
     let player;
     let animation;
     let isLoading = false;
@@ -74,6 +76,8 @@
             player = document.createElement('dotlottie-wc');
             player.className = 'error-404__player';
             player.toggleAttribute('loop', true);
+            player.setAttribute('segment', JSON.stringify(visibleSegment));
+            player.setAttribute('mode', 'bounce');
             player.setAttribute('src', mount.dataset.src);
             mount.append(player);
             animation = player.dotLottie;
