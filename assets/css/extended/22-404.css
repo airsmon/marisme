@@ -95,7 +95,13 @@
     }
 }
 
-@media (max-width: 640px) {
+@media (min-width: 901px) {
+    .error-404__visual {
+        overflow: visible;
+    }
+}
+
+@media (max-width: 900px) {
     .error-404__player {
         transform: scale(1.08);
     }
