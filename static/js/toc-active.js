@@ -31,7 +31,7 @@
         if (!heading) return null;
 
         const label = link.textContent.replace(/\s+/g, " ").trim();
-        link.title = label;
+        link.removeAttribute("title");
 
         return { heading: heading, label: label, link: link };
       })
