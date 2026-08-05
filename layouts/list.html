@@ -65,6 +65,13 @@
 {{- end }}
 
 <article class="{{ $class }}">
+  <div class="card-lottie" data-card-lottie aria-hidden="true">
+    <dotlottie-wc
+      class="card-lottie__player"
+      data-src="{{ "animations/world-map-pinging-and-searching.lottie" | relURL }}"
+      loop
+    ></dotlottie-wc>
+  </div>
   {{- $isHidden := (.Param "cover.hiddenInList") | default (.Param "cover.hidden") | default false }}
   {{- partial "cover.html" (dict "cxt" . "IsSingle" false "isHidden" $isHidden) }}
   <header class="entry-header">

@@ -8,6 +8,7 @@
 {{- $hasMedia := and $isSingle (.HasShortcode "media") -}}
 {{- $hasLeisure := and .IsSection (eq .Section "leisure") -}}
 {{- $hasZoom := and $isSingle (gt (len (findRE `(?i)<img(?:\s|>)` $content 1)) 0) -}}
+{{- $hasCardLottie := and (or .IsHome .IsSection (eq .Kind "taxonomy") (eq .Kind "term")) (ne .Section "leisure") -}}
 {{- $followProfiles := site.Params.followProfiles -}}
 {{- $hasFollowProfiles := and $isSingle (not (.Param "hideFollowProfiles")) $followProfiles.enabled (gt (len $followProfiles.items) 0) -}}
 
@@ -26,6 +27,9 @@
 {{- end }}
 {{- if eq .Layout "archives" }}
 <script src="/js/archive-infinite.js" defer></script>
+{{- end }}
+{{- if $hasCardLottie }}
+<script type="module" src="{{ "js/card-lottie.js" | relURL }}"></script>
 {{- end }}
 
 {{- if $hasZoom }}

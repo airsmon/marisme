@@ -63,18 +63,12 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   transition: color 0.25s ease;
-}
-
-/* 标题右侧渐隐遮罩 */
-.entry-header .entry-hint-parent::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 40%;
-  height: 1.4em;
-  background: linear-gradient(to right, transparent, var(--entry));
-  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 60%, transparent 100%);
+  mask-image: linear-gradient(to right, #000 0%, #000 60%, transparent 100%);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
 
 .post-entry:hover .entry-header .entry-hint-parent {
