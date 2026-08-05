@@ -3,3 +3,6 @@
 
 /animations/v1/*
   Cache-Control: public, max-age=31536000, immutable
+
+/animations/v2/*
+  Cache-Control: public, max-age=31536000, immutable

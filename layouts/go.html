@@ -1,0 +1,86 @@
+{{- define "main" }}
+<section
+  class="external-link-gate"
+  data-external-link-gate
+  data-state="loading"
+  data-gate-version="v2"
+  data-home-url="{{ "/" | relURL }}"
+  data-site-host="{{ (urls.Parse site.BaseURL).Hostname }}"
+  aria-labelledby="external-link-title"
+>
+  <div class="external-link-gate__card">
+    <div class="external-link-gate__route" aria-hidden="true">
+      <span class="external-link-gate__route-node external-link-gate__route-node--local">
+        <svg viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="8.25"></circle>
+          <path d="M3.9 12h16.2M12 3.75c2.1 2.18 3.18 4.93 3.18 8.25S14.1 18.07 12 20.25C9.9 18.07 8.82 15.32 8.82 12S9.9 5.93 12 3.75Z"></path>
+        </svg>
+        <span>marisme.com</span>
+      </span>
+      <span class="external-link-gate__route-track"></span>
+      <span class="external-link-gate__route-node external-link-gate__route-node--remote">
+        <span>外部网站</span>
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M7 17 17 7M9 7h8v8"></path>
+        </svg>
+      </span>
+    </div>
+
+    <div class="external-link-gate__hero">
+      <div class="external-link-gate__copy">
+        <p class="external-link-gate__eyebrow">OUTBOUND / 外部链接</p>
+        <h1 class="external-link-gate__title" id="external-link-title" data-external-link-title>即将离开本站</h1>
+        <p class="external-link-gate__intro" data-external-link-intro>
+          你将前往由第三方运营的网站。继续前，请核对目标域名是否与你预期一致。
+        </p>
+      </div>
+
+      <div class="external-link-gate__motion" data-external-link-motion aria-hidden="true">
+        <span
+          class="external-link-gate__motion-mount"
+          data-external-link-motion-mount
+          data-src="{{ "animations/v2/people-in-autumn-scene.lottie" | relURL }}"
+        ></span>
+      </div>
+    </div>
+
+    <div class="external-link-gate__destination">
+      <div class="external-link-gate__destination-header">
+        <span>目标域名</span>
+        <span class="external-link-gate__protocol" data-external-link-protocol>检查中</span>
+      </div>
+      <strong class="external-link-gate__host" data-external-link-host>正在解析链接…</strong>
+      <code class="external-link-gate__url" data-external-link-url>请稍候</code>
+    </div>
+
+    <p class="external-link-gate__status" data-external-link-status role="status" aria-live="polite">
+      正在检查目标地址。
+    </p>
+
+    <div class="external-link-gate__actions">
+      <a class="external-link-gate__button external-link-gate__button--secondary" href="{{ "/" | relURL }}" data-external-link-back>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m14.5 6.5-5.5 5.5 5.5 5.5"></path>
+        </svg>
+        <span data-external-link-back-label>返回本站</span>
+      </a>
+      <a
+        class="external-link-gate__button external-link-gate__button--primary"
+        rel="noopener noreferrer"
+        referrerpolicy="no-referrer"
+        data-external-link-continue
+        hidden
+      >
+        <span>继续访问</span>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 17 17 7M9 7h8v8"></path>
+        </svg>
+      </a>
+    </div>
+
+    <noscript>
+      <p class="external-link-gate__noscript">请启用 JavaScript，以便本站检查目标地址后继续访问。</p>
+    </noscript>
+  </div>
+</section>
+{{- end }}

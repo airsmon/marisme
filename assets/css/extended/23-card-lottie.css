@@ -47,8 +47,8 @@
 }
 
 :root[data-theme="dark"] .post-entry.is-lottie-active > .card-lottie.is-lottie-ready {
-  opacity: 0.46;
-  filter: brightness(1.12) saturate(0.9);
+  opacity: 0.36;
+  filter: invert(1) hue-rotate(180deg) saturate(0.85) brightness(1.05);
 }
 
 @media (max-width: 768px) {

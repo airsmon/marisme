@@ -28,6 +28,10 @@
 {{- if eq .Layout "archives" }}
 <script src="/js/archive-infinite.js" defer></script>
 {{- end }}
+{{- if eq .Layout "go" }}
+<script src="{{ "js/external-link-gate.js" | relURL }}" defer></script>
+<script type="module" src="{{ "js/external-link-gate-lottie.js" | relURL }}"></script>
+{{- end }}
 {{- if $hasCardLottie }}
 <script type="module" src="{{ "js/card-lottie.js" | relURL }}"></script>
 {{- end }}

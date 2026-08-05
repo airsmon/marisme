@@ -39,7 +39,6 @@ if (topLink && mount) {
       || topLink.classList.contains('hidden')
     ) return;
 
-    animation.setFrame(0);
     animation.play();
   };
 
@@ -59,7 +58,6 @@ if (topLink && mount) {
     }
     animation.setFrame(posterFrame);
     topLink.classList.add('is-lottie-ready');
-    animation.addEventListener('complete', () => animation.setFrame(posterFrame));
 
     if (!document.hidden && !topLink.classList.contains('hidden')) {
       window.requestAnimationFrame(play);
@@ -98,6 +96,7 @@ if (topLink && mount) {
       if (!player) {
         player = document.createElement('dotlottie-wc');
         player.className = 'top-link-lottie__player';
+        player.toggleAttribute('loop', true);
         player.setAttribute('src', source);
         mount.append(player);
         animation = player.dotLottie;

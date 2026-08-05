@@ -1,0 +1,39 @@
+{{- $destination := .Destination -}}
+{{- $url := urls.Parse $destination -}}
+{{- $siteURL := urls.Parse site.BaseURL -}}
+{{- $scheme := $url.Scheme | lower -}}
+{{- $host := $url.Hostname | lower -}}
+{{- $siteHost := $siteURL.Hostname | lower -}}
+{{- $isProtocolRelative := and (eq $scheme "") (ne $host "") -}}
+{{- $isWeb := or (in (slice "http" "https") $scheme) $isProtocolRelative -}}
+{{- $isExternal := and $isWeb (ne $host $siteHost) -}}
+{{- $shouldGate := .Page.IsPage -}}
+{{- $shouldRewrite := and $shouldGate $isExternal -}}
+{{- $isRelative := and (eq $scheme "") (eq $host "") -}}
+{{- $isMailOrTel := in (slice "mailto" "tel") $scheme -}}
+{{- $isAllowed := or $isWeb $isRelative $isMailOrTel -}}
+
+{{- if $isAllowed -}}
+  {{- $href := $destination -}}
+  {{- if $shouldRewrite -}}
+    {{- $target := $destination -}}
+    {{- if $isProtocolRelative -}}
+      {{- $target = printf "%s:%s" $siteURL.Scheme $destination -}}
+    {{- end -}}
+    {{- $href = printf "%s?%s" ("go/" | relLangURL) (querify "url" $target) -}}
+  {{- end -}}
+
+  <a href="{{ $href | safeURL }}"
+    {{- with .Title }} title="{{ . }}"{{ end -}}
+    {{- if $shouldRewrite }} data-external-link="true"{{ end -}}
+  >
+    {{- with .Text }}{{ . }}{{ end -}}
+    {{- if $shouldRewrite -}}
+      <span class="external-link-mark" aria-hidden="true">↗</span>
+      <span class="external-link-note">（外部链接，将先进入确认页面）</span>
+    {{- end -}}
+  </a>
+{{- else -}}
+  {{- with .Text }}{{ . }}{{ end -}}
+{{- end -}}
+{{- /* Chomp trailing whitespace. */ -}}
