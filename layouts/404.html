@@ -4,53 +4,107 @@
     <div class="error-404__visual" data-error-404-visual>
         <img
             class="error-404__poster"
-            src="{{ "animations/page-not-found-404.png" | relURL }}"
+            src="{{ "animations/v1/page-not-found-404.png" | relURL }}"
             width="640"
             height="640"
             alt=""
         >
-        <dotlottie-wc
+        <span
             class="error-404__animation"
-            src="{{ "animations/page-not-found-404.lottie" | relURL }}"
-            autoplay
-            loop
+            data-error-404-animation
+            data-src="{{ "animations/v1/page-not-found-404.lottie" | relURL }}"
             aria-hidden="true"
-        ></dotlottie-wc>
+        ></span>
     </div>
 </section>
 
+<script>
+    (() => {
+        const visual = document.querySelector('[data-error-404-visual]');
+        if (!visual || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        visual.classList.add('is-loading');
+        window.setTimeout(() => {
+            if (!visual.classList.contains('is-ready')) visual.classList.remove('is-loading');
+        }, 10000);
+    })();
+</script>
+
 <script type="module">
     const visual = document.querySelector('[data-error-404-visual]');
-    const player = visual?.querySelector('dotlottie-wc');
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mount = visual?.querySelector('[data-error-404-animation]');
+    const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let player;
+    let animation;
+    let isLoading = false;
 
-    if (visual && player) {
-        if (reduceMotion.matches) {
-            player.removeAttribute('autoplay');
-            player.removeAttribute('loop');
+    const showPoster = () => {
+        isLoading = false;
+        visual?.classList.remove('is-loading', 'is-ready');
+        player?.remove();
+        player = undefined;
+        animation = undefined;
+    };
+
+    const showAnimation = () => {
+        if (reduceMotionQuery.matches) {
+            showPoster();
+            return;
         }
 
-        const showAnimation = () => visual.classList.add('is-ready');
+        isLoading = false;
+        visual.classList.remove('is-loading');
+        visual.classList.add('is-ready');
+        animation.play();
+    };
 
-        import('https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-wc@0.9.17/dist/dotlottie-wc.js')
-            .then(() => customElements.whenDefined('dotlottie-wc'))
-            .then(() => {
-                const animation = player.dotLottie;
-                if (!animation) return;
+    const loadAnimation = async () => {
+        if (!visual || !mount?.dataset.src || reduceMotionQuery.matches || isLoading || player) return;
+        isLoading = true;
+        visual.classList.add('is-loading');
 
-                if (animation.isLoaded) {
-                    if (reduceMotion.matches) animation.setFrame(0);
-                    showAnimation();
-                } else {
-                    animation.addEventListener('load', () => {
-                        if (reduceMotion.matches) animation.setFrame(0);
-                        showAnimation();
-                    }, { once: true });
-                }
-            })
-            .catch(() => {
-                // Keep the local poster visible when the player cannot be loaded.
-            });
+        try {
+            const { loadDotLottie } = await import('{{ "js/lottie-runtime.js" | relURL }}');
+            await loadDotLottie();
+            if (reduceMotionQuery.matches) {
+                showPoster();
+                return;
+            }
+
+            player = document.createElement('dotlottie-wc');
+            player.className = 'error-404__player';
+            player.toggleAttribute('loop', true);
+            player.setAttribute('src', mount.dataset.src);
+            mount.append(player);
+            animation = player.dotLottie;
+
+            if (!animation) {
+                showPoster();
+                return;
+            }
+
+            animation.addEventListener('loadError', showPoster, { once: true });
+            if (animation.isLoaded) {
+                showAnimation();
+            } else {
+                animation.addEventListener('load', showAnimation, { once: true });
+            }
+        } catch {
+            showPoster();
+        }
+    };
+
+    if (visual && mount) {
+        reduceMotionQuery.addEventListener('change', (event) => {
+            if (event.matches) {
+                animation?.pause();
+                showPoster();
+            } else {
+                loadAnimation();
+            }
+        });
+
+        loadAnimation();
     }
 </script>
 {{- end }}

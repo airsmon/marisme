@@ -1,5 +1,12 @@
 <script defer src="https://cloud.umami.is/script.js" data-website-id="84f6cfba-21de-45e0-9580-335c27369343"></script>
 
+{{- if eq .Kind "404" }}
+<link rel="modulepreload" href="{{ "js/lottie-runtime.js" | relURL }}" media="(prefers-reduced-motion: no-preference)">
+<link rel="modulepreload" href="{{ "vendor/dotlottie/0.9.17/index.js" | relURL }}" media="(prefers-reduced-motion: no-preference)">
+<link rel="preload" href="{{ "vendor/dotlottie/0.9.17/dotlottie-player.wasm" | relURL }}" as="fetch" crossorigin="anonymous" media="(prefers-reduced-motion: no-preference)">
+<link rel="preload" href="{{ "animations/v1/page-not-found-404.lottie" | relURL }}" as="fetch" crossorigin="anonymous" media="(prefers-reduced-motion: no-preference)">
+{{- end }}
+
 {{- /* Mermaid 使用官方内置主题，并在 PaperMod 明暗模式切换时重绘 */ -}}
 {{ if .Params.mermaid }}
 <script type="module">

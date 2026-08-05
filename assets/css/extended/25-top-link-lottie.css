@@ -44,6 +44,12 @@
   opacity: 0;
 }
 
+.top-link-lottie__player {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .top-link--lottie[data-lottie-variant="scroll"] .top-link-lottie {
   transform: rotate(180deg);
 }

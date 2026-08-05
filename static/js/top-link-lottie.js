@@ -1,34 +1,29 @@
-const topLink = document.getElementById('top-link');
-const player = topLink?.querySelector('[data-top-link-lottie]');
+import { loadDotLottie } from './lottie-runtime.js';
 
-if (topLink && player) {
+const topLink = document.getElementById('top-link');
+const mount = topLink?.querySelector('[data-top-link-lottie]');
+
+if (topLink && mount) {
   const touchQuery = window.matchMedia('(hover: none), (pointer: coarse)');
   const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+  let player;
   let animation;
   let isReady = false;
   let isLoading = false;
   let lastVisible = null;
-  let playerModule;
   let posterFrame;
   let source;
   let variant;
 
   const selectVariant = () => {
     variant = touchQuery.matches ? 'swipe' : 'scroll';
-    source = variant === 'swipe' ? player.dataset.swipeSrc : player.dataset.scrollSrc;
+    source = variant === 'swipe' ? mount.dataset.swipeSrc : mount.dataset.scrollSrc;
     posterFrame = variant === 'swipe' ? 36 : 67;
     topLink.dataset.lottieVariant = variant;
   };
 
   selectVariant();
-
-  const loadPlayer = () => {
-    playerModule ??= import('https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-wc@0.9.17/dist/dotlottie-wc.js')
-      .then(() => customElements.whenDefined('dotlottie-wc'));
-
-    return playerModule;
-  };
 
   const showFallback = () => {
     topLink.classList.remove('is-lottie-ready');
@@ -74,8 +69,9 @@ if (topLink && player) {
   const handleLoadError = () => {
     isLoading = false;
     isReady = false;
-    animation?.removeEventListener('load', handleLoad);
-    player.removeAttribute('src');
+    player?.remove();
+    player = undefined;
+    animation = undefined;
     showFallback();
   };
 
@@ -89,37 +85,39 @@ if (topLink && player) {
     if (!isLoading) selectVariant();
     if (isLoading || reduceMotionQuery.matches || !source) return;
     isLoading = true;
-    player.setAttribute('src', source);
 
     try {
-      await loadPlayer();
+      await loadDotLottie();
 
       if (reduceMotionQuery.matches) {
         isLoading = false;
-        player.removeAttribute('src');
         showFallback();
         return;
       }
 
-      animation = player.dotLottie;
+      if (!player) {
+        player = document.createElement('dotlottie-wc');
+        player.className = 'top-link-lottie__player';
+        player.setAttribute('src', source);
+        mount.append(player);
+        animation = player.dotLottie;
 
-      if (!animation) {
-        isLoading = false;
-        showFallback();
-        return;
-      }
+        if (!animation) {
+          handleLoadError();
+          return;
+        }
 
-      animation.addEventListener('loadError', handleLoadError, { once: true });
-
-      if (animation.isLoaded) {
+        animation.addEventListener('loadError', handleLoadError, { once: true });
+        if (animation.isLoaded) {
+          handleLoad();
+        } else {
+          animation.addEventListener('load', handleLoad, { once: true });
+        }
+      } else if (animation?.isLoaded) {
         handleLoad();
-      } else {
-        animation.addEventListener('load', handleLoad, { once: true });
       }
     } catch {
       isLoading = false;
-      playerModule = undefined;
-      player.removeAttribute('src');
       showFallback();
     }
   };
