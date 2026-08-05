@@ -40,17 +40,17 @@
 {{- end -}}
 
 {{- if $hasNavigation -}}
-<nav class="paginav">
+<nav class="paginav" aria-label="{{ i18n "post_navigation" }}">
   {{- with $prevPage -}}
-  <a class="prev" href="{{ .Permalink }}">
-    <span class="title">« {{ i18n "prev_page" }}</span>
-    <span>{{- .Name -}}</span>
+  <a class="prev" href="{{ .Permalink }}" rel="prev">
+    <span class="title"><span class="paginav-arrow" aria-hidden="true">←</span>{{ i18n "prev_post" }}</span>
+    <span class="paginav-name">{{- .Name -}}</span>
   </a>
   {{- end -}}
   {{- with $nextPage -}}
-  <a class="next" href="{{ .Permalink }}">
-    <span class="title">{{ i18n "next_page" }} »</span>
-    <span>{{- .Name -}}</span>
+  <a class="next" href="{{ .Permalink }}" rel="next">
+    <span class="title">{{ i18n "next_post" }}<span class="paginav-arrow" aria-hidden="true">→</span></span>
+    <span class="paginav-name">{{- .Name -}}</span>
   </a>
   {{- end -}}
 </nav>

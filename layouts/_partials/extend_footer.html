@@ -31,6 +31,9 @@
 {{- if $hasCardLottie }}
 <script type="module" src="{{ "js/card-lottie.js" | relURL }}"></script>
 {{- end }}
+{{- if not site.Params.disableScrollToTop }}
+<script type="module" src="{{ "js/top-link-lottie.js" | relURL }}"></script>
+{{- end }}
 
 {{- if $hasZoom }}
 <script src="/js/medium-zoom.min.js" defer></script>

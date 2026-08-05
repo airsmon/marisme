@@ -48,11 +48,14 @@
     {{- partial "post_license.html" . -}}
     {{- partial "follow_profiles.html" . -}}
     {{- $tags := .Language.Params.Taxonomies.tag | default "tags" }}
-    <ul class="post-tags">
-      {{- range ($.GetTerms $tags) }}
+    {{- $postTags := $.GetTerms $tags -}}
+    {{- with $postTags }}
+    <ul class="post-tags" aria-label="{{ i18n "post_tags" }}">
+      {{- range . }}
       <li><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></li>
       {{- end }}
     </ul>
+    {{- end }}
     {{- if (.Param "ShowPostNavLinks") }}
     {{- partial "post_nav_links.html" . }}
     {{- end }}

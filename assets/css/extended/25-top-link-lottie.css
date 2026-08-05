@@ -1,0 +1,101 @@
+/* Input-aware top link: mouse scroll cue on desktop, swipe cue on touch devices. */
+.top-link.top-link--lottie {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  place-items: center;
+  overflow: hidden;
+  color: var(--secondary);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  filter: none;
+  touch-action: manipulation;
+  transition:
+    visibility 160ms ease,
+    opacity 160ms ease,
+    color 160ms ease;
+}
+
+.top-link--lottie.hidden {
+  pointer-events: none;
+}
+
+.top-link--lottie .top-link-fallback,
+.top-link--lottie .top-link-lottie {
+  grid-area: 1 / 1;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+.top-link--lottie .top-link-fallback {
+  width: 20px;
+  height: 20px;
+  opacity: 1;
+  filter: none;
+}
+
+.top-link--lottie .top-link-lottie {
+  display: block;
+  width: 36px;
+  height: 36px;
+  opacity: 0;
+}
+
+.top-link--lottie[data-lottie-variant="scroll"] .top-link-lottie {
+  transform: rotate(180deg);
+}
+
+.top-link--lottie[data-lottie-variant="swipe"] .top-link-lottie {
+  width: 44px;
+  height: 44px;
+  transform: scale(2.6);
+}
+
+.top-link--lottie.is-lottie-ready .top-link-fallback {
+  opacity: 0;
+}
+
+.top-link--lottie.is-lottie-ready .top-link-lottie {
+  opacity: 1;
+}
+
+.top-link--lottie:hover,
+.top-link--lottie:focus-visible {
+  color: var(--primary);
+  background: transparent;
+  box-shadow: none;
+}
+
+.top-link--lottie:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+[data-theme="dark"] .top-link--lottie[data-lottie-variant="swipe"] .top-link-lottie {
+  filter: invert(1) brightness(1.15);
+}
+
+@media (max-width: 768px), (pointer: coarse) {
+  .top-link.top-link--lottie {
+    right: max(14px, calc(env(safe-area-inset-right, 0px) + 14px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .top-link.top-link--lottie,
+  .top-link--lottie .top-link-fallback {
+    transition: none;
+  }
+
+  .top-link--lottie .top-link-lottie {
+    display: none;
+  }
+
+  .top-link--lottie.is-lottie-ready .top-link-fallback {
+    opacity: 1;
+  }
+}
