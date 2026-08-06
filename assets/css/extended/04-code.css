@@ -1,10 +1,20 @@
-/* 行内代码 */
+/* Nord code blocks */
+:root,
+:root[data-theme="dark"] {
+  --code-block-bg: #2e3440;
+}
+
+.post-content pre code,
+.md-content pre code {
+  color: #d8dee9;
+}
+
+/* Inline code */
 .post-content :not(pre) > code {
   color: #6d5fc7;
   background: rgba(109, 95, 199, 0.08);
 }
 
-/* dark mode */
 :root[data-theme="dark"] .post-content :not(pre) > code {
   color: #a89ce8;
   background: rgba(168, 156, 232, 0.12);

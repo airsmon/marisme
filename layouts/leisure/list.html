@@ -33,20 +33,27 @@
 </script>
 
 <header class="page-header leisure-shelf-page__header">
-  {{- partial "breadcrumbs.html" . }}
-  <h1>{{ .Title }}</h1>
+  <nav class="breadcrumbs leisure-shelf-page__breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ site.Home.RelPermalink }}">{{ i18n "home" | default "Home" }}</a>
+    <span aria-hidden="true">·</span>
+    <span aria-current="page">{{ .Title }}</span>
+  </nav>
+  <div class="leisure-shelf-page__masthead">
+    <p class="leisure-shelf-page__eyebrow">LEISURE <span aria-hidden="true">·</span> {{ printf "%03d" (len $entries) }}</p>
+    <h1>{{ .Title }}</h1>
+    {{- with .Description }}
+    <p class="leisure-shelf-page__description">{{ . }}</p>
+    {{- end }}
+  </div>
 </header>
 
 <section
   class="leisure-shelf-page"
   aria-label="{{ .Title }}"
   data-leisure-page-size="{{ $pageSize }}"
-  data-leisure-current-page="{{ $currentPage }}"
-  data-leisure-show-page-nums="{{ if (.Param "ShowPageNums") }}true{{ else }}false{{ end }}"
-  data-leisure-prev-label="{{ i18n "prev_page" }}"
-  data-leisure-next-label="{{ i18n "next_page" }}">
+  data-leisure-current-page="{{ $currentPage }}">
   {{- if gt (len $entries) 0 }}
-  <nav class="leisure-filter" aria-label="Leisure media filters">
+  <nav class="leisure-filter" aria-label="闲暇内容筛选">
     <button class="leisure-filter__tab is-active" type="button" data-leisure-filter="all" aria-pressed="true">
       全部
       <span class="leisure-filter__count">{{ len $entries }}</span>
@@ -73,6 +80,14 @@
     {{- $externalUrl := .Params.externalUrl -}}
     {{- $url := $externalUrl | default .Permalink -}}
     {{- $cover := .Params.bookCover -}}
+    {{- $coverSrc := $cover -}}
+    {{- $coverSrcset := "" -}}
+    {{- if and $cover (hasPrefix (printf "%v" $cover) "https://image.tmdb.org/t/p/original/") -}}
+      {{- $coverSrc = replace (printf "%v" $cover) "/original/" "/w342/" -}}
+      {{- $coverSrc2x := replace (printf "%v" $cover) "/original/" "/w500/" -}}
+      {{- $coverSrcset = printf "%s 342w, %s 500w" $coverSrc $coverSrc2x -}}
+    {{- end -}}
+    {{- $isPriorityCover := eq $index $startIndex -}}
     {{- $typeHint := lower (printf "%v" (.Param "mediaType" | default (.Param "type") | default (.Param "kind") | default "")) -}}
     {{- $externalUrlLower := lower (printf "%v" ($externalUrl | default "")) -}}
     {{- $hasBookMeta := or .Params.isbn .Params.ISBN .Params.publisher .Params.author -}}
@@ -103,15 +118,24 @@
     {{- $categoryText := delimit $categories " / " -}}
     {{- if not $categoryText }}{{ $categoryText = "暂无" }}{{ end -}}
     {{- $summary := .Params.summary | default (.Summary | plainify | htmlUnescape) | default "暂无简介" -}}
-    <article class="leisure-shelf-item" data-media-type="{{ $mediaType }}"{{ if not $isInitiallyVisible }} hidden style="display: none;"{{ end }}>
+    <article class="leisure-shelf-item" data-media-type="{{ $mediaType }}"{{ if not $isInitiallyVisible }} hidden{{ end }}>
       {{- if $url }}<a class="leisure-shelf-item__link" href="{{ $url }}"{{ if $externalUrl }} target="_blank" rel="noopener noreferrer"{{ end }} aria-label="Open {{ $title }}">{{ end }}
         <div class="leisure-shelf-item__cover-shell">
           {{- with $cover }}
           <img
             class="leisure-shelf-item__cover"
-            src="{{ . }}"
+            src="{{ $coverSrc }}"
+            {{- with $coverSrcset }}
+            srcset="{{ . }}"
+            sizes="(max-width: 600px) 33vw, 124px"
+            {{- end }}
             alt="{{ $title }}"
+            {{- if $isPriorityCover }}
+            loading="eager"
+            fetchpriority="high"
+            {{- else }}
             loading="lazy"
+            {{- end }}
             decoding="async">
           {{- else }}
           <div class="leisure-shelf-item__cover leisure-shelf-item__cover--placeholder" aria-hidden="true">
@@ -124,7 +148,11 @@
             {{- with $cover }}
             <img
               class="leisure-shelf-item__cover"
-              src="{{ . }}"
+              src="{{ $coverSrc }}"
+              {{- with $coverSrcset }}
+              srcset="{{ . }}"
+              sizes="(max-width: 600px) 33vw, 124px"
+              {{- end }}
               alt="{{ $title }}"
               loading="lazy"
               decoding="async">
@@ -161,18 +189,39 @@
   {{- end }}
 </section>
 
-<footer class="page-footer">
-  <nav class="pagination" data-leisure-pagination{{ if le (len $entries) $pageSize }} hidden{{ end }}>
-    {{- if $paginator.HasPrev }}
-    <a class="prev" data-leisure-prev href="{{ $paginator.Prev.URL | absURL }}">«&nbsp;{{ i18n "prev_page" }}</a>
-    {{- else }}
-    <a class="prev" data-leisure-prev hidden>«&nbsp;{{ i18n "prev_page" }}</a>
-    {{- end }}
-    {{- if $paginator.HasNext }}
-    <a class="next" data-leisure-next href="{{ $paginator.Next.URL | absURL }}">{{ i18n "next_page" }}&nbsp;»</a>
-    {{- else }}
-    <a class="next" data-leisure-next hidden>{{ i18n "next_page" }}&nbsp;»</a>
-    {{- end }}
+<footer class="page-footer leisure-shelf-page__footer">
+  <nav class="pagination leisure-pagination" data-leisure-pagination aria-label="闲暇内容分页"{{ if le (len $entries) $pageSize }} hidden{{ end }}>
+    <a
+      class="prev leisure-pagination__link{{ if not $paginator.HasPrev }} is-disabled{{ end }}"
+      data-leisure-prev
+      {{- if $paginator.HasPrev }}
+      href="{{ $paginator.Prev.URL | absURL }}"
+      aria-disabled="false"
+      {{- else }}
+      aria-disabled="true"
+      tabindex="-1"
+      {{- end }}>
+      <span class="leisure-pagination__arrow" aria-hidden="true">←</span>
+      <span class="leisure-pagination__label">{{ i18n "prev_page" }}</span>
+    </a>
+    <span class="leisure-pagination__status" data-leisure-page-status aria-live="polite" aria-atomic="true" aria-current="page" tabindex="-1">
+      <span class="leisure-pagination__status-long" data-leisure-page-status-long aria-hidden="true"><span class="leisure-pagination__current" data-leisure-page-current>{{ printf "%02d" $currentPage }}</span><span class="leisure-pagination__separator">/</span><span data-leisure-page-total>{{ printf "%02d" $paginator.TotalPages }}</span></span>
+      <span class="leisure-pagination__status-short" data-leisure-page-status-short aria-hidden="true">{{ $currentPage }} / {{ $paginator.TotalPages }}</span>
+      <span class="leisure-pagination__status-a11y" data-leisure-page-status-a11y>第 {{ $currentPage }} 页，共 {{ $paginator.TotalPages }} 页</span>
+    </span>
+    <a
+      class="next leisure-pagination__link{{ if not $paginator.HasNext }} is-disabled{{ end }}"
+      data-leisure-next
+      {{- if $paginator.HasNext }}
+      href="{{ $paginator.Next.URL | absURL }}"
+      aria-disabled="false"
+      {{- else }}
+      aria-disabled="true"
+      tabindex="-1"
+      {{- end }}>
+      <span class="leisure-pagination__label">{{ i18n "next_page" }}</span>
+      <span class="leisure-pagination__arrow" aria-hidden="true">→</span>
+    </a>
   </nav>
 </footer>
 

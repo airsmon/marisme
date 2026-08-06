@@ -22,8 +22,10 @@
 <script src="/js/media-card-reveal.js" defer></script>
 {{- end }}
 {{- if $hasLeisure }}
-<script src="/js/leisure-filter.js" defer></script>
-<script src="/js/leisure-reveal.js" defer></script>
+{{- $leisureFilterVersion := crypto.MD5 (readFile "static/js/leisure-filter.js") -}}
+{{- $leisureRevealVersion := crypto.MD5 (readFile "static/js/leisure-reveal.js") -}}
+<script src="/js/leisure-filter.js?v={{ $leisureFilterVersion }}" defer></script>
+<script src="/js/leisure-reveal.js?v={{ $leisureRevealVersion }}" defer></script>
 {{- end }}
 {{- if eq .Layout "archives" }}
 <script src="/js/archive-infinite.js" defer></script>

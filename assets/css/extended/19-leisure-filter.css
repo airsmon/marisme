@@ -1,12 +1,15 @@
 .leisure-filter {
   display: flex;
   align-items: center;
-  gap: 1.1rem;
-  margin: 0 auto 1rem;
-  padding: 0 0.1rem;
+  justify-content: center;
+  gap: 2.75rem;
+  height: 38px;
+  margin: 0 auto 1.5rem;
+  padding: 0;
+  border-top: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
   border-bottom: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
-  overflow-x: auto;
-  scrollbar-width: none;
+  box-sizing: border-box;
+  scroll-margin-top: 1.5rem;
 }
 
 .leisure-filter::-webkit-scrollbar {
@@ -18,11 +21,13 @@
   display: inline-flex;
   align-items: baseline;
   gap: 0.35rem;
-  padding: 0 0 0.72rem;
+  height: 100%;
+  padding: 5px 0 0;
+  box-sizing: border-box;
   border: 0;
   background: transparent;
   color: var(--secondary);
-  font-size: 0.98rem;
+  font-size: 0.875rem;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
@@ -33,20 +38,26 @@
   content: "";
   position: absolute;
   left: 0;
-  right: 0;
+  width: 2em;
   bottom: -1px;
   height: 2px;
   border-radius: 999px;
   background: var(--primary);
   opacity: 0;
   transform: scaleX(0.4);
+  transform-origin: left center;
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
 .leisure-filter__tab:hover,
-.leisure-filter__tab:focus-visible,
 .leisure-filter__tab.is-active {
   color: var(--primary);
+}
+
+.leisure-filter__tab:focus-visible {
+  color: var(--primary);
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
 }
 
 .leisure-filter__tab:hover::after,
@@ -66,15 +77,17 @@
   margin-top: 1rem;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 600px) {
   .leisure-filter {
-    gap: 0.9rem;
-    margin-bottom: 0.9rem;
+    gap: 1.25rem;
+    height: 44px;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    scrollbar-width: none;
   }
 
   .leisure-filter__tab {
-    font-size: 0.94rem;
-    padding-bottom: 0.64rem;
+    font-size: 0.875rem;
   }
 }
 

@@ -9,6 +9,21 @@ function initLeisureFilter() {
   const paginationRoot = document.querySelector('[data-leisure-pagination]');
   const prevLink = paginationRoot ? paginationRoot.querySelector('[data-leisure-prev]') : null;
   const nextLink = paginationRoot ? paginationRoot.querySelector('[data-leisure-next]') : null;
+  const pageStatus = paginationRoot
+    ? paginationRoot.querySelector('[data-leisure-page-status]')
+    : null;
+  const pageStatusCurrent = paginationRoot
+    ? paginationRoot.querySelector('[data-leisure-page-current]')
+    : null;
+  const pageStatusTotal = paginationRoot
+    ? paginationRoot.querySelector('[data-leisure-page-total]')
+    : null;
+  const pageStatusShort = paginationRoot
+    ? paginationRoot.querySelector('[data-leisure-page-status-short]')
+    : null;
+  const pageStatusA11y = paginationRoot
+    ? paginationRoot.querySelector('[data-leisure-page-status-a11y]')
+    : null;
   const pageLinks = pageRoot
     ? Array.from(pageRoot.querySelectorAll('[data-leisure-page-link]'))
     : [];
@@ -17,9 +32,6 @@ function initLeisureFilter() {
 
   const allowedFilters = new Set(['all', 'book', 'movie']);
   const pageSize = Number(pageRoot && pageRoot.dataset.leisurePageSize) || 20;
-  const showPageNums = pageRoot && pageRoot.dataset.leisureShowPageNums === 'true';
-  const prevLabel = (pageRoot && pageRoot.dataset.leisurePrevLabel) || 'Previous';
-  const nextLabel = (pageRoot && pageRoot.dataset.leisureNextLabel) || 'Next';
   const allPageHrefs = new Map();
   const basePathname = pageLinks.length ? new URL(pageLinks[0].href).pathname : window.location.pathname;
   const initialHash = window.location.hash.replace('#', '');
@@ -46,16 +58,51 @@ function initLeisureFilter() {
     return window.location.origin + basePathname;
   }
 
-  function updateUrl(filter, pageNumber) {
-    const nextUrl = new URL(getPageHref(pageNumber), window.location.origin);
+  function getFilteredPageUrl(pageNumber, filter) {
+    const pageUrl = new URL(getPageHref(pageNumber), window.location.origin);
+    pageUrl.hash = filter !== 'all' ? filter : '';
+    return pageUrl;
+  }
 
-    if (filter !== 'all') {
-      nextUrl.hash = filter;
-    } else {
-      nextUrl.hash = '';
-    }
+  function updateUrl(filter, pageNumber) {
+    const nextUrl = getFilteredPageUrl(pageNumber, filter);
 
     history.replaceState(null, '', nextUrl.pathname + nextUrl.hash);
+  }
+
+  function setPaginationLinkState(link, isEnabled, targetPage, filter) {
+    link.classList.toggle('is-disabled', !isEnabled);
+    link.setAttribute('aria-disabled', String(!isEnabled));
+
+    if (!isEnabled) {
+      if (document.activeElement === link && pageStatus) {
+        pageStatus.focus({ preventScroll: true });
+      }
+      link.removeAttribute('href');
+      link.setAttribute('tabindex', '-1');
+      return;
+    }
+
+    link.href = getFilteredPageUrl(targetPage, filter).toString();
+    link.removeAttribute('tabindex');
+  }
+
+  function updatePageStatus(pageNumber, totalPages) {
+    if (pageStatusCurrent) {
+      pageStatusCurrent.textContent = String(pageNumber).padStart(2, '0');
+    }
+
+    if (pageStatusTotal) {
+      pageStatusTotal.textContent = String(totalPages).padStart(2, '0');
+    }
+
+    if (pageStatusShort) {
+      pageStatusShort.textContent = pageNumber + ' / ' + totalPages;
+    }
+
+    if (pageStatusA11y) {
+      pageStatusA11y.textContent = '第 ' + pageNumber + ' 页，共 ' + totalPages + ' 页';
+    }
   }
 
   function updatePagination(filter, pageNumber, totalPages) {
@@ -63,35 +110,12 @@ function initLeisureFilter() {
 
     const hasMultiplePages = totalPages > 1;
     paginationRoot.hidden = !hasMultiplePages;
-    paginationRoot.style.display = hasMultiplePages ? '' : 'none';
-    if (!hasMultiplePages) {
-      prevLink.hidden = true;
-      nextLink.hidden = true;
-      return;
-    }
-
     const prevPage = Math.max(1, pageNumber - 1);
     const nextPage = Math.min(totalPages, pageNumber + 1);
-    const hasPrev = pageNumber > 1;
-    const hasNext = pageNumber < totalPages;
-    const prevText = showPageNums
-      ? '«\u00a0' + prevLabel + '\u00a0' + prevPage + '/' + totalPages
-      : '«\u00a0' + prevLabel;
-    const nextText = showPageNums
-      ? nextLabel + '\u00a0' + nextPage + '/' + totalPages + '\u00a0»'
-      : nextLabel + '\u00a0»';
 
-    prevLink.href = getPageHref(prevPage);
-    prevLink.textContent = prevText;
-    prevLink.hash = filter !== 'all' ? filter : '';
-    prevLink.hidden = !hasPrev;
-    prevLink.style.display = hasPrev ? '' : 'none';
-
-    nextLink.href = getPageHref(nextPage);
-    nextLink.textContent = nextText;
-    nextLink.hash = filter !== 'all' ? filter : '';
-    nextLink.hidden = !hasNext;
-    nextLink.style.display = hasNext ? '' : 'none';
+    updatePageStatus(pageNumber, totalPages);
+    setPaginationLinkState(prevLink, pageNumber > 1, prevPage, filter);
+    setPaginationLinkState(nextLink, pageNumber < totalPages, nextPage, filter);
   }
 
   function applyFilter(filter, requestedPage, options) {
@@ -124,7 +148,7 @@ function initLeisureFilter() {
     currentPage = safePage;
 
     updatePagination(filter, safePage, totalPages);
-    if (!opts.skipUrlSync) {
+    if (!opts.skipUrlSync || safePage !== requestedPage) {
       updateUrl(filter, safePage);
     }
 
@@ -142,7 +166,6 @@ function initLeisureFilter() {
     items.forEach(function (item) {
       const matches = visibleSet.has(item);
       item.hidden = !matches;
-      item.style.display = matches ? '' : 'none';
     });
 
     if (emptyState) {
@@ -171,7 +194,16 @@ function initLeisureFilter() {
 
       event.preventDefault();
 
+      if (link.getAttribute('aria-disabled') === 'true') return;
+
       applyFilter(activeFilter, currentPage + (isPrev ? -1 : 1));
+
+      window.requestAnimationFrame(function () {
+        filterRoot.scrollIntoView({
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+          block: 'start',
+        });
+      });
     });
   }
 

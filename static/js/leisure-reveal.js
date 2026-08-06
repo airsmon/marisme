@@ -9,67 +9,67 @@ function initLeisureReveal() {
   const revealDelayStep = 90;
   const fadeOutDuration = 220;
   let runId = 0;
-
-  function clearExpandAlignment() {
-    items.forEach(function (item) {
-      item.classList.remove('is-expand-right');
-    });
-  }
+  let transitionTimeoutId = 0;
+  let prepareFrameId = 0;
+  let revealFrameId = 0;
+  let resizeFrameId = 0;
+  let activeColumnCount = 1;
+  let expandRightItems = new Set();
 
   function getVisibleItems() {
     return items.filter(function (item) {
-      return !item.hidden && item.style.display !== 'none';
+      return !item.hidden;
     });
   }
 
   function getActiveColumnCount() {
-    const templateColumns = window.getComputedStyle(grid).gridTemplateColumns;
-    if (!templateColumns || templateColumns === 'none') return 1;
-
-    return templateColumns
-      .split(' ')
-      .filter(function (column) {
-        return column && column !== '/';
-      }).length;
+    const value = window.getComputedStyle(grid).getPropertyValue('--leisure-column-count');
+    const columnCount = Number.parseInt(value, 10);
+    return Number.isNaN(columnCount) || columnCount < 1 ? 1 : columnCount;
   }
 
-  function updateExpandAlignment(targetItems) {
-    clearExpandAlignment();
+  function updateExpandAlignment(targetItems, columnCount) {
+    const nextExpandRightItems = new Set();
 
-    const activeColumns = getActiveColumnCount();
-    if (activeColumns <= 3) return;
+    if (columnCount > 3) {
+      targetItems.forEach(function (item, index) {
+        const columnIndex = index % columnCount;
+        if (columnIndex >= columnCount - 2) {
+          nextExpandRightItems.add(item);
+        }
+      });
+    }
 
-    const orderedItems = getRevealOrder(targetItems);
-    let currentTop = null;
-    let currentColumn = 0;
-
-    orderedItems.forEach(function (item) {
-      if (currentTop === null || Math.abs(item.offsetTop - currentTop) > 4) {
-        currentTop = item.offsetTop;
-        currentColumn = 1;
-      } else {
-        currentColumn += 1;
+    expandRightItems.forEach(function (item) {
+      if (!nextExpandRightItems.has(item)) {
+        item.classList.remove('is-expand-right');
       }
+    });
 
-      if (currentColumn >= activeColumns - 1) {
+    nextExpandRightItems.forEach(function (item) {
+      if (!expandRightItems.has(item)) {
         item.classList.add('is-expand-right');
       }
     });
+
+    expandRightItems = nextExpandRightItems;
   }
 
-  function getRevealOrder(nextItems) {
-    return nextItems
-      .slice()
-      .sort(function (leftItem, rightItem) {
-        const leftTop = leftItem.offsetTop;
-        const rightTop = rightItem.offsetTop;
+  function cancelPendingTransition() {
+    if (transitionTimeoutId) {
+      window.clearTimeout(transitionTimeoutId);
+      transitionTimeoutId = 0;
+    }
 
-        if (Math.abs(leftTop - rightTop) > 4) {
-          return leftTop - rightTop;
-        }
+    if (prepareFrameId) {
+      window.cancelAnimationFrame(prepareFrameId);
+      prepareFrameId = 0;
+    }
 
-        return leftItem.offsetLeft - rightItem.offsetLeft;
-      });
+    if (revealFrameId) {
+      window.cancelAnimationFrame(revealFrameId);
+      revealFrameId = 0;
+    }
   }
 
   function resetDelays(targetItems) {
@@ -79,22 +79,21 @@ function initLeisureReveal() {
   }
 
   function applyRevealDelays(nextItems) {
-    const orderedItems = getRevealOrder(nextItems);
-
-    orderedItems.forEach(function (item, index) {
+    nextItems.forEach(function (item, index) {
       item.style.setProperty('--leisure-reveal-delay', index * revealDelayStep + 'ms');
     });
-
-    return orderedItems;
   }
 
-  function showItems(nextItems) {
-    const orderedItems = applyRevealDelays(nextItems);
-    updateExpandAlignment(orderedItems);
+  function showItems(nextItems, currentRunId) {
+    applyRevealDelays(nextItems);
+    updateExpandAlignment(nextItems, activeColumnCount);
 
-    requestAnimationFrame(function () {
-      orderedItems.forEach(function (item) {
-        if (item.hidden || item.style.display === 'none') return;
+    revealFrameId = window.requestAnimationFrame(function () {
+      revealFrameId = 0;
+      if (currentRunId !== runId) return;
+
+      nextItems.forEach(function (item) {
+        if (item.hidden) return;
         item.classList.add('is-visible');
       });
     });
@@ -105,16 +104,14 @@ function initLeisureReveal() {
       item.classList.remove('is-visible');
       item.style.setProperty('--leisure-reveal-delay', '0ms');
       item.hidden = true;
-      item.style.display = 'none';
     });
 
     visibleItems.forEach(function (item) {
       item.hidden = false;
-      item.style.display = '';
       item.classList.add('is-visible');
     });
 
-    updateExpandAlignment(visibleItems);
+    updateExpandAlignment(visibleItems, activeColumnCount);
 
     if (emptyState) {
       emptyState.hidden = visibleCount > 0;
@@ -127,30 +124,30 @@ function initLeisureReveal() {
     const visibleCount = detail.visibleCount || 0;
     const emptyState = detail.emptyState || null;
 
+    runId += 1;
+    const currentRunId = runId;
+    cancelPendingTransition();
+
     if (prefersReducedMotion) {
       applyImmediateVisibility(visibleItems, hiddenItems, visibleCount, emptyState);
       return;
     }
-
-    runId += 1;
-    const currentRunId = runId;
 
     hiddenItems.forEach(function (item) {
       item.classList.remove('is-visible');
       item.style.setProperty('--leisure-reveal-delay', '0ms');
     });
 
-    window.setTimeout(function () {
+    transitionTimeoutId = window.setTimeout(function () {
+      transitionTimeoutId = 0;
       if (currentRunId !== runId) return;
 
       hiddenItems.forEach(function (item) {
         item.hidden = true;
-        item.style.display = 'none';
       });
 
       visibleItems.forEach(function (item) {
         item.hidden = false;
-        item.style.display = '';
         item.classList.remove('is-visible');
       });
 
@@ -160,30 +157,44 @@ function initLeisureReveal() {
         emptyState.hidden = visibleCount > 0;
       }
 
-      requestAnimationFrame(function () {
+      prepareFrameId = window.requestAnimationFrame(function () {
+        prepareFrameId = 0;
         if (currentRunId !== runId) return;
-        showItems(visibleItems);
+        showItems(visibleItems, currentRunId);
       });
     }, fadeOutDuration);
   }
+
+  activeColumnCount = getActiveColumnCount();
 
   if (prefersReducedMotion) {
     items.forEach(function (item) {
       item.classList.add('is-visible');
       item.style.setProperty('--leisure-reveal-delay', '0ms');
     });
+    updateExpandAlignment(getVisibleItems(), activeColumnCount);
   } else {
     items.forEach(function (item) {
       item.classList.remove('is-visible');
       item.style.setProperty('--leisure-reveal-delay', '0ms');
     });
-    requestAnimationFrame(function () {
-      showItems(getVisibleItems());
+    prepareFrameId = window.requestAnimationFrame(function () {
+      prepareFrameId = 0;
+      showItems(getVisibleItems(), runId);
     });
   }
 
   window.addEventListener('resize', function () {
-    updateExpandAlignment(getVisibleItems());
+    if (resizeFrameId) return;
+
+    resizeFrameId = window.requestAnimationFrame(function () {
+      resizeFrameId = 0;
+      const nextColumnCount = getActiveColumnCount();
+      if (nextColumnCount === activeColumnCount) return;
+
+      activeColumnCount = nextColumnCount;
+      updateExpandAlignment(getVisibleItems(), activeColumnCount);
+    });
   });
 
   window.__leisureReveal = {
