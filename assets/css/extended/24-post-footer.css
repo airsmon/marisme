@@ -150,6 +150,14 @@
   overflow-wrap: anywhere;
 }
 
+.paginav a:not(:only-child) .paginav-name {
+  display: -webkit-box;
+  min-block-size: calc(2 * 1.45em);
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
 .paginav span:hover:not(.title) {
   text-decoration: none;
 }
@@ -194,10 +202,6 @@
   color: var(--post-footer-accent);
 }
 
-.paginav a:active {
-  background: color-mix(in srgb, var(--post-footer-accent-soft) 10%, var(--theme));
-}
-
 .paginav a:active::before {
   height: 32px;
   background: var(--post-footer-accent);
@@ -213,10 +217,6 @@
 
   .post-tags a:hover::before {
     color: var(--post-footer-accent);
-  }
-
-  .paginav a:hover {
-    background: color-mix(in srgb, var(--post-footer-accent-soft) 7%, var(--theme));
   }
 
   .paginav a:hover::before {
@@ -282,6 +282,7 @@
     display: block;
     width: 100%;
     min-width: 0;
+    min-block-size: 0;
     overflow: hidden;
     overflow-wrap: normal;
     text-align: start;
