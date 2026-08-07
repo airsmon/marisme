@@ -105,6 +105,34 @@
 
 {{- if gt $paginator.TotalPages 1 }}
 <footer class="page-footer">
+  {{- if $.IsHome }}
+  <nav class="pagination home-pagination" aria-label="文章分页">
+    {{- if $paginator.HasPrev }}
+    <a class="prev home-pagination__link" href="{{ $paginator.Prev.URL | absURL }}" rel="prev" aria-label="{{ i18n "prev_page" }}">
+      <span class="home-pagination__label">{{ i18n "prev_page" }}</span>
+    </a>
+    {{- else }}
+    <span class="prev home-pagination__link is-disabled" aria-hidden="true">
+      <span class="home-pagination__label">{{ i18n "prev_page" }}</span>
+    </span>
+    {{- end }}
+    <span class="home-pagination__status" aria-current="page">
+      <span class="home-pagination__current" aria-hidden="true">{{ printf "%02d" $paginator.PageNumber }}</span>
+      <span class="home-pagination__separator" aria-hidden="true">/</span>
+      <span class="home-pagination__total" aria-hidden="true">{{ printf "%02d" $paginator.TotalPages }}</span>
+      <span class="home-pagination__status-a11y">第 {{ $paginator.PageNumber }} 页，共 {{ $paginator.TotalPages }} 页</span>
+    </span>
+    {{- if $paginator.HasNext }}
+    <a class="next home-pagination__link" href="{{ $paginator.Next.URL | absURL }}" rel="next" aria-label="{{ i18n "next_page" }}">
+      <span class="home-pagination__label">{{ i18n "next_page" }}</span>
+    </a>
+    {{- else }}
+    <span class="next home-pagination__link is-disabled" aria-hidden="true">
+      <span class="home-pagination__label">{{ i18n "next_page" }}</span>
+    </span>
+    {{- end }}
+  </nav>
+  {{- else }}
   <nav class="pagination">
     {{- if $paginator.HasPrev }}
     <a class="prev" href="{{ $paginator.Prev.URL | absURL }}">
@@ -123,6 +151,7 @@
     </a>
     {{- end }}
   </nav>
+  {{- end }}
 </footer>
 {{- end }}
 
