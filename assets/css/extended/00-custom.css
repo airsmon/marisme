@@ -10,3 +10,49 @@
 .menu .active {
     text-decoration: none !important;
 }
+
+.post-content {
+    font-size: 16.5px;
+    line-height: 1.7;
+}
+
+.post-content h2,
+.post-content h3 {
+    position: relative;
+}
+
+.post-content h2 {
+    padding-left: 16px;
+}
+
+.post-content h2::before {
+    content: "";
+    position: absolute;
+    top: 0.15em;
+    left: 0;
+    width: 4px;
+    height: 0.9em;
+    border-radius: 999px;
+    background: var(--primary);
+}
+
+.post-content h3 {
+    padding-left: 12px;
+}
+
+.post-content h3::before {
+    content: "";
+    position: absolute;
+    top: 0.22em;
+    left: 0;
+    width: 2px;
+    height: 0.72em;
+    border-radius: 999px;
+    background: var(--secondary);
+}
+
+.post-content h4 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.015em;
+}
