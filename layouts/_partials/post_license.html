@@ -3,21 +3,26 @@
 {{- $licenseName := .Param "licenseName" | default site.Params.articleLicense.name -}}
 {{- $licenseURL := .Param "licenseURL" | default site.Params.articleLicense.url -}}
 {{- $licenseNotice := .Param "licenseNotice" | default site.Params.articleLicense.notice -}}
-{{- $usageTitle := .Param "usageNoticeTitle" | default site.Params.articleUsageNotice.title -}}
-{{- $usageMark := .Param "usageNoticeMark" | default site.Params.articleUsageNotice.mark -}}
+{{- $usageTitle := .Param "usageNoticeTitle" -}}
+{{- if not $usageTitle -}}
+  {{- if isset .Params "usagenoticetext" -}}
+    {{- $usageTitle = "使用说明" -}}
+  {{- else -}}
+    {{- $usageTitle = site.Params.articleUsageNotice.title -}}
+  {{- end -}}
+{{- end -}}
 {{- $usageText := .Param "usageNoticeText" | default site.Params.articleUsageNotice.text -}}
 {{- $showLicense := and (not $hidePostLicense) $licenseName $licenseURL -}}
 {{- $showUsage := and (not $hideUsageNotice) $usageText -}}
 
 {{- if or $showLicense $showUsage }}
-<section class="post-license" aria-label="文章附注">
+<section class="post-license" aria-labelledby="post-license-title">
+  <h2 class="post-license-heading" id="post-license-title">版权与使用</h2>
   {{- if $showLicense }}
   <div class="post-license-item">
-    <div class="post-license-mark" aria-hidden="true">CC</div>
+    <span class="post-license-mark" aria-hidden="true">CC</span>
     <div class="post-license-body">
-      <div class="post-license-head">
-        <h2 class="post-license-title">许可授权</h2>
-      </div>
+      <h3 class="post-license-title">内容许可</h3>
       <p class="post-license-text">
         {{- if $licenseNotice -}}
         {{ $licenseNotice }}
@@ -25,18 +30,16 @@
         本文采用
         {{- end -}}
         <a href="{{ $licenseURL }}" target="_blank" rel="noopener noreferrer">{{ $licenseName }}</a>
-        许可协议，转载请保留署名并注明出处。
+        许可协议。转载需署名并注明出处，不得用于商业用途；修改后须以相同许可方式共享。
       </p>
     </div>
   </div>
   {{- end }}
   {{- if $showUsage }}
-  <div class="post-license-item post-license-item-note">
-    <div class="post-license-mark" aria-hidden="true">{{ $usageMark | default "注" }}</div>
+  <div class="post-license-item">
+    <span class="post-license-mark post-license-mark--info" aria-hidden="true">i</span>
     <div class="post-license-body">
-      <div class="post-license-head">
-        <h2 class="post-license-title">{{ $usageTitle | default "使用前提" }}</h2>
-      </div>
+      <h3 class="post-license-title">{{ $usageTitle | default "第三方内容" }}</h3>
       <p class="post-license-text">{{ $usageText }}</p>
     </div>
   </div>

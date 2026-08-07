@@ -65,9 +65,8 @@ params:
     url: "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans"
     notice: "本文采用"
   articleUsageNotice:
-    title: "使用前提"
-    mark: "注"
-    text: "博客中涉及的 GitHub 仓库及第三方软件均有其独立的开源许可证。在部署或使用前，请自行查阅对应仓库的 LICENSE 文件，确认许可类型（如 MIT、Apache 2.0、GPL 等）及其附加条款。"
+    title: "第三方内容"
+    text: "文中引用的 GitHub 仓库、代码及第三方软件不适用上述许可，使用前请以各项目的 LICENSE 和附加条款为准。"
   followProfiles:
     enabled: true
     title: "关注更新"
