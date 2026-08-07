@@ -1,6 +1,9 @@
 {{- define "main" }}
 
 <article class="post-single">
+  <div class="reading-progress" data-reading-progress aria-hidden="true">
+    <span class="reading-progress__bar"></span>
+  </div>
   <header class="post-header">
     {{ partial "breadcrumbs.html" . }}
     <h1 class="post-title entry-hint-parent">

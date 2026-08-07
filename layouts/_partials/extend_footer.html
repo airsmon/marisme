@@ -15,6 +15,10 @@
 {{- if $hasToc }}
 <script src="/js/toc-active.js" defer></script>
 {{- end }}
+{{- if $isSingle }}
+{{- $readingProgressVersion := crypto.MD5 (readFile "static/js/reading-progress.js") -}}
+<script src="/js/reading-progress.js?v={{ $readingProgressVersion }}" defer></script>
+{{- end }}
 {{- if $hasTable }}
 <script src="/js/table-preview.js" defer></script>
 {{- end }}

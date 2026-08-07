@@ -1,0 +1,42 @@
+.reading-progress {
+  --reading-progress-color: #9ca3af;
+
+  position: fixed;
+  z-index: 1000;
+  inset: 0 0 auto;
+  height: 2px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease;
+}
+
+.reading-progress.is-visible {
+  opacity: 1;
+}
+
+.reading-progress__bar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--reading-progress-color);
+  transform: scaleX(var(--reading-progress, 0));
+  transform-origin: left center;
+  will-change: transform;
+}
+
+[data-theme="dark"] .reading-progress {
+  --reading-progress-color: #7c828b;
+}
+
+@media (max-width: 640px) {
+  .reading-progress {
+    height: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reading-progress {
+    transition: none;
+  }
+}
