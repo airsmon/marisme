@@ -15,6 +15,32 @@
     -webkit-text-fill-color: transparent;
 }
 
+/* 文章行：用克制的底色变化提示整行可点击 */
+.archive-entry {
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.archive-entry-title {
+    transition: color 0.2s ease;
+}
+
+.archive-entry:hover .archive-entry-title,
+.archive-entry:focus-within .archive-entry-title {
+    color: #6366f1;
+}
+
+.archive-entry .entry-link:focus-visible {
+    outline: 2px solid #818cf8;
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+:root[data-theme="dark"] .archive-entry:hover .archive-entry-title,
+:root[data-theme="dark"] .archive-entry:focus-within .archive-entry-title {
+    color: #a5b4fc;
+}
+
 .archive-infinite-status {
     display: flex;
     align-items: center;
@@ -50,5 +76,11 @@
     .archive-entry .archive-meta {
         font-size: 12px;
         letter-spacing: 0.04em;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .archive-entry-title {
+        transition: none;
     }
 }
