@@ -7,18 +7,17 @@
   const shortcut = root.querySelector(".tags-search__shortcut");
   const status = root.querySelector(".tags-search__status");
   const popular = root.querySelector("[data-tags-popular]");
-  const directory = root.querySelector(".tags-directory");
+  const index = root.querySelector("[data-tags-index]");
   const emptyState = root.querySelector("[data-tags-empty]");
-  const longTail = root.querySelector("[data-tags-long-tail]");
-  const longTailDetails = root.querySelector("[data-tags-long-tail-details]");
-  const groups = [...root.querySelectorAll("[data-tags-group]")];
-  const routeButtons = [...root.querySelectorAll("[data-tags-target]")];
+  const resetButton = root.querySelector("[data-tags-reset]");
+  const filterButtons = [...root.querySelectorAll("[data-tag-filter]")];
+  const sortButtons = [...root.querySelectorAll("[data-tag-sort]")];
+  const items = [...root.querySelectorAll("[data-tag-item]")];
   const total = Number(root.dataset.tagTotal || 0);
-  let detailsWasOpen = longTailDetails?.open || false;
+  let activeFilter = "all";
+  let activeSort = "count";
 
-  root.querySelectorAll("[data-tag-label]").forEach((label) => {
-    label.dataset.originalLabel = label.textContent.trim();
-  });
+  if (!searchInput || !index) return;
 
   const normalize = (value) => value.trim().toLocaleLowerCase("zh-CN");
 
@@ -30,75 +29,93 @@
     "'": "&#039;"
   })[character]);
 
-  const highlight = (name, query) => {
-    if (!query) return escapeHtml(name);
+  const highlight = (label, query) => {
+    if (!query) return escapeHtml(label);
+    const normalizedLabel = label.toLocaleLowerCase("zh-CN");
+    const matchIndex = normalizedLabel.indexOf(query);
+    if (matchIndex < 0) return escapeHtml(label);
 
-    const index = name.toLocaleLowerCase("zh-CN").indexOf(query);
-    if (index < 0) return escapeHtml(name);
-
-    return `${escapeHtml(name.slice(0, index))}<mark>${escapeHtml(name.slice(index, index + query.length))}</mark>${escapeHtml(name.slice(index + query.length))}`;
+    return `${escapeHtml(label.slice(0, matchIndex))}<mark>${escapeHtml(label.slice(matchIndex, matchIndex + query.length))}</mark>${escapeHtml(label.slice(matchIndex + query.length))}`;
   };
 
-  const filterTags = () => {
+  const sortItems = () => {
+    const collator = new Intl.Collator("zh-CN", { numeric: true, sensitivity: "base" });
+    const sorted = [...items].sort((left, right) => {
+      if (activeSort === "name") {
+        return collator.compare(left.dataset.tagLabel, right.dataset.tagLabel);
+      }
+
+      const countDifference = Number(right.dataset.tagCount) - Number(left.dataset.tagCount);
+      return countDifference || collator.compare(left.dataset.tagLabel, right.dataset.tagLabel);
+    });
+
+    const fragment = document.createDocumentFragment();
+    sorted.forEach((item) => fragment.appendChild(item));
+    index.appendChild(fragment);
+    index.dataset.activeSort = activeSort;
+  };
+
+  const update = () => {
     const query = normalize(searchInput.value);
-    const visibleNames = new Set();
+    let visibleCount = 0;
 
-    root.querySelectorAll("[data-tag-item]").forEach((item) => {
-      const matches = !query || item.dataset.tagName.includes(query);
-      item.hidden = !matches;
-      if (matches) visibleNames.add(item.dataset.tagName);
+    items.forEach((item) => {
+      const matchesQuery = !query || item.dataset.tagName.includes(query);
+      const matchesFilter = activeFilter === "all" || item.dataset.tagGroup === activeFilter;
+      const visible = matchesQuery && matchesFilter;
+      item.hidden = !visible;
+      if (visible) visibleCount += 1;
 
-      const label = item.querySelector("[data-tag-label]");
-      if (label) {
-        label.innerHTML = highlight(label.dataset.originalLabel, query);
-      }
+      const label = item.querySelector("[data-tag-text]");
+      if (label) label.innerHTML = highlight(item.dataset.tagLabel, query);
     });
 
-    let visibleGroupCount = 0;
-    groups.forEach((group) => {
-      const hasMatch = [...group.querySelectorAll("[data-tag-item]")].some((item) => !item.hidden);
-      group.hidden = query ? !hasMatch : false;
-      if (!group.hidden) visibleGroupCount += 1;
-
-      const id = group.id.replace("tags-group-", "");
-      const routeButton = routeButtons.find((button) => button.dataset.tagsTarget === id);
-      if (routeButton) routeButton.closest("li").hidden = query ? !hasMatch : false;
-    });
-
-    const popularHasMatch = popular
-      ? [...popular.querySelectorAll("[data-tag-item]")].some((item) => !item.hidden)
-      : false;
-    if (popular) popular.hidden = query ? !popularHasMatch : false;
-
-    const longTailHasMatch = longTail
-      ? [...longTail.querySelectorAll("[data-tag-item]")].some((item) => !item.hidden)
-      : false;
-    if (longTail) longTail.hidden = query ? !longTailHasMatch : false;
-
-    if (longTailDetails) {
-      if (query && longTailHasMatch) {
-        longTailDetails.open = true;
-      } else if (!query && !detailsWasOpen) {
-        longTailDetails.open = false;
-      }
-    }
-
-    directory.hidden = query ? visibleGroupCount === 0 : false;
-    emptyState.hidden = visibleNames.size > 0;
+    popular.hidden = Boolean(query) || activeFilter !== "all";
+    emptyState.hidden = visibleCount > 0;
+    index.hidden = visibleCount === 0;
     clearButton.hidden = !query;
     shortcut.hidden = Boolean(query);
-    status.innerHTML = query
-      ? `找到 <strong>${visibleNames.size}</strong> 个匹配标签`
+    const resultText = query || activeFilter !== "all"
+      ? `找到 <strong>${visibleCount}</strong> 个标签`
       : `共 <strong>${total}</strong> 个标签`;
+    const sortText = activeSort === "name" ? "按名称排列" : "按热度排列";
+    status.innerHTML = `${resultText}<span class="tags-search__sort-status"> · ${sortText}</span>`;
   };
 
-  searchInput.addEventListener("input", filterTags);
-  searchInput.addEventListener("search", filterTags);
-
-  clearButton.addEventListener("click", () => {
+  const reset = () => {
     searchInput.value = "";
-    filterTags();
+    activeFilter = "all";
+    filterButtons.forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.tagFilter === "all"));
+    });
+    update();
     searchInput.focus();
+  };
+
+  searchInput.addEventListener("input", update);
+  searchInput.addEventListener("search", update);
+  clearButton.addEventListener("click", reset);
+  resetButton?.addEventListener("click", reset);
+
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      activeFilter = button.dataset.tagFilter;
+      filterButtons.forEach((candidate) => {
+        candidate.setAttribute("aria-pressed", String(candidate === button));
+      });
+      update();
+    });
+  });
+
+  sortButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      activeSort = button.dataset.tagSort;
+      sortButtons.forEach((candidate) => {
+        candidate.setAttribute("aria-pressed", String(candidate === button));
+      });
+      sortItems();
+      update();
+    });
   });
 
   document.addEventListener("keydown", (event) => {
@@ -107,48 +124,9 @@
       searchInput.focus();
     }
 
-    if (event.key === "Escape" && document.activeElement === searchInput) {
-      searchInput.value = "";
-      filterTags();
-    }
+    if (event.key === "Escape" && document.activeElement === searchInput) reset();
   });
 
-  routeButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const target = root.querySelector(`#tags-group-${button.dataset.tagsTarget}`);
-      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      target?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
-    });
-  });
-
-  if (longTailDetails) {
-    longTailDetails.addEventListener("toggle", () => {
-      if (!normalize(searchInput.value)) detailsWasOpen = longTailDetails.open;
-
-      const action = longTailDetails.querySelector(".tags-long-tail__action");
-      if (action) {
-        action.childNodes[0].textContent = longTailDetails.open ? "收起标签 " : "展开查看 ";
-      }
-    });
-  }
-
-  if ("IntersectionObserver" in window) {
-    const observer = new IntersectionObserver((entries) => {
-      if (normalize(searchInput.value)) return;
-
-      const visible = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((left, right) => left.boundingClientRect.top - right.boundingClientRect.top)[0];
-
-      if (!visible) return;
-      const id = visible.target.id.replace("tags-group-", "");
-      routeButtons.forEach((button) => {
-        button.setAttribute("aria-current", String(button.dataset.tagsTarget === id));
-      });
-    }, { rootMargin: "-20% 0px -68% 0px", threshold: 0 });
-
-    groups.forEach((group) => observer.observe(group));
-  }
-
-  filterTags();
+  sortItems();
+  update();
 })();

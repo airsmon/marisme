@@ -3,7 +3,7 @@
 {{- $configuredGroups := hugo.Data.tag_groups.groups | default slice }}
 {{- $allTerms := .Data.Terms.Alphabetical }}
 {{- $popularTerms := first 6 .Data.Terms.ByCount }}
-{{- $mappedPaths := dict }}
+{{- $termGroups := dict }}
 {{- $groups := slice }}
 {{- $exactTermCounts := newScratch }}
 
@@ -14,115 +14,70 @@
 {{- end }}
 
 {{- range $configuredGroups }}
+    {{- $groupID := .id }}
     {{- $items := slice }}
     {{- range .tags }}
-        {{- $slug := . }}
-        {{- with site.GetPage (printf "/tags/%s" $slug) }}
-            {{- $item := dict
-                "page" .
-                "name" .LinkTitle
-                "count" ($exactTermCounts.Get .RelPermalink | default 0)
-                "search" (lower .LinkTitle)
-            }}
-            {{- $items = $items | append $item }}
-            {{- $mappedPaths = merge $mappedPaths (dict .RelPermalink true) }}
+        {{- with site.GetPage (printf "/tags/%s" .) }}
+            {{- $items = $items | append .RelPermalink }}
+            {{- $termGroups = merge $termGroups (dict .RelPermalink $groupID) }}
         {{- end }}
     {{- end }}
     {{- if gt (len $items) 0 }}
-        {{- $groups = $groups | append (dict
-            "id" .id
-            "title" .title
-            "description" .description
-            "items" $items
-        ) }}
+        {{- $groups = $groups | append (dict "id" .id "title" .title "count" (len $items)) }}
     {{- end }}
 {{- end }}
 
-{{- $unmappedRegular := slice }}
-{{- $longTail := slice }}
+{{- $otherCount := 0 }}
 {{- range $allTerms }}
-    {{- $term := . }}
-    {{- with site.GetPage (printf "/tags/%s" $term.Name) }}
-        {{- if not (isset $mappedPaths .RelPermalink) }}
-            {{- $count := $exactTermCounts.Get .RelPermalink | default 0 }}
-            {{- $item := dict
-                "page" .
-                "name" .LinkTitle
-                "count" $count
-                "search" (lower .LinkTitle)
-            }}
-            {{- if gt $count 1 }}
-                {{- $unmappedRegular = $unmappedRegular | append $item }}
-            {{- else }}
-                {{- $longTail = $longTail | append $item }}
-            {{- end }}
+    {{- with site.GetPage (printf "/tags/%s" .Name) }}
+        {{- if not (isset $termGroups .RelPermalink) }}
+            {{- $otherCount = add $otherCount 1 }}
         {{- end }}
     {{- end }}
 {{- end }}
-
-{{- if gt (len $unmappedRegular) 0 }}
-    {{- $groups = $groups | append (dict
-        "id" "other"
-        "title" "其他主题"
-        "description" "一些横跨现有方向、已经积累多篇内容的主题。"
-        "items" $unmappedRegular
-    ) }}
+{{- if gt $otherCount 0 }}
+    {{- $groups = $groups | append (dict "id" "other" "title" "其他" "count" $otherCount) }}
 {{- end }}
 
 <article class="tags-page" data-tags-page data-tag-total="{{ len $allTerms }}">
-    <header class="tags-hero">
-        <div class="tags-hero__grid">
-            <div>
-                <p class="tags-eyebrow">标签索引 · 知识航图</p>
-                <h1>按主题，找到<br>下一篇<span>文章</span></h1>
-                <p class="tags-hero__description">从基础设施、系统与工具，到动画、阅读与生活随想，沿着主题发现相关笔记。</p>
-            </div>
-            <dl class="tags-stats" aria-label="标签统计">
-                <div>
-                    <dt>全部标签</dt>
-                    <dd>{{ len $allTerms }}</dd>
-                </div>
-                <div>
-                    <dt>主题路径</dt>
-                    <dd>{{ len $groups }}</dd>
-                </div>
-            </dl>
+    <header class="tags-header">
+        <div>
+            <h1>标签</h1>
+            <p>按主题浏览本站的文章与笔记，找到值得继续阅读的内容。</p>
         </div>
+        <p class="tags-header__total"><strong>{{ len $allTerms }}</strong><span>个标签</span></p>
     </header>
 
+    {{- if gt (len $allTerms) 0 }}
     <section class="tags-search" aria-label="搜索标签">
-        <div class="tags-search__row">
-            <div class="tags-search__field">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <circle cx="11" cy="11" r="6.5"></circle>
-                    <path d="m16 16 4 4"></path>
-                </svg>
-                <label class="tags-page__visually-hidden" for="tag-search-input">搜索标签</label>
-                <input id="tag-search-input" type="search" autocomplete="off" placeholder="搜索标签，例如 Hugo、TLS、动画……">
-                <span class="tags-search__shortcut" aria-hidden="true"><kbd>⌘</kbd><kbd>K</kbd></span>
-                <button class="tags-search__clear" type="button" hidden>清除</button>
-            </div>
-            <p class="tags-search__status" aria-live="polite">共 <strong>{{ len $allTerms }}</strong> 个标签</p>
+        <div class="tags-search__field">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="6.5"></circle>
+                <path d="m16 16 4 4"></path>
+            </svg>
+            <label class="tags-page__visually-hidden" for="tag-search-input">搜索标签</label>
+            <input id="tag-search-input" type="search" autocomplete="off" placeholder="搜索标签，例如 Hugo、TLS、动画……">
+            <span class="tags-search__shortcut" aria-hidden="true"><kbd>⌘</kbd><kbd>K</kbd></span>
+            <button class="tags-search__clear" type="button" hidden>清除</button>
         </div>
+        <p class="tags-search__status" aria-live="polite">共 <strong>{{ len $allTerms }}</strong> 个标签</p>
     </section>
 
     <section class="tags-popular" data-tags-popular aria-labelledby="tags-popular-title">
         <header class="tags-section-heading">
-            <div>
-                <span>从这里开始</span>
-                <h2 id="tags-popular-title">常用主题</h2>
-            </div>
-            <p>这些主题积累了更多文章，是了解本站内容的快捷入口。</p>
+            <h2 id="tags-popular-title">热门标签</h2>
+            <p>文章积累较多的主题，可以从这里开始。</p>
         </header>
         <ol class="tags-popular__list">
             {{- range $popularTerms }}
                 {{- $term := . }}
                 {{- with site.GetPage (printf "/tags/%s" $term.Name) }}
                 {{- $count := $exactTermCounts.Get .RelPermalink | default 0 }}
-                <li data-tag-item data-tag-name="{{ lower .LinkTitle }}">
+                <li>
                     <a href="{{ .RelPermalink }}" aria-label="{{ .LinkTitle }}，{{ $count }} 篇文章">
-                        <span class="tags-popular__name" data-tag-label>{{ .LinkTitle }}</span>
-                        <span class="tags-popular__count">{{ $count }} 篇 <i aria-hidden="true">↗</i></span>
+                        <span class="tags-popular__name">{{ .LinkTitle }}</span>
+                        <span class="tags-popular__count">{{ $count }} 篇</span>
+                        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 5 5 5-5 5"></path></svg>
                     </a>
                 </li>
                 {{- end }}
@@ -131,78 +86,52 @@
     </section>
 
     <section class="tags-directory" aria-labelledby="tags-directory-title">
-        <aside class="tags-routes" aria-label="主题路径导航">
-            <p>主题路径</p>
-            <ul>
-                {{- range $index, $group := $groups }}
-                <li>
-                    <button type="button" data-tags-target="{{ $group.id }}" aria-current="{{ if eq $index 0 }}true{{ else }}false{{ end }}">
-                        {{ $group.title }}<small>{{ len $group.items }}</small>
-                    </button>
+        <header class="tags-directory__header">
+            <div>
+                <h2 id="tags-directory-title">全部标签</h2>
+                <p>按主题筛选，或切换排列方式。</p>
+            </div>
+            <div class="tags-sort" role="group" aria-label="标签排序方式">
+                <button type="button" data-tag-sort="count" aria-pressed="true">按热度</button>
+                <button type="button" data-tag-sort="name" aria-pressed="false">按名称</button>
+            </div>
+        </header>
+
+        <nav class="tags-filters" aria-label="标签主题筛选">
+            <button type="button" data-tag-filter="all" aria-pressed="true">全部 <small>{{ len $allTerms }}</small></button>
+            {{- range $groups }}
+            <button type="button" data-tag-filter="{{ .id }}" aria-pressed="false">{{ .title }} <small>{{ .count }}</small></button>
+            {{- end }}
+        </nav>
+
+        <ul class="tags-index" data-tags-index>
+            {{- range $allTerms }}
+                {{- $term := . }}
+                {{- with site.GetPage (printf "/tags/%s" $term.Name) }}
+                {{- $count := $exactTermCounts.Get .RelPermalink | default 0 }}
+                {{- $group := index $termGroups .RelPermalink | default "other" }}
+                <li data-tag-item data-tag-name="{{ lower .LinkTitle }}" data-tag-label="{{ .LinkTitle }}" data-tag-count="{{ $count }}" data-tag-group="{{ $group }}">
+                    <a href="{{ .RelPermalink }}" aria-label="{{ .LinkTitle }}，{{ $count }} 篇文章">
+                        <span data-tag-text>{{ .LinkTitle }}</span>
+                        <small>{{ $count }}</small>
+                        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 5 5 5-5 5"></path></svg>
+                    </a>
                 </li>
                 {{- end }}
-            </ul>
-        </aside>
-
-        <div class="tags-directory__content">
-            <header class="tags-directory__intro">
-                <h2 id="tags-directory-title">全部主题路径</h2>
-                <p>六条路径串起技术实践、工具创作与生活记录，选择感兴趣的方向继续阅读。</p>
-            </header>
-
-            {{- range $groups }}
-            <section class="tags-group" id="tags-group-{{ .id }}" data-tags-group>
-                <header>
-                    <div>
-                        <h3>{{ .title }}</h3>
-                        <span>{{ len .items }} 个标签</span>
-                    </div>
-                    <p>{{ .description }}</p>
-                </header>
-                <ul class="tags-group__list">
-                    {{- range .items }}
-                    <li data-tag-item data-tag-name="{{ .search }}">
-                        <a href="{{ .page.RelPermalink }}" aria-label="{{ .name }}，{{ .count }} 篇文章">
-                            <span data-tag-label>{{ .name }}</span>
-                            <small>{{ .count }}</small>
-                        </a>
-                    </li>
-                    {{- end }}
-                </ul>
-            </section>
             {{- end }}
-        </div>
+        </ul>
     </section>
 
     <section class="tags-empty" data-tags-empty hidden>
-        <span aria-hidden="true">∅</span>
-        <h2>没有找到这个标签</h2>
-        <p>试试缩短关键词，或搜索相邻概念，例如“证书”“模型”“系统”。</p>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path><path d="M8.5 11h5"></path></svg>
+        <h2>没有找到匹配的标签</h2>
+        <p>试试缩短关键词，或清除当前主题筛选。</p>
+        <button type="button" data-tags-reset>清除筛选</button>
     </section>
-
-    {{- if gt (len $longTail) 0 }}
-    <section class="tags-long-tail" data-tags-long-tail>
-        <details data-tags-long-tail-details>
-            <summary>
-                <span>更多标签 <small>更具体的关键词 · {{ len $longTail }} 个</small></span>
-                <span class="tags-long-tail__action">展开查看
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
-                </span>
-            </summary>
-            <div class="tags-long-tail__content">
-                <p>一些更具体、目前收录较少的关键词，也可以直接搜索或展开浏览。</p>
-                <ul>
-                    {{- range $longTail }}
-                    <li data-tag-item data-tag-name="{{ .search }}">
-                        <a href="{{ .page.RelPermalink }}" aria-label="{{ .name }}，{{ .count }} 篇文章">
-                            <span data-tag-label>{{ .name }}</span>
-                            <small>{{ .count }}</small>
-                        </a>
-                    </li>
-                    {{- end }}
-                </ul>
-            </div>
-        </details>
+    {{- else }}
+    <section class="tags-empty tags-empty--initial">
+        <h2>暂无标签</h2>
+        <p>发布带有标签的文章后，它们会出现在这里。</p>
     </section>
     {{- end }}
 </article>
