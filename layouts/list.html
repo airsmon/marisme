@@ -105,7 +105,7 @@
 
 {{- if gt $paginator.TotalPages 1 }}
 <footer class="page-footer">
-  {{- if $.IsHome }}
+  {{- if or $.IsHome (eq $.Kind "term") }}
   <nav class="pagination home-pagination" aria-label="文章分页">
     {{- if $paginator.HasPrev }}
     <a class="prev home-pagination__link" href="{{ $paginator.Prev.URL | absURL }}" rel="prev" aria-label="{{ i18n "prev_page" }}">
