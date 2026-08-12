@@ -190,9 +190,9 @@
 </section>
 
 <footer class="page-footer leisure-shelf-page__footer">
-  <nav class="pagination leisure-pagination" data-leisure-pagination aria-label="闲暇内容分页"{{ if le (len $entries) $pageSize }} hidden{{ end }}>
+  <nav class="pagination home-pagination leisure-pagination" data-leisure-pagination aria-label="闲暇内容分页"{{ if le (len $entries) $pageSize }} hidden{{ end }}>
     <a
-      class="prev leisure-pagination__link{{ if not $paginator.HasPrev }} is-disabled{{ end }}"
+      class="prev home-pagination__link leisure-pagination__link{{ if not $paginator.HasPrev }} is-disabled{{ end }}"
       data-leisure-prev
       {{- if $paginator.HasPrev }}
       href="{{ $paginator.Prev.URL | absURL }}"
@@ -201,16 +201,16 @@
       aria-disabled="true"
       tabindex="-1"
       {{- end }}>
-      <span class="leisure-pagination__arrow" aria-hidden="true">←</span>
-      <span class="leisure-pagination__label">{{ i18n "prev_page" }}</span>
+      <span class="home-pagination__label leisure-pagination__label">{{ i18n "prev_page" }}</span>
     </a>
-    <span class="leisure-pagination__status" data-leisure-page-status aria-live="polite" aria-atomic="true" aria-current="page" tabindex="-1">
-      <span class="leisure-pagination__status-long" data-leisure-page-status-long aria-hidden="true"><span class="leisure-pagination__current" data-leisure-page-current>{{ printf "%02d" $currentPage }}</span><span class="leisure-pagination__separator">/</span><span data-leisure-page-total>{{ printf "%02d" $paginator.TotalPages }}</span></span>
-      <span class="leisure-pagination__status-short" data-leisure-page-status-short aria-hidden="true">{{ $currentPage }} / {{ $paginator.TotalPages }}</span>
-      <span class="leisure-pagination__status-a11y" data-leisure-page-status-a11y>第 {{ $currentPage }} 页，共 {{ $paginator.TotalPages }} 页</span>
+    <span class="home-pagination__status leisure-pagination__status" data-leisure-page-status aria-live="polite" aria-atomic="true" aria-current="page" tabindex="-1">
+      <span class="home-pagination__current leisure-pagination__current" data-leisure-page-current aria-hidden="true">{{ printf "%02d" $currentPage }}</span>
+      <span class="home-pagination__separator leisure-pagination__separator" aria-hidden="true">/</span>
+      <span class="home-pagination__total" data-leisure-page-total aria-hidden="true">{{ printf "%02d" $paginator.TotalPages }}</span>
+      <span class="home-pagination__status-a11y leisure-pagination__status-a11y" data-leisure-page-status-a11y>第 {{ $currentPage }} 页，共 {{ $paginator.TotalPages }} 页</span>
     </span>
     <a
-      class="next leisure-pagination__link{{ if not $paginator.HasNext }} is-disabled{{ end }}"
+      class="next home-pagination__link leisure-pagination__link{{ if not $paginator.HasNext }} is-disabled{{ end }}"
       data-leisure-next
       {{- if $paginator.HasNext }}
       href="{{ $paginator.Next.URL | absURL }}"
@@ -219,8 +219,7 @@
       aria-disabled="true"
       tabindex="-1"
       {{- end }}>
-      <span class="leisure-pagination__label">{{ i18n "next_page" }}</span>
-      <span class="leisure-pagination__arrow" aria-hidden="true">→</span>
+      <span class="home-pagination__label leisure-pagination__label">{{ i18n "next_page" }}</span>
     </a>
   </nav>
 </footer>

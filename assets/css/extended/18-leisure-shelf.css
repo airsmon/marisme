@@ -409,98 +409,13 @@ html.has-leisure-reveal .leisure-shelf-item.is-visible {
 }
 
 .leisure-shelf-page__footer .leisure-pagination {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  align-items: center;
   width: 100%;
   max-width: var(--leisure-content-width, var(--main-width));
-  min-height: 54px;
   margin: 0 auto;
-  padding: 0.625rem 0 0;
-  border-top: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
-}
-
-.leisure-shelf-page__footer .leisure-pagination__link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-width: 44px;
-  min-height: 44px;
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
-  color: var(--primary);
-  font-size: 0.75rem;
-  line-height: 1;
-  text-decoration: none;
-}
-
-.leisure-shelf-page__footer .leisure-pagination .prev {
-  justify-self: start;
-}
-
-.leisure-shelf-page__footer .leisure-pagination .next {
-  justify-self: end;
-  margin-inline-start: 0;
-}
-
-.leisure-shelf-page__footer .leisure-pagination__link:hover {
-  color: var(--secondary);
-}
-
-.leisure-shelf-page__footer .leisure-pagination__link:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 3px;
-}
-
-.leisure-shelf-page__footer .leisure-pagination__link.is-disabled {
-  color: var(--secondary);
-  opacity: 0.48;
-  pointer-events: none;
-}
-
-.leisure-pagination__arrow {
-  font-size: 0.875rem;
-}
-
-.leisure-pagination__status {
-  min-width: 5.5rem;
-  color: var(--secondary);
-  font-size: 0.75rem;
-  line-height: 1;
-  letter-spacing: 0.12em;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
 }
 
 .leisure-pagination__status:focus {
   outline: none;
-}
-
-.leisure-pagination__separator {
-  padding: 0 0.35em;
-  color: var(--tertiary);
-}
-
-.leisure-pagination__current {
-  color: var(--primary);
-  font-weight: 600;
-}
-
-.leisure-pagination__status-short {
-  display: none;
-}
-
-.leisure-pagination__status-a11y {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
 }
 
 @media (max-width: 840px) {
@@ -579,30 +494,6 @@ html.has-leisure-reveal .leisure-shelf-item.is-visible {
     margin-top: 1.1rem;
   }
 
-  .leisure-shelf-page__footer .leisure-pagination {
-    min-height: 52px;
-    padding-top: 0.5rem;
-  }
-
-  .leisure-pagination__status-long {
-    display: none;
-  }
-
-  .leisure-pagination__label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  .leisure-pagination__status-short {
-    display: inline;
-  }
 }
 
 @media (max-width: 420px) {

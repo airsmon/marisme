@@ -18,9 +18,6 @@ function initLeisureFilter() {
   const pageStatusTotal = paginationRoot
     ? paginationRoot.querySelector('[data-leisure-page-total]')
     : null;
-  const pageStatusShort = paginationRoot
-    ? paginationRoot.querySelector('[data-leisure-page-status-short]')
-    : null;
   const pageStatusA11y = paginationRoot
     ? paginationRoot.querySelector('[data-leisure-page-status-a11y]')
     : null;
@@ -94,10 +91,6 @@ function initLeisureFilter() {
 
     if (pageStatusTotal) {
       pageStatusTotal.textContent = String(totalPages).padStart(2, '0');
-    }
-
-    if (pageStatusShort) {
-      pageStatusShort.textContent = pageNumber + ' / ' + totalPages;
     }
 
     if (pageStatusA11y) {
