@@ -2,65 +2,69 @@
   function initTablePreview() {
     const selector =
       ".post-content table:not(.highlighttable, .highlight table, .gist .highlight table), .md-content table:not(.highlighttable, .highlight table, .gist .highlight table)";
+    const tableItems = [];
 
-    const tableItems = Array.from(document.querySelectorAll(selector)).map(function (table) {
-      const parent = table.parentElement;
-      if (parent && parent.classList.contains("table-scroll")) {
-        return { table: table, shell: parent };
+    document.querySelectorAll(selector).forEach(function (table, index) {
+      let shell = table.parentElement;
+      let block = shell && shell.parentElement;
+
+      if (!shell || !shell.classList.contains("table-scroll")) {
+        shell = document.createElement("div");
+        shell.className = "table-scroll";
+        table.parentNode.insertBefore(shell, table);
+        shell.appendChild(table);
       }
 
-      const shell = document.createElement("div");
-      shell.className = "table-scroll";
-      table.parentNode.insertBefore(shell, table);
-      shell.appendChild(table);
-      return { table: table, shell: shell };
+      if (!block || !block.classList.contains("table-block")) {
+        block = document.createElement("div");
+        block.className = "table-block";
+        shell.parentNode.insertBefore(block, shell);
+        block.appendChild(shell);
+      }
+
+      const actions = document.createElement("div");
+      actions.className = "table-actions";
+
+      const hint = document.createElement("span");
+      hint.className = "table-scroll-hint";
+      hint.id = `table-scroll-hint-${index + 1}`;
+      hint.textContent = "左右滑动查看更多";
+
+      const expand = document.createElement("button");
+      expand.className = "table-expand-button";
+      expand.type = "button";
+      expand.textContent = "展开表格";
+      expand.setAttribute("aria-describedby", hint.id);
+
+      actions.appendChild(hint);
+      actions.appendChild(expand);
+      block.insertBefore(actions, shell);
+      tableItems.push({ table: table, shell: shell, block: block, hint: hint, expand: expand });
     });
+
     if (!tableItems.length) return;
 
-    const canHoverPreview = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-
     let activeOverlay = null;
-    let activeDialog = null;
-    let activeShell = null;
-    let openTimer = null;
-    let closeTimer = null;
-    let pointerX = 0;
-    let pointerY = 0;
+    let activeTrigger = null;
+    let previousBodyOverflow = "";
 
     function closePreview() {
-      if (closeTimer) {
-        clearTimeout(closeTimer);
-        closeTimer = null;
-      }
       if (!activeOverlay) return;
       activeOverlay.remove();
+      document.body.style.overflow = previousBodyOverflow;
+      const trigger = activeTrigger;
       activeOverlay = null;
-      activeDialog = null;
-      activeShell = null;
+      activeTrigger = null;
+      if (trigger) trigger.focus();
     }
 
-    function queueClosePreview(delay) {
-      if (closeTimer) clearTimeout(closeTimer);
-      closeTimer = window.setTimeout(closePreview, delay || 48);
+    function removeDuplicateIds(root) {
+      root.querySelectorAll("[id]").forEach(function (element) {
+        element.removeAttribute("id");
+      });
     }
 
-    function pointerInsideActiveRegion() {
-      const hit = document.elementFromPoint(pointerX, pointerY);
-      if (!hit) return false;
-      if (activeShell && activeShell.contains(hit)) return true;
-      if (activeDialog && activeDialog.contains(hit)) return true;
-      return false;
-    }
-
-    function positionDialog(dialog, table) {
-      const gutter = 24;
-      const viewportWidth = window.innerWidth;
-      const targetWidth = Math.min(table.scrollWidth, viewportWidth - gutter * 2);
-
-      dialog.style.width = `${targetWidth}px`;
-    }
-
-    function buildPreview(table) {
+    function buildPreview(item) {
       closePreview();
 
       const overlay = document.createElement("div");
@@ -68,107 +72,73 @@
 
       const dialog = document.createElement("div");
       dialog.className = "table-preview-dialog";
+      dialog.setAttribute("role", "dialog");
+      dialog.setAttribute("aria-modal", "true");
+      dialog.setAttribute("aria-label", "展开的表格");
+      dialog.tabIndex = -1;
 
       const scroll = document.createElement("div");
       scroll.className = "table-preview-scroll";
+      scroll.tabIndex = 0;
 
-      const clone = table.cloneNode(true);
+      const clone = item.table.cloneNode(true);
       clone.classList.add("table-preview-table");
-      clone.classList.remove("is-overflow-table");
+      removeDuplicateIds(clone);
 
       scroll.appendChild(clone);
       dialog.appendChild(scroll);
       overlay.appendChild(dialog);
       document.body.appendChild(overlay);
-      activeOverlay = overlay;
-      activeDialog = dialog;
-      activeShell = table.parentElement;
-      positionDialog(dialog, table);
 
-      dialog.addEventListener("mouseenter", function () {
-        if (closeTimer) {
-          clearTimeout(closeTimer);
-          closeTimer = null;
+      previousBodyOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      activeOverlay = overlay;
+      activeTrigger = item.expand;
+
+      overlay.addEventListener("click", function (event) {
+        if (event.target === overlay) closePreview();
+      });
+      dialog.addEventListener("keydown", function (event) {
+        if (event.key !== "Tab") return;
+        const focusable = Array.from(dialog.querySelectorAll("button, a[href], [tabindex]:not([tabindex='-1'])"));
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
         }
       });
-      dialog.addEventListener("mouseleave", function () {
-        queueClosePreview(42);
-      });
-      overlay.addEventListener("mouseleave", function () {
-        queueClosePreview(42);
-      });
+
+      scroll.focus();
     }
 
     function updateOverflowState(item) {
       const isOverflowing = item.table.scrollWidth > item.shell.clientWidth + 2;
-      item.shell.classList.toggle("is-overflow-table", isOverflowing);
+      item.block.classList.toggle("is-overflow-table", isOverflowing);
+      item.expand.hidden = !isOverflowing;
+      item.hint.hidden = !isOverflowing;
     }
 
-    function updateAll() {
-      tableItems.forEach(updateOverflowState);
-    }
-
-    updateAll();
-
-    if (!canHoverPreview) {
-      window.addEventListener("resize", updateAll, { passive: true });
-      return;
-    }
-
-    tableItems.forEach((item) => {
-      const table = item.table;
-      const shell = item.shell;
-
-      shell.addEventListener("mouseenter", function () {
-        if (!shell.classList.contains("is-overflow-table")) return;
-        if (activeOverlay && activeShell === shell) return;
-        if (closeTimer) {
-          clearTimeout(closeTimer);
-          closeTimer = null;
-        }
-
-        openTimer = window.setTimeout(function () {
-          buildPreview(table);
-        }, 120);
+    tableItems.forEach(function (item) {
+      item.expand.addEventListener("click", function () {
+        buildPreview(item);
       });
-
-      shell.addEventListener("mouseleave", function () {
-        if (openTimer) {
-          clearTimeout(openTimer);
-          openTimer = null;
-        }
-
-        if (activeOverlay) {
-          queueClosePreview(42);
-        }
-      });
+      item.shell.addEventListener("scroll", function () {
+        if (item.shell.scrollLeft > 8) item.block.classList.add("has-scrolled");
+      }, { passive: true });
+      updateOverflowState(item);
     });
 
     window.addEventListener("resize", function () {
-      updateAll();
-      if (activeDialog && activeShell) {
-        const table = activeShell.querySelector("table");
-        if (table) positionDialog(activeDialog, table);
-      }
+      tableItems.forEach(updateOverflowState);
     }, { passive: true });
     document.addEventListener("keydown", function (event) {
       if (event.key === "Escape") closePreview();
     });
-    document.addEventListener("pointermove", function (event) {
-      pointerX = event.clientX;
-      pointerY = event.clientY;
-
-      if (!activeOverlay || !activeDialog) return;
-
-      if (pointerInsideActiveRegion()) {
-        if (closeTimer) {
-          clearTimeout(closeTimer);
-          closeTimer = null;
-        }
-      } else {
-        queueClosePreview(56);
-      }
-    }, { passive: true });
   }
 
   if (document.readyState === "loading") {

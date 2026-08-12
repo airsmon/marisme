@@ -12,16 +12,25 @@
 }
 
 /* Default strategy: keep article width, overflow horizontally when needed */
+.post-content .table-block,
+.md-content .table-block {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin: 1.15rem 0;
+}
+
 .post-content .table-scroll,
 .md-content .table-scroll {
     width: 100%;
     max-width: 100%;
-    margin: 1.15rem 0;
     overflow-x: auto;
     overflow-y: hidden;
     border: var(--table-border-style);
     border-radius: 8px;
     background: transparent;
+    scrollbar-color: color-mix(in srgb, var(--primary) 24%, transparent) transparent;
+    scrollbar-width: thin;
 }
 
 .post-content table:not(.highlighttable, .highlight table, .gist .highlight table),
@@ -38,14 +47,58 @@
     line-height: 1.55;
 }
 
-.post-content .table-scroll.is-overflow-table,
-.md-content .table-scroll.is-overflow-table {
-    cursor: zoom-in;
+.table-actions {
+    display: none;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    min-height: 2rem;
+    margin-bottom: 0.4rem;
 }
 
-.post-content .table-scroll.is-overflow-table:hover,
-.md-content .table-scroll.is-overflow-table:hover {
-    border-color: color-mix(in srgb, var(--primary) 18%, var(--border));
+.is-overflow-table .table-actions {
+    display: flex;
+}
+
+.table-scroll-hint {
+    color: var(--secondary);
+    font-size: 0.78rem;
+    line-height: 1.4;
+    transition: opacity 0.16s ease-out;
+}
+
+.has-scrolled .table-scroll-hint {
+    opacity: 0;
+}
+
+.table-expand-button {
+    appearance: none;
+    border: 1px solid color-mix(in srgb, var(--primary) 14%, var(--border));
+    border-radius: 8px;
+    background: var(--theme);
+    color: var(--primary);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color 0.16s ease-out, background-color 0.16s ease-out;
+}
+
+.table-expand-button {
+    min-height: 2rem;
+    padding: 0.42rem 0.68rem;
+}
+
+.table-expand-button:hover {
+    border-color: color-mix(in srgb, var(--primary) 34%, var(--border));
+    background: color-mix(in srgb, var(--primary) 5%, var(--theme));
+}
+
+.table-expand-button:focus-visible,
+.table-preview-scroll:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--primary) 64%, transparent);
+    outline-offset: 3px;
 }
 
 .post-content table:not(.highlighttable, .highlight table, .gist .highlight table) thead,
@@ -125,6 +178,10 @@
 }
 
 @media (max-width: 768px) {
+    .table-actions {
+        display: none !important;
+    }
+
     .post-content table:not(.highlighttable, .highlight table, .gist .highlight table),
     .md-content table:not(.highlighttable, .highlight table, .gist .highlight table) {
         font-size: 0.88rem;
@@ -144,64 +201,72 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0;
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(0.8px) saturate(101%);
-    -webkit-backdrop-filter: blur(0.8px) saturate(101%);
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.74);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
     z-index: 9999;
-    pointer-events: none;
     animation: table-preview-fade-in 0.14s ease-out;
 }
 
 :root[data-theme="dark"] .table-preview-overlay {
-    background: rgba(12, 12, 16, 0.12);
+    background: rgba(12, 12, 16, 0.78);
 }
 
 .table-preview-dialog {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    width: min(1440px, 100%);
     max-height: min(86vh, 940px);
     padding: 0;
     border: var(--table-border-style);
     border-radius: 16px;
-    background: color-mix(in srgb, var(--theme) 90%, transparent);
+    background: var(--theme);
     box-shadow: 0 20px 56px rgba(15, 23, 42, 0.12);
-    pointer-events: auto;
     animation: table-preview-zoom-in 0.14s ease-out;
 }
 
 :root[data-theme="dark"] .table-preview-dialog {
-    background: color-mix(in srgb, var(--theme) 84%, transparent);
+    background: var(--theme);
     box-shadow: 0 22px 60px rgba(0, 0, 0, 0.3);
 }
 
 .table-preview-scroll {
     overflow-x: hidden;
     overflow-y: auto;
+    min-height: 0;
     max-width: 100%;
-    max-height: min(86vh, 940px);
+    overscroll-behavior: contain;
     border-radius: 16px;
+    scrollbar-color: color-mix(in srgb, var(--primary) 30%, transparent) transparent;
+    scrollbar-width: thin;
 }
 
 .table-preview-table {
     display: table !important;
     width: 100% !important;
-    min-width: 100%;
+    min-width: 100% !important;
     max-width: 100% !important;
     table-layout: fixed;
     margin: 0;
     overflow: visible !important;
-    background: color-mix(in srgb, var(--theme) 96%, transparent);
+    background: var(--theme);
     border: none;
 }
 
 .table-preview-table th,
 .table-preview-table td {
+    min-width: 0;
     white-space: normal;
-    word-break: break-word;
+    word-break: normal;
     overflow-wrap: anywhere;
 }
 
 .table-preview-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
     background: color-mix(in srgb, var(--theme) 94%, var(--primary) 6%);
 }
 
@@ -249,5 +314,27 @@
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 640px) {
+    .table-preview-overlay {
+        align-items: center;
+        padding: 12px;
+    }
+
+    .table-preview-dialog {
+        width: 100%;
+        max-height: calc(100dvh - 24px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .table-scroll-hint,
+    .table-expand-button,
+    .table-preview-overlay,
+    .table-preview-dialog {
+        animation: none;
+        transition: none;
     }
 }
