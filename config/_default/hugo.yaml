@@ -213,7 +213,7 @@ params:
 menu:
   main:
     - identifier: search
-      name: 🫧 搜索
+      name: 🫧 Search
       url: /search/
       weight: 10
     # - identifier: tech
@@ -229,11 +229,11 @@ menu:
     #   url: /articles/ops/
     #   weight: 30
     - identifier: musing
-      name: 🌳 随想
+      name: 🌳 Musings
       url: /musing/
       weight: 40
     - identifier: leisure
-      name: 🍵 闲暇
+      name: 🍵 Leisure
       url: /leisure/
       weight: 50
     # - identifier: about
@@ -249,11 +249,11 @@ menu:
     #   url: /categories/
     #   weight: 60
     - identifier: tags
-      name: 🌾 标签
+      name: 🌾 Tags
       url: /tags/
       weight: 70
     - identifier: archives
-      name: 🍄 时间线
+      name: 🍄 Timeline
       url: /archives/
       weight: 80
 
