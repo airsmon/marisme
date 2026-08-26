@@ -1,0 +1,76 @@
+{{- $pages := where site.RegularPages "Section" "articles" -}}
+{{- $today := time.AsTime (now.Format "2006-01-02") -}}
+{{- $weekdayOffset := mod (add (int $today.Weekday) 6) 7 -}}
+{{- $weekStart := $today.AddDate 0 0 (mul -1 $weekdayOffset) -}}
+{{- $gridStart := $weekStart.AddDate 0 0 -364 -}}
+{{- $monthStart := time.AsTime (now.Format "2006-01-01") -}}
+{{- $activity := newScratch -}}
+{{- $activity.Set "days" dict -}}
+{{- $stats := newScratch -}}
+{{- $stats.Set "week" 0 -}}
+{{- $stats.Set "month" 0 -}}
+
+{{- range $pages -}}
+  {{- $key := .Date.Format "2006-01-02" -}}
+  {{- $count := index ($activity.Get "days") $key | default 0 -}}
+  {{- $activity.SetInMap "days" $key (add $count 1) -}}
+  {{- if and (ge .Date $weekStart) (le .Date now) -}}
+    {{- $stats.Add "week" 1 -}}
+  {{- end -}}
+  {{- if and (ge .Date $monthStart) (le .Date now) -}}
+    {{- $stats.Add "month" 1 -}}
+  {{- end -}}
+{{- end -}}
+
+<section class="activity-panel" aria-labelledby="activity-title">
+  <header class="activity-panel__header">
+    <div id="activity-title" class="activity-panel__title" role="heading" aria-level="2">博客活动</div>
+    <dl class="activity-panel__stats" aria-label="文章发布统计">
+      <div>
+        <dt>本周</dt>
+        <dd>{{ $stats.Get "week" }}</dd>
+      </div>
+      <div>
+        <dt>本月</dt>
+        <dd>{{ $stats.Get "month" }}</dd>
+      </div>
+      <div>
+        <dt>累计</dt>
+        <dd>{{ len $pages }}</dd>
+      </div>
+    </dl>
+  </header>
+
+  <div class="activity-panel__scroll" tabindex="0" role="region" aria-label="过去一年文章发布热力图">
+    <div class="activity-panel__grid">
+      {{- range seq 0 370 -}}
+        {{- $date := $gridStart.AddDate 0 0 . -}}
+        {{- $key := $date.Format "2006-01-02" -}}
+        {{- $count := index ($activity.Get "days") $key | default 0 -}}
+        {{- $level := 0 -}}
+        {{- if eq $count 1 -}}
+          {{- $level = 1 -}}
+        {{- else if eq $count 2 -}}
+          {{- $level = 2 -}}
+        {{- else if le $count 4 -}}
+          {{- if gt $count 0 }}{{ $level = 3 }}{{ end -}}
+        {{- else -}}
+          {{- $level = 4 -}}
+        {{- end -}}
+        {{- $isFuture := gt $date $today -}}
+        <span
+          class="activity-panel__cell{{ if $isFuture }} is-future{{ end }}"
+          data-level="{{ $level }}"
+          title="{{ $date.Format "2006年1月2日" }}：{{ $count }} 篇文章"
+          aria-label="{{ $date.Format "2006年1月2日" }}，发布 {{ $count }} 篇文章"
+        ></span>
+      {{- end -}}
+    </div>
+    <div class="activity-panel__months" aria-hidden="true">
+      {{- $labelStart := $gridStart.AddDate 0 1 0 -}}
+      {{- range seq 0 11 -}}
+        <span>{{ ($labelStart.AddDate 0 . 0).Format "1月" }}</span>
+      {{- end -}}
+    </div>
+  </div>
+</section>

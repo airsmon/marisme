@@ -1,0 +1,24 @@
+{{- define "main" }}
+{{- $articles := where site.RegularPages "Section" "articles" -}}
+<article class="post-single about-page">
+  <header class="about-profile">
+    <h1 class="about-profile__name">Y'Jie</h1>
+    <p class="about-profile__handle">@airsmon <span aria-hidden="true">·</span> Infrastructure · Cloud Native · SRE</p>
+    <nav class="about-profile__links" aria-label="个人链接">
+      <a href="https://github.com/airsmon" rel="noopener noreferrer">GitHub</a>
+      <a href="mailto:airsmon@gmail.com">Email</a>
+    </nav>
+  </header>
+
+  <dl class="about-overview" aria-label="个人资料概览">
+    <div><dd>{{ len $articles }}</dd><dt>技术文章</dt></div>
+    <div><dd>{{ len site.Taxonomies.tags }}</dd><dt>内容标签</dt></div>
+    <div><dd>{{ len site.Taxonomies.series }}</dd><dt>文章系列</dt></div>
+    <div><dd>4</dd><dt>开源项目</dt></div>
+  </dl>
+
+  <div class="post-content md-content about-page__content">
+    {{- .Content -}}
+  </div>
+</article>
+{{- end }}

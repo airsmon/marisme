@@ -1,5 +1,6 @@
 ---
 title: "关于我"
+layout: "about"
 date: 2026-06-01T10:00:00+08:00
 description: "一个普通技术人的自留地，写点工作、生活和兴趣。"
 summary: "喜欢排问题，喜欢研究，也喜欢安静地看书、发呆和陪女儿长大。"
@@ -15,20 +16,31 @@ hideFollowProfiles: true
 draft: false
 ---
 
-我是 Y'Jie。
+{{< activity-grid >}}
 
-平时是个普通技术人，私下算半个技术宅。
+<div class="about-columns">
+  <section class="about-section" aria-labelledby="interests-title">
+    <h2 id="interests-title" class="about-section__title">兴趣侧写</h2>
+    <dl class="about-interests">
+      <div class="about-interest"><dt>系统与排障</dt><dd>配置、分析与排除法</dd></div>
+      <div class="about-interest"><dt>阅读与独处</dt><dd>看书、安静待着和发呆</dd></div>
+      <div class="about-interest"><dt>动漫</dt><dd>治愈与冒险题材</dd></div>
+      <div class="about-interest"><dt>家庭</dt><dd>陪女儿玩耍和成长</dd></div>
+    </dl>
+  </section>
 
-平时喜欢折腾系统、看配置、排问题。遇到故障的时候，我习惯先缩小范围，再一个个排除，所以一直挺喜欢排障这件事，也比较信排除法。
+  <section class="about-section" aria-labelledby="projects-title">
+    <h2 id="projects-title" class="about-section__title">GitHub 项目</h2>
+    <div class="about-projects">
+      <a class="about-project" href="https://github.com/airsmon/marisme" rel="noopener noreferrer"><span class="about-project__name">marisme</span><span class="about-project__language">Hugo · CSS</span></a>
+      <a class="about-project" href="https://github.com/airsmon/charts" rel="noopener noreferrer"><span class="about-project__name">charts</span><span class="about-project__language">Helm</span></a>
+      <a class="about-project" href="https://github.com/airsmon/safeline_exporter" rel="noopener noreferrer"><span class="about-project__name">safeline_exporter</span><span class="about-project__language">Go</span></a>
+      <a class="about-project" href="https://github.com/airsmon/qiniu_exporter" rel="noopener noreferrer"><span class="about-project__name">qiniu_exporter</span><span class="about-project__language">Go</span></a>
+    </div>
+  </section>
+</div>
 
-我学东西忘得很快，所以比起记答案，我更喜欢自己研究，尽量把事情看明白。
-
-生活里我比较安静，喜欢看书，喜欢一个人待着，也擅长发呆。对我来说，发呆很多时候不是放空，只是想让自己慢一点，把节奏放缓一点。
-
-到了 28 岁，生活里也多了一个很重要的角色: 我的女儿。她很可爱，调皮、玩耍是她每天的主题，我们的日常里也多了许多小小的烦恼，不过也正因为这样，日子变得更具体，也更有烟火气了。
-
-我也喜欢看动漫，偏爱治愈和冒险一点的作品，比如《火影忍者》《葬送的芙莉莲》《Re:0 从零开始的异世界生活》《记录的地平线》。这类作品我会反复看，主要是喜欢那种慢慢往前走的感觉。
-
-这个站点主要写技术、排障、学习记录，也会夹杂一点生活、阅读和一些胡思乱想。
-
-如果你也喜欢安静一点的内容，欢迎随便看看。
+<section class="about-section about-section--closing" aria-labelledby="site-title">
+  <h2 id="site-title" class="about-section__title">关于这里</h2>
+  <p class="about-closing">这个站点主要写技术、排障和学习记录，也会夹杂一点生活、阅读与胡思乱想。如果你也喜欢安静一点的内容，欢迎随便看看。</p>
+</section>

@@ -236,10 +236,10 @@ menu:
       name: 🍵 Leisure
       url: /leisure/
       weight: 50
-    # - identifier: about
-    #   name: 🍃 About
-    #   url: /about/
-    #   weight: 50
+    - identifier: about
+      name: 🍃 About
+      url: /about/
+      weight: 90
     # - identifier: series
     #   name: Series
     #   url: /series/
