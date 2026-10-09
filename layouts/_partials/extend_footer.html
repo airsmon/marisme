@@ -13,41 +13,37 @@
 {{- $hasFollowProfiles := and $isSingle (not (.Param "hideFollowProfiles")) $followProfiles.enabled (gt (len $followProfiles.items) 0) -}}
 
 {{- if $hasToc }}
-<script src="/js/toc-active.js" defer></script>
+{{- partial "assets/script.html" (dict "name" "toc-active.js") }}
 {{- end }}
 {{- if $isSingle }}
-{{- $readingProgressVersion := crypto.MD5 (readFile "static/js/reading-progress.js") -}}
-<script src="/js/reading-progress.js?v={{ $readingProgressVersion }}" defer></script>
+{{- partial "assets/script.html" (dict "name" "reading-progress.js") }}
 {{- end }}
 {{- if $hasTable }}
-{{- $tablePreviewVersion := crypto.MD5 (readFile "static/js/table-preview.js") -}}
-<script src="/js/table-preview.js?v={{ $tablePreviewVersion }}" defer></script>
+{{- partial "assets/script.html" (dict "name" "table-preview.js") }}
 {{- end }}
 {{- if $hasMedia }}
-<script src="/js/media-card-reveal.js" defer></script>
+{{- partial "assets/script.html" (dict "name" "media-card-reveal.js") }}
 {{- end }}
 {{- if $hasLeisure }}
-{{- $leisureFilterVersion := crypto.MD5 (readFile "static/js/leisure-filter.js") -}}
-{{- $leisureRevealVersion := crypto.MD5 (readFile "static/js/leisure-reveal.js") -}}
-<script src="/js/leisure-filter.js?v={{ $leisureFilterVersion }}" defer></script>
-<script src="/js/leisure-reveal.js?v={{ $leisureRevealVersion }}" defer></script>
+{{- partial "assets/script.html" (dict "name" "leisure-filter.js") }}
+{{- partial "assets/script.html" (dict "name" "leisure-reveal.js") }}
 {{- end }}
 {{- if eq .Layout "archives" }}
-<script src="/js/archive-infinite.js" defer></script>
+{{- partial "assets/script.html" (dict "name" "archive-infinite.js") }}
 {{- end }}
 {{- if eq .Layout "go" }}
-<script src="{{ "js/external-link-gate.js" | relURL }}" defer></script>
-<script type="module" src="{{ "js/external-link-gate-lottie.js" | relURL }}"></script>
+{{- partial "assets/script.html" (dict "name" "external-link-gate.js") }}
+{{- partial "assets/script.html" (dict "name" "external-link-gate-lottie.js" "module" true) }}
 {{- end }}
 {{- if $hasCardLottie }}
-<script type="module" src="{{ "js/card-lottie.js" | relURL }}"></script>
+{{- partial "assets/script.html" (dict "name" "card-lottie.js" "module" true) }}
 {{- end }}
 {{- if not site.Params.disableScrollToTop }}
-<script type="module" src="{{ "js/top-link-lottie.js" | relURL }}"></script>
+{{- partial "assets/script.html" (dict "name" "top-link-lottie.js" "module" true) }}
 {{- end }}
 
 {{- if $hasZoom }}
-<script src="/js/medium-zoom.min.js" defer></script>
+{{- partial "assets/script.html" (dict "name" "medium-zoom.min.js") }}
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     if (typeof mediumZoom === 'function') {

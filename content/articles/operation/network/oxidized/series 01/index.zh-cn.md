@@ -1,5 +1,5 @@
 ---
-title: "Oxidized 网络设备配置备份：从零部署到 GitLab 自动同步"
+title: "Oxidized 配置备份：Docker 部署与 GitLab 自动同步"
 slug: "oxidized-network-config-backup-deploy"
 date: 2026-05-27T16:15:56+08:00
 author:
@@ -51,7 +51,7 @@ mermaid: true
 
 ## 为什么用 Oxidized
 
-网络设备配置丢失是运维事故的高频原因之一。手动备份既费时又容易遗漏，而 **Oxidized** 是目前开源生态中最成熟的自动化配置备份方案：
+网络设备配置丢失会影响故障恢复，手动备份也容易遗漏。**Oxidized** 可以自动采集设备配置，主要能力包括：
 
 - **多厂商覆盖**：Cisco、华为、H3C、FortiGate、Aruba、锐捷等主流设备开箱即用
 - **数据源灵活**：CSV、SQLite、MySQL、HTTP API（NetBox）均支持
@@ -91,7 +91,7 @@ flowchart LR
 
 ---
 
-## 核心配置详解
+## Oxidized 配置项说明 {#核心配置详解}
 
 Oxidized 只有一个主配置文件，但内容较多，下面按模块拆解说明。
 
@@ -121,7 +121,7 @@ extensions:
     load: true
 ```
 
-### SSH 输入配置
+### SSH 采集配置 {#ssh-输入配置}
 
 老旧设备往往只支持过时的加密算法，需要显式降级兼容：
 
@@ -142,7 +142,7 @@ input:
 
 > ⚠️ **安全提示：** `diffie-hellman-group1-sha1` 已被认为不安全，仅对无法升级固件的遗留设备开启，建议在防火墙层面限制 Oxidized 的 SSH 访问来源。
 
-### Git 本地仓库输出
+### 配置备份到本地 Git 仓库 {#git-本地仓库输出}
 
 ```yaml
 output:
@@ -155,7 +155,7 @@ output:
     single_repo: true         # 所有设备配置存入同一个 Git 仓库
 ```
 
-### GitLab 同步 Hook
+### 通过 Hook 同步 GitLab {#gitlab-同步-hook}
 
 ```yaml
 hooks:
@@ -292,7 +292,7 @@ docker compose logs -f oxidized
 
 ---
 
-## 厂商设备适配要点
+## 不同厂商设备的采集适配 {#厂商设备适配要点}
 
 ### FortiGate（FortiOS）
 
@@ -337,7 +337,7 @@ Oxidized 通过 NetBox API 过滤 `tag=oxidized` 的设备，只需在 NetBox �
 
 ---
 
-## 总结
+## 配置备份与同步要点 {#总结}
 
 **Oxidized 最小化部署清单：**
 

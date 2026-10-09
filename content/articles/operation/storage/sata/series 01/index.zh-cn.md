@@ -1,5 +1,5 @@
 ---
-title: "存储接口与协议入门：SATA、M.2、U.2、AHCI、NVMe 一次讲清"
+title: "存储接口与协议：SATA、M.2、U.2、AHCI 与 NVMe"
 slug: "storage-interface-and-protocol-introduction"
 date: 2026-06-01T12:05:00+08:00
 author:
@@ -44,7 +44,7 @@ mermaid: false
 
 ![存储接口与协议示意](https://img.marisme.com/blog/2025/11/20/202511201640565.webp)
 
-## 先分清三层概念
+## 物理接口、传输协议与主机接口 {#先分清三层概念}
 
 理解存储设备时，最好先拆成三层：
 
@@ -54,7 +54,7 @@ mermaid: false
 
 如果这三层没分开，讨论 `M.2`、`NVMe`、`SATA` 时就特别容易鸡同鸭讲。
 
-## 物理接口：先看“怎么接”
+## 物理接口与设备形态 {#物理接口先看怎么接}
 
 常见接口形态：
 
@@ -69,9 +69,9 @@ mermaid: false
 这里要特别注意：  
 **接口形态不等于协议本身。**
 
-比如 `M.2` 只是长得像一张小板卡，不代表它一定就是 NVMe；它也可能跑 SATA。
+`M.2` 是接口形态，设备可能使用 NVMe，也可能使用 SATA。
 
-## 传输协议：再看“数据怎么走”
+## SATA 与 PCIe 传输方式 {#传输协议再看数据怎么走}
 
 ### SATA
 
@@ -98,7 +98,7 @@ mermaid: false
 在存储里，PCIe 的意义是：  
 它给 NVMe 这种更高性能的协议提供了更宽的路。
 
-### Linux 怎么看 PCIe 链路速率
+### 在 Linux 中检查 PCIe 链路速率 {#linux-怎么看-pcie-链路速率}
 
 ```bash
 lspci -s 9b:00.0 -vvv | grep LnkSta
@@ -111,9 +111,9 @@ LnkSta: Speed 16GT/s (ok), Width x16 (ok)
 LnkSta2: Current De-emphasis Level: -6dB, EqualizationComplete+ EqualizationPhase1+
 ```
 
-这里的 `Width` 和 `Speed` 很关键，很多性能预期其实就是被这些参数悄悄限制住了。
+`Width` 和 `Speed` 分别反映链路宽度与速率，判断性能时需要同时检查。
 
-## 上层协议：最后看“主机怎么跟盘说话”
+## AHCI 与 NVMe 主机访问方式 {#上层协议最后看主机怎么跟盘说话}
 
 ### AHCI
 
@@ -156,7 +156,7 @@ LnkSta2: Current De-emphasis Level: -6dB, EqualizationComplete+ EqualizationPhas
 它的价值在于：  
 把计算和存储分离之后，仍然尽量保留接近本地 NVMe 的访问体验。
 
-## 结语
+## 接口、协议与性能判断要点 {#结语}
 
 记住这三个层次，很多存储问题就容易想明白了：
 

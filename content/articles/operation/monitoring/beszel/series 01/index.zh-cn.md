@@ -1,5 +1,5 @@
 ---
-title: "Beszel 入门：轻量监控平台的部署、主动/被动模式与告警"
+title: "Beszel 监控部署：主动与被动模式、节点接入和告警"
 slug: "beszel-getting-started"
 date: 2026-06-01T09:16:45+08:00
 author:
@@ -44,7 +44,7 @@ mermaid: true
 
 {{< github repo="henrygd/beszel" />}}
 
-## Beszel 的两部分结构
+## Hub 与 Agent 架构 {#beszel-的两部分结构}
 
 Beszel 由两个角色组成：[^beszel-arch]
 
@@ -90,9 +90,9 @@ networks:
 
 这套配置比较轻量，适合作为基础部署模板。
 
-## 主动模式和被动模式如何选择
+## 主动与被动模式对比 {#主动模式和被动模式如何选择}
 
-### 主动模式
+### 主动模式连接方式 {#主动模式}
 
 特点：
 
@@ -102,7 +102,7 @@ networks:
 
 ![Beszel 主动模式](https://img.marisme.com/blog/2025/11/05/202511051606160.png)
 
-### 被动模式
+### 被动模式连接方式 {#被动模式}
 
 特点：
 
@@ -130,11 +130,7 @@ networks:
 
 ## 告警配置
 
-这里可以先明确一个问题：
-
-“我们为什么要监控？只是为了把数据收集起来摆在那儿看吗？”
-
-监控的价值不只是收集数据，还在于指标异常时能够及时通知。
+监控除了收集数据，还需要在指标异常时及时通知。
 
 Beszel 支持：
 
@@ -165,7 +161,7 @@ lark://open.feishu.cn/409963d1-7927-4259-a152-d8590sds8f3a
 
 ![Beszel 告警配置](https://img.marisme.com/blog/2025/11/19/202511191501377.png)
 
-## 反向代理：可选
+## 可选：配置反向代理 {#反向代理可选}
 
 如果你想通过域名访问，可以挂 Traefik：
 
@@ -181,9 +177,9 @@ labels:
   - "traefik.http.services.beszel.loadbalancer.server.port=8090"
 ```
 
-## 结语
+## 监控接入与告警要点 {#结语}
 
-Beszel 的优势不在于“全家桶式监控大平台”，而在于：
+Beszel 的特点包括：
 
 - 部署轻
 - 接入快

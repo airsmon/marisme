@@ -1,0 +1,7 @@
+{{- $resource := resources.Get (printf "js/%s" .) -}}
+{{- if in (slice "card-lottie.js" "top-link-lottie.js" "external-link-gate-lottie.js") . -}}
+  {{- $runtime := partialCached "assets/script-resource.html" "lottie-runtime.js" "lottie-runtime.js" -}}
+  {{- $source := replace $resource.Content "'./lottie-runtime.js'" (printf "%q" $runtime.RelPermalink) -}}
+  {{- $resource = resources.FromString $resource.Name $source -}}
+{{- end -}}
+{{- return ($resource | minify | fingerprint) -}}

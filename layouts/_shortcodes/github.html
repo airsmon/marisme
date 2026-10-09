@@ -27,8 +27,9 @@
   {{- end -}}
 {{- end -}}
 
-{{- $apiData := dict -}}
-{{- if $repo -}}
+{{- /* Committed metadata keeps existing cards stable during offline builds. */ -}}
+{{- $apiData := index (hugo.Data.github | default dict) (lower $repo) | default dict -}}
+{{- if and $repo (not $apiData) -}}
   {{- $apiURL := printf "https://api.github.com/repos/%s" $repo -}}
   {{- $headers := dict
       "Accept" "application/vnd.github+json"

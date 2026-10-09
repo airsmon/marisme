@@ -1,5 +1,5 @@
 ---
-title: "macOS 工具配置（一）：用 Vim 与 Nord 打造顺手的终端编辑环境"
+title: "macOS 工具配置（一）：Vim 编辑设置与 Nord 配色"
 slug: "macos-vim-nord-configuration"
 date: 2026-08-04T11:00:00+08:00
 author:
@@ -39,7 +39,7 @@ usageNoticeText: "撤销文件和 Swap 文件可能保留曾编辑过的内容�
 
 Vim 的默认配置并不难用，只是许多行为更照顾历史兼容性，而不是现代终端里的日常编辑体验。
 
-这篇文章是“macOS 工具配置”系列的第一篇：先把 Vim 的编辑行为整理好，再用 Nord 统一配色。后续配置 iTerm2 和 SecureCRT 时，终端的 ANSI 色板、真彩色能力与 Vim 的显示效果也能接上同一套视觉语言。
+这篇文章是“macOS 工具配置”系列的第一篇：先把 Vim 的编辑行为整理好，再用 Nord 统一配色。后续配置 iTerm2 和 SecureCRT 时，还需要协调终端的 ANSI 色板、真彩色能力与 Vim 的显示效果。
 
 本文配置侧重三个目标：
 
@@ -61,7 +61,7 @@ macOS 自带 `/usr/bin/vim`，但 Vim 官方下载页也明确说明，系统版
 brew install vim
 ```
 
-如果还没有 Homebrew，先按 [Homebrew 官方安装说明](https://brew.sh/)完成安装，并执行安装器最后给出的 `shellenv` 命令。Homebrew 在 Apple Silicon 和 Intel Mac 上使用不同前缀，不建议手工猜路径。
+如果还没有 Homebrew，先按 [Homebrew 官方安装说明](https://brew.sh/) 完成安装，并执行安装器最后给出的 `shellenv` 命令。Homebrew 在 Apple Silicon 和 Intel Mac 上使用不同前缀，不建议手工猜路径。
 
 安装后重新打开终端，确认当前命中的不是系统自带版本：
 
@@ -85,7 +85,7 @@ brew --prefix vim
 
 ## 安装 vim-plug 与 Nord
 
-[Nord Vim 官方文档](https://www.nordtheme.com/docs/ports/vim/installation/)推荐使用 vim-plug 管理主题。先按 [vim-plug 官方说明](https://github.com/junegunn/vim-plug)安装单文件插件管理器：
+[Nord Vim 官方文档](https://www.nordtheme.com/docs/ports/vim/installation/) 推荐使用 vim-plug 管理主题。先按 [vim-plug 官方说明](https://github.com/junegunn/vim-plug) 安装单文件插件管理器：
 
 ```bash
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
@@ -114,7 +114,7 @@ call plug#end()
 :PlugUpdate
 ```
 
-## 完整 vimrc
+## 完整 vimrc 配置示例 {#完整-vimrc}
 
 如果已经有自己的配置，先备份再合并，不要直接覆盖：
 
@@ -446,7 +446,7 @@ let &showbreak = '> '
 
 这样也不依赖行尾空格，避免被格式化工具自动删掉。
 
-## 关键配置说明
+## Vim 编辑与终端配置说明 {#关键配置说明}
 
 ### Vim 模式、编码与 Leader 键
 
@@ -515,7 +515,7 @@ Makefile 的命令行必须以真正的 Tab 开头，因此不能继承全局的
 
 项目如果已经提供 `.editorconfig` 或专用格式化工具，应以项目规则为准；这份配置只负责个人环境的默认值。
 
-### 为什么关闭注释自动延续
+### 关闭注释自动延续 {#为什么关闭注释自动延续}
 
 不同语言的 `ftplugin` 经常会向 `formatoptions` 加入 `c`、`r`、`o`：
 
@@ -677,9 +677,9 @@ mkdir -p ~/.vim/undo ~/.vim/swap
 chmod 700 ~/.vim/undo ~/.vim/swap
 ```
 
-## 结语
+## Vim 与终端配色协作要点 {#结语}
 
-这份配置没有试图把 Vim 变成一个塞满插件的 IDE。它只处理每天都会碰到的细节：看清缩进、快速搜索、稳定粘贴、跨会话撤销，以及在不同终端里保持可辨认的 Nord 配色。
+这份配置侧重日常编辑：看清缩进、快速搜索、稳定粘贴、跨会话撤销，以及在不同终端里保持可辨认的 Nord 配色。
 
 Vim 本身配置好以后，下一步是处理承载它的终端。iTerm2 负责 macOS 本机体验，SecureCRT 负责大量远程会话；只有三者的字体、ANSI 色板和真彩色策略相互配合，Nord 才不只是“装上了”，而是真的一致。
 

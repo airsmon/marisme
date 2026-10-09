@@ -1,5 +1,5 @@
 ---
-title: "macOS 工具配置（三）：SecureCRT 的 Nord 配色与 SSH 会话管理"
+title: "macOS 工具配置（三）：SecureCRT 配色与 SSH 会话管理"
 slug: "macos-securecrt-nord-configuration"
 date: 2026-08-04T11:20:00+08:00
 author:
@@ -57,7 +57,7 @@ uname -m
 
 如果安装的是 SecureCRT 与 SecureFX Bundle，应分别把两个应用拖入“应用程序”，不要同时拖动。VanDyke 的 macOS 安装说明指出，同时拖动可能触发异常的隔离状态。
 
-## 先备份，再调整全局设置
+## 备份 SecureCRT 配置 {#先备份再调整全局设置}
 
 开始前选择：
 
@@ -73,7 +73,7 @@ Tools > Import Settings…
 
 如果只想迁移配色和普通会话设置，不要勾选包含个人配置数据的选项。导出文件可能包含用户名、密码或自动登录信息，不应上传到公开仓库。
 
-## SecureCRT 中的颜色分为两层
+## ANSI 调色板与 Color Scheme {#securecrt-中的颜色分为两层}
 
 SecureCRT 的颜色设置容易混淆，因为它同时使用两套配置：
 
@@ -82,7 +82,7 @@ SecureCRT 的颜色设置容易混淆，因为它同时使用两套配置：
 
 颜色方案是全局定义、按会话应用的。也就是说，编辑一个已被多个会话使用的方案，会同时影响这些会话。需要修改时，最好新建名为 `Nord Custom` 的方案，不要直接覆盖内置方案。
 
-### 为什么不直接导入一个 Nord 文件
+### Nord 配色的导入限制 {#为什么不直接导入一个-nord-文件}
 
 Nord 官方提供 iTerm2、Terminal.app 等端口，但没有 SecureCRT 端口；SecureCRT 官方文档也没有提供直接导入 `.itermcolors` 的操作路径。
 
@@ -231,7 +231,7 @@ defaults write com.vandyke.SecureCRT ApplePressAndHoldEnabled -bool False
 
 第一次配置建议先选择前者，确认显示和连接正常后，再决定是否批量修改现有会话。
 
-## 新建一个安全的 SSH2 会话
+## 新建 SSH2 会话并配置认证 {#新建一个安全的-ssh2-会话}
 
 从 Session Manager 点击 **New Session**，或者使用：
 
@@ -317,7 +317,7 @@ Session Options > Terminal > Emulation > Advanced > Allow OSC 52 to copy text to
 
 开启 OSC 52 后，远端程序可以修改本机剪贴板。对不完全信任的主机，这不是一个合适的默认值。
 
-## 管理大量会话
+## 会话目录与批量管理 {#管理大量会话}
 
 Session Manager 支持嵌套文件夹、筛选、复制和批量修改。可以按环境和用途组织，例如：
 
@@ -412,7 +412,7 @@ printf '\033[48;2;46;52;64m\033[38;2;136;192;208m Nord True Color \033[0m\n'
 
 优先升级 SSH 服务端。VanDyke 明确建议保持旧式 Diffie-Hellman 关闭；只有服务器确实无法升级时，才在该服务器对应的单个会话中临时启用所需算法。
 
-## 结语
+## SecureCRT 配色与会话维护要点 {#结语}
 
 一套稳定的 SecureCRT 配置应该把三个层次分开：全局 ANSI 调色板负责颜色映射，Default Session 负责通用终端体验，具体会话负责主机和认证信息。
 

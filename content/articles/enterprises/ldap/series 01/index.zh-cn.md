@@ -1,5 +1,5 @@
 ---
-title: "企业如何管理身份目录（一）：Microsoft AD、OpenLDAP 与 FusionDirectory 怎么选"
+title: "企业身份目录（一）：Microsoft AD、OpenLDAP 与 FusionDirectory 选型"
 slug: "enterprise-ldap-openldap-fusiondirectory-deployment"
 date: 2026-08-12T10:00:00+08:00
 author:
@@ -59,7 +59,7 @@ usageNoticeText: "目录服务保存企业账号与权限等敏感数据。生�
 - 想使用 OpenLDAP，又不希望所有管理工作都靠命令行和手写 LDIF，可以组合 `OpenLDAP + FusionDirectory`
 - 企业也可以采用混合模式：AD 负责 Windows 域，OpenLDAP 或其他 IAM 层负责面向应用的目录与身份同步
 
-## LDAP、OpenLDAP 和 AD 不是同一个概念
+## LDAP、OpenLDAP 与 AD DS 的关系 {#ldapopenldap-和-ad-不是同一个概念}
 
 `LDAP` 是访问目录服务的协议，不是某一款具体产品。
 
@@ -80,9 +80,9 @@ flowchart LR
   AD --> ADDATA["LDAP + Kerberos + DNS + GPO + 域服务"]
 ```
 
-## Microsoft AD 与 OpenLDAP 怎么选
+## AD DS 与 OpenLDAP 选型对比 {#microsoft-ad-与-openldap-怎么选}
 
-### 总体对比
+### 平台能力与管理方式 {#总体对比}
 
 | 维度 | Microsoft AD DS | OpenLDAP |
 | --- | --- | --- |
@@ -106,7 +106,7 @@ OpenLDAP 不收软件授权费，但不代表部署和维护没有成本。企�
 
 选择 OpenLDAP 应该是因为它的协议开放、架构可控，而且适合跨平台场景，而不应只因为它免费。
 
-### 什么时候优先选择 AD DS
+### AD DS 适用场景 {#什么时候优先选择-ad-ds}
 
 以下需求较多时，AD DS 通常更合适：
 
@@ -116,7 +116,7 @@ OpenLDAP 不收软件授权费，但不代表部署和维护没有成本。企�
 - 已经大量使用 Microsoft 365、Entra ID 或其他微软管理体系
 - 希望购买成熟的厂商支持和实施服务
 
-### 什么时候优先选择 OpenLDAP
+### OpenLDAP 适用场景 {#什么时候优先选择-openldap}
 
 OpenLDAP 更适合这些场景：
 
@@ -126,7 +126,7 @@ OpenLDAP 更适合这些场景：
 - 团队具备 Linux、PKI、容器与目录服务运维能力
 - 希望降低对单一厂商生态的依赖
 
-## 为什么给 OpenLDAP 配 FusionDirectory
+## FusionDirectory 的目录管理能力 {#为什么给-openldap-配-fusiondirectory}
 
 OpenLDAP 的核心工具偏向命令行。平台工程师可以直接使用 `ldapadd`、`ldapmodify` 和 LDIF 文件，但行政、人事或一线 IT 很难用这些工具处理入职、调岗和离职。
 
@@ -139,11 +139,11 @@ FusionDirectory 为 OpenLDAP 增加了管理界面和权限控制：
 - 通过 REST Webservice 与 HR、工单或自动化平台集成
 - 让账号生命周期管理从“改 LDAP 数据”变成可理解的业务操作
 
-这些功能降低了管理门槛和手工出错的概率，也让权限委派有了清晰边界。
+管理界面减少了手工操作，权限控制则让不同岗位能够在各自的授权范围内管理目录。
 
 FusionDirectory 的插件必须与 OpenLDAP Schema 保持一致。如果 Web 端启用了某个插件，而 LDAP 端没有加载对应 Schema，创建或修改对象时可能出现 `objectClass` 或属性不存在等错误。
 
-## 部署方案
+## OpenLDAP 与 FusionDirectory 部署 {#部署方案}
 
 本文使用两个容器：
 
@@ -242,7 +242,7 @@ chmod 600 .env
 
 `.env` 包含目录最高权限密码，必须加入 `.gitignore`，不要提交到 Git。更成熟的生产环境应改用 Docker Secrets、Vault 或企业密钥管理系统。
 
-### Docker Compose
+### 编写 Docker Compose 配置 {#docker-compose}
 
 将下面配置保存为 `/usr/local/src/fusiondirectory/compose.yml`。这是一套单机部署基线，示例将 `example.com` 对应到 `dc=example,dc=com`；两者必须同步修改。
 
@@ -460,7 +460,7 @@ ldapsearch -x -ZZ \
 
 确认所有客户端都能通过 StartTLS 或 LDAPS 连接后，再把 `TLS_ENFORCE` 改为 `TRUE` 并重建容器。
 
-## 端口应该怎么开放
+## 端口开放与访问控制 {#端口应该怎么开放}
 
 LDAP 不应该直接暴露到公网。防火墙规则应按“来源系统 + 目标端口”建立白名单，而不是向整个办公网无差别开放。
 
@@ -481,7 +481,7 @@ LDAP 不应该直接暴露到公网。防火墙规则应按“来源系统 + 目
 
 ## 上线后的管理重点
 
-### 1. 先设计目录，再批量导入账号
+### 目录设计与账号导入 {#1-先设计目录再批量导入账号}
 
 至少先确定：
 
@@ -493,7 +493,7 @@ LDAP 不应该直接暴露到公网。防火墙规则应按“来源系统 + 目
 
 目录树一旦被大量应用依赖，再调整 DN 和对象结构的成本会很高。
 
-### 2. 管理账号与应用账号分离
+### 管理账号与应用账号隔离 {#2-管理账号与应用账号分离}
 
 不要让业务系统使用 `cn=admin` 查询目录。应为每个系统创建独立服务账号，并通过 ACL 只授予必要的搜索范围和属性读取权限。
 
@@ -505,7 +505,7 @@ LDAP 不应该直接暴露到公网。防火墙规则应按“来源系统 + 目
 - 各业务系统的独立服务账号
 - 备份与监控账号
 
-### 3. 密码策略不是一个复选框
+### 密码策略配置与验证 {#3-密码策略不是一个复选框}
 
 启用 `ppolicy` 插件后，还要明确：
 
@@ -517,7 +517,7 @@ LDAP 不应该直接暴露到公网。防火墙规则应按“来源系统 + 目
 
 盲目设置频繁过期，往往只会让员工使用可预测密码。策略应结合 MFA、访问来源控制和异常登录监控一起设计。
 
-### 4. 备份必须包含恢复验证
+### 备份与恢复验证 {#4-备份必须包含恢复验证}
 
 至少要备份：
 
@@ -529,7 +529,7 @@ LDAP 不应该直接暴露到公网。防火墙规则应按“来源系统 + 目
 
 建议每季度做一次隔离环境恢复演练，验证用户、组、ACL、密码策略和应用查询是否完整。
 
-### 5. 升级前先验证 Schema 与插件
+### 升级前验证 Schema 与插件 {#5-升级前先验证-schema-与插件}
 
 不要直接在生产环境使用浮动标签。升级时应：
 
@@ -539,7 +539,7 @@ LDAP 不应该直接暴露到公网。防火墙规则应按“来源系统 + 目
 4. 检查 Schema 变更和回滚方法
 5. 再安排生产变更窗口
 
-## 这套方案不解决什么
+## 方案能力边界 {#这套方案不解决什么}
 
 `OpenLDAP + FusionDirectory` 可以建立好用的企业目录和管理入口，但它不会自动解决所有 IAM 问题：
 
@@ -561,7 +561,7 @@ LDAP 不应该直接暴露到公网。防火墙规则应按“来源系统 + 目
 
 如果企业需要一套供 Linux、网络设备和内部应用共同使用的账号目录，并且团队能够承担目录设计、TLS、备份与升级工作，可以采用 `OpenLDAP + FusionDirectory`。
 
-安装完成只是开始。之后还要持续维护权限边界和账号生命周期，检查审计记录，并定期验证备份能否恢复。
+上线后还要持续维护权限边界和账号生命周期，检查审计记录，并定期验证备份能否恢复。
 
 ## 参考资料
 

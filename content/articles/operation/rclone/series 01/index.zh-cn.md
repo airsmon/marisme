@@ -1,5 +1,5 @@
 ---
-title: "Rclone 入门：对象存储配置、数据拷贝与后台任务"
+title: "Rclone 入门：对象存储配置、数据复制与后台任务"
 slug: "rclone-getting-started"
 date: 2026-06-01T12:00:00+08:00
 author:
@@ -44,7 +44,7 @@ mermaid: false
 
 {{< github repo="rclone/rclone" />}}
 
-## Rclone 能做什么
+## Rclone 常见用途 {#rclone-能做什么}
 
 几类最常见用途：
 
@@ -56,13 +56,13 @@ mermaid: false
 
 ## 安装
 
-### 方式一：官方脚本
+### 方式一：使用官方安装脚本 {#方式一官方脚本}
 
 ```bash
 sudo -v ; curl https://rclone.org/install.sh | sudo bash
 ```
 
-### 方式二：系统软件包
+### 方式二：使用系统软件包 {#方式二系统软件包}
 
 ```bash
 sudo apt install rclone
@@ -78,7 +78,7 @@ sudo apt install rclone
 rclone config
 ```
 
-### 第一步：创建新的 remote
+### 创建 remote {#第一步创建新的-remote}
 
 ```bash
 No remotes found, make a new one?
@@ -88,7 +88,7 @@ q) Quit config
 n/s/q> n
 ```
 
-### 第二步：命名
+### 命名 remote {#第二步命名}
 
 例如：
 
@@ -96,7 +96,7 @@ n/s/q> n
 name> qiniu
 ```
 
-### 第三步：选择存储类型
+### 选择存储类型 {#第三步选择存储类型}
 
 如果是兼容 S3 的对象存储，选择：[^rclone-s3]
 
@@ -104,7 +104,7 @@ name> qiniu
 Storage> 5
 ```
 
-### 第四步：选择提供商
+### 选择存储提供商 {#第四步选择提供商}
 
 以七牛云为例：
 
@@ -112,7 +112,7 @@ Storage> 5
 provider> 23
 ```
 
-### 第五步：选择认证方式
+### 选择认证方式 {#第五步选择认证方式}
 
 ```bash
 env_auth> 1
@@ -123,7 +123,7 @@ env_auth> 1
 - `access_key_id`
 - `secret_access_key`
 
-### 第六步：选择区域、Endpoint 和位置约束
+### 设置区域、Endpoint 与位置约束 {#第六步选择区域endpoint-和位置约束}
 
 例如：
 
@@ -136,7 +136,7 @@ bucket_acl> 1
 
 其余选项按默认处理即可。
 
-## 配置文件位置
+## remote 配置文件与权限 {#配置文件位置}
 
 ```bash
 ls -la ~/.config/rclone/rclone.conf
@@ -179,7 +179,7 @@ rclone copy qiniu:download /mnt/ \
   --progress
 ```
 
-这里几个参数比较值得记一下：
+这几个参数分别用于控制复制行为：
 
 - `--transfers`：并发传输数
 - `--checkers`：检查并发数
@@ -190,7 +190,7 @@ rclone copy qiniu:download /mnt/ \
 还需要注意一点：  
 如果完全按默认参数跑，有时会遇到请求配额类错误。适当控制并发，往往更稳。
 
-## 后台运行
+## 通过 systemd-run 执行后台任务 {#后台运行}
 
 如果复制任务比较长，可以用 `systemd-run` 放到后台执行：
 
@@ -207,7 +207,7 @@ journalctl -u rclone-download -f
 
 这套方式适合一次性的大数据同步，也更方便配合 `systemd` 查看运行状态。
 
-## 结语
+## 对象存储配置与复制要点 {#结语}
 
 Rclone 的学习曲线主要来自“选项多”，不是“它难用”。  
 只要先把一个 remote 配通，再掌握 `copy`、`sync`、`lsd`、后台运行这些核心动作，后面很多云存储操作都会顺手很多。

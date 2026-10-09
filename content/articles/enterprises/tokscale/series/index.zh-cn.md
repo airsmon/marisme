@@ -1,5 +1,5 @@
 ---
-title: "Tokscale 企业内部如何使用：把 Token 花销从玄学变成报表"
+title: "Tokscale 企业部署：AI 工具用量统计与 Token 成本分析"
 slug: "tokscale-enterprise-internal-usage"
 date: 2026-05-29T14:03:46+08:00
 author:
@@ -42,13 +42,13 @@ mermaid: true
 usageNoticeText: "请同时遵守项目许可证、模型服务条款、账号规范与数据合规要求，避免处理未授权数据。"
 ---
 
-`Tokscale` 这个名字，多少有点“我不是在统计 Token，我是在丈量文明等级”的意思。项目本身也确实不小家子气，它既能扫描本地多种 AI Coding Agent 的使用记录，也能把这些数据做成排行榜、贡献图、模型统计和趋势分析。
+`Tokscale` 可以扫描本地多种 AI Coding Agent 的使用记录，并将数据整理成排行榜、贡献图、模型统计和趋势分析。
 
 开源仓库：
 
 {{< github repo="junhoyeo/tokscale" />}}
 
-如果你是个人开发者，它是“我这个月到底被哪个模型薅了钱包”的照妖镜；如果你是企业团队，它就更像一套轻量级的 AI 使用观测台。尤其是在大家都已经把 Claude Code、Codex、Cursor、Copilot、Gemini CLI 混着用的时候，Token 成本如果还靠感觉，那财务看你就像看一台会自燃的 GPU。
+个人开发者可以用它查看各模型的使用与成本；企业团队可以用它汇总 AI 工具的使用情况。同时使用 Claude Code、Codex、Cursor、Copilot、Gemini CLI 时，统一统计比仅凭使用感受估算 Token 成本更方便。
 
 ```mermaid
 flowchart LR
@@ -74,11 +74,11 @@ flowchart LR
 
 这时候，`Tokscale` 的价值就体现出来了。它不是直接替你省钱，而是先把“花在哪儿了”这件事梳理清楚。
 
-## 企业内部为什么值得用
+## 企业用量统计与治理需求 {#企业内部为什么值得用}
 
 把 `Tokscale` 放进企业内部环境后，它通常不只是一个开发者看板，而是下面几类场景的公共基础设施。
 
-### 1. 成本治理
+### Token 成本统计 {#1-成本治理}
 
 最直接的价值，就是把 Token 成本从“体感昂贵”变成“可追踪、可对比、可复盘”。
 
@@ -89,9 +89,9 @@ flowchart LR
 - 最近成本飙升，是因为使用人数增加，还是因为模型切到了更贵的一档？
 - 谁在深夜疯狂调 Agent，顺便把预算也一起调没了？
 
-企业不怕花钱，企业怕的是花了钱以后，会议上所有人一起望向天花板。
+这些统计用于解释支出，帮助团队讨论预算和使用策略。
 
-### 2. AI 落地评估
+### AI 工具使用评估 {#2-ai-落地评估}
 
 很多公司推进 AI Coding 时，都会遇到一个经典问题：到底是“真的提效”，还是“大家只是在更高成本地生成更多 TODO”。
 
@@ -105,7 +105,7 @@ flowchart LR
 
 它不是完整的生产力评估系统，但它是一个很好的起点。先知道大家怎么用，再谈用得值不值。
 
-### 3. 团队运营与制度建设
+### 团队使用策略与制度建设 {#3-团队运营与制度建设}
 
 当企业开始沉淀 AI 使用规范时，`Tokscale` 很适合配合内部策略使用：
 
@@ -116,11 +116,11 @@ flowchart LR
 
 它不是用来“抓谁超支”的，而是用来让团队形成一套基于数据的 AI 工程习惯。
 
-## Tokscale 在企业内部怎么落地
+## 采集与可视化架构 {#tokscale-在企业内部怎么落地}
 
 如果是企业内部使用，我更建议把 `Tokscale` 分成两层来看：
 
-### 第一层：开发者侧采集
+### 开发者侧使用记录采集 {#第一层开发者侧采集}
 
 开发者本机通过 `tokscale` CLI 读取本地 AI 工具的使用记录。这个阶段相当于“数据入口”。
 
@@ -133,7 +133,7 @@ bunx tokscale@latest submit
 
 如果企业希望内部闭环运行，可以把“提交到公网排行榜”的动作替换为内部约定的数据汇聚流程，或者直接仅使用前端做内部私有可视化。
 
-### 第二层：企业侧可视化
+### 企业侧统计与可视化 {#第二层企业侧可视化}
 
 `packages/frontend` 是更适合企业内部落地的部分。它基于 `Next.js`，配合 PostgreSQL 和 GitHub OAuth，可以提供：[^tokscale-oauth]
 
@@ -145,7 +145,7 @@ bunx tokscale@latest submit
 
 这部分部署到企业内部后，技术负责人、平台团队、研发管理者就能在一个固定入口里观察团队 AI 使用情况。
 
-## 私有化部署思路
+## 私有化部署步骤 {#私有化部署思路}
 
 原仓库前端默认更偏向云上部署思路，企业内部使用时，通常会改造成：
 
@@ -155,7 +155,7 @@ bunx tokscale@latest submit
 4. 外层配 Nginx / Ingress / LB
 5. 配好备份、审计和访问控制
 
-### 部署步骤 1：拉取代码
+### 拉取项目代码 {#部署步骤-1拉取代码}
 
 ```bash
 git clone https://github.com/junhoyeo/tokscale.git
@@ -164,7 +164,7 @@ cd tokscale/packages/frontend
 
 这里直接进入 `packages/frontend`，是因为前端页面、数据库连接和 OAuth 配置都在这个子项目里。企业私有化部署时，通常也是优先把这一层先跑起来。
 
-### 部署步骤 2：准备环境变量
+### 配置环境变量 {#部署步骤-2准备环境变量}
 
 先基于模板生成 `.env`：
 
@@ -185,7 +185,7 @@ AUTH_SECRET=replace-with-a-long-random-string
 
 如果你暂时不接 GitHub OAuth，也可以先把数据库和站点地址配置好，后续再补认证流程。毕竟系统先活着，比系统架构图先优雅更重要。
 
-### 部署步骤 3：创建 `Dockerfile.bun`
+### 创建 `Dockerfile.bun` {#部署步骤-3创建-dockerfilebun}
 
 在 `packages/frontend` 目录下创建 `Dockerfile.bun`，内容如下：
 
@@ -225,7 +225,7 @@ EXPOSE 3000
 CMD ["bun", "run", "start"]
 ```
 
-### 部署步骤 4：构建镜像
+### 构建容器镜像 {#部署步骤-4构建镜像}
 
 在 `packages/frontend` 目录执行：
 
@@ -242,7 +242,7 @@ docker build \
   -t tokscale-frontend:debug .
 ```
 
-### 部署步骤 5：启动容器
+### 启动容器 {#部署步骤-5启动容器}
 
 最简单的启动方式：
 
@@ -268,7 +268,7 @@ curl -I http://127.0.0.1:3000
 http://127.0.0.1:3000
 ```
 
-### 部署步骤 6：查看日志与排障
+### 查看容器日志与排障 {#部署步骤-6查看日志与排障}
 
 ```bash
 docker logs -f tokscale-frontend
@@ -281,7 +281,7 @@ docker logs -f tokscale-frontend
 3. GitHub OAuth 回调地址是否已按部署域名配置。
 4. `DATABASE_SSL` 是否与数据库实际策略一致。
 
-### 部署步骤 7：停止与重启
+### 停止与重启容器 {#部署步骤-7停止与重启}
 
 ```bash
 docker stop tokscale-frontend
@@ -301,7 +301,7 @@ docker run -d \
   tokscale-frontend:latest
 ```
 
-### 一套命令看完版
+### 部署命令汇总 {#一套命令看完版}
 
 如果你想在文档里给同事留一个“少废话直接开跑”的版本，可以用下面这段：
 
@@ -326,7 +326,7 @@ docker run -d \
 1. 这个 Dockerfile 更适合作为 `packages/frontend` 目录内的构建方案，若在 monorepo 根目录执行，需要把 workspace 依赖和构建上下文一起补齐。
 2. `COPY --from=build /app/.env.example /app/.env` 只是让容器“有文件可读”，真正上线时仍建议通过环境变量注入敏感配置，而不是把生产配置烤进镜像里。
 
-## `.env.example` 参数讲解
+## `.env.example` 参数说明 {#envexample-参数讲解}
 
 `Tokscale` 前端项目实际提供的环境变量模板位于 `packages/frontend/.env.example`。参数不多，但都与启动和连接能力直接相关。
 
@@ -355,9 +355,9 @@ NEXT_PUBLIC_URL=https://tokscale.company.internal
 AUTH_SECRET=replace-with-a-long-random-string
 ```
 
-## 生产环境为什么必须启用数据库 SSL
+## 数据库 SSL 配置与生产环境连接问题 {#生产环境为什么必须启用数据库-ssl}
 
-你提到的问题我看了下源码，确实存在。
+下面分析前端源码如何决定数据库连接是否启用 SSL。
 
 当前文件：`packages/frontend/src/lib/db/index.ts`
 
@@ -377,7 +377,7 @@ ssl: process.env.NODE_ENV === "production" ? "require" : false,
 
 于是就会出现一种很典型的场景：
 
-“应用很正式，环境很生产，数据库也很认真，但它就是不想 SSL。”
+应用运行在生产模式，而数据库没有启用 SSL。
 
 结果就是：应用代码认为 `production` 必须启用 SSL，而数据库侧实际没有开启，最终连接会直接失败。
 
@@ -418,13 +418,13 @@ function createDb() {
 const databaseSsl = process.env.DATABASE_SSL === "true";
 ```
 
-这样后续排障时，代码可读性也会更好。毕竟凌晨排查故障时，最珍贵的不是 CPU，而是工程师还愿意继续爱这个世界。
+独立变量能更清楚地表达 SSL 配置意图，也方便后续排障。
 
-## 企业落地后的实际价值
+## 统计结果的使用方式 {#企业落地后的实际价值}
 
 当 `Tokscale` 真正在企业内部跑起来之后，最常见的收益通常有四类。
 
-### 1. 管理层可以看到真实数据
+### 管理层查看使用统计 {#1-管理层可以看到真实数据}
 
 不是“听说大家都在用”，而是能看到：
 
@@ -435,11 +435,11 @@ const databaseSsl = process.env.DATABASE_SSL === "true";
 
 这对预算申请、工具采购和 AI 战略复盘都很重要。
 
-### 2. 平台团队有了统一观测入口
+### 平台团队统一汇总数据 {#2-平台团队有了统一观测入口}
 
-以前各个 AI 工具像群雄割据，现在至少能先把使用统计拉到同一个观察面板里。哪怕它不是最终形态，也比“全靠截图汇报”进化了好几个物种。
+统一面板可以汇总分散在各个 AI 工具中的使用统计，减少依赖截图汇报的工作。
 
-### 3. 帮助团队做模型分层
+### 按任务选择模型 {#3-帮助团队做模型分层}
 
 不是所有任务都要上最贵模型。通过 `Tokscale` 的统计，团队可以逐步沉淀出：
 
@@ -450,7 +450,7 @@ const databaseSsl = process.env.DATABASE_SSL === "true";
 
 这时候，AI 使用才开始从“大家都会点按钮”走向“组织级优化”。
 
-### 4. 为后续治理打基础
+### 将统计用于预算与治理 {#4-为后续治理打基础}
 
 很多企业一开始只想“先上 AI 工具”，但用一阵子后就会进入第二阶段：
 
@@ -459,9 +459,9 @@ const databaseSsl = process.env.DATABASE_SSL === "true";
 - 数据治理
 - 合规治理
 
-`Tokscale` 不能单独包办这一切，但它能成为一个非常好的数据底座。没有观测，就没有治理；没有数据，所有优化都容易变成气氛组。
+`Tokscale` 不能单独包办这一切，但它能成为一个非常好的数据底座。使用统计可以为后续预算和模型选择提供依据。
 
-## 务实结论
+## 部署与使用要点 {#务实结论}
 
 如果你把 `Tokscale` 当作一个开源玩具，它当然已经很好玩了；但如果你把它放进企业内部，它其实更像一个轻量级的 AI 使用分析平台雏形。
 

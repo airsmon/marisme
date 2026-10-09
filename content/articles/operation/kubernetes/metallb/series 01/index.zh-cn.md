@@ -1,5 +1,5 @@
 ---
-title: "Kubernetes MetalLB 入门：给裸金属集群补上 LoadBalancer 能力"
+title: "Kubernetes MetalLB：裸金属集群的 LoadBalancer 配置"
 slug: "kubernetes-metallb-getting-started"
 date: 2026-06-01T11:15:00+08:00
 author:
@@ -53,7 +53,7 @@ mermaid: true
 - Pod 也跑起来了
 - `EXTERNAL-IP` 却一直是 `<pending>`[^metallb-pending]
 
-这时候 `MetalLB` 就登场了。
+`MetalLB` 可以为这种环境补充负载均衡能力。
 
 它主要做两件事：
 
@@ -68,7 +68,7 @@ flowchart LR
   A --> N["局域网其他设备"]
 ```
 
-## 先安装 MetalLB
+## 安装 MetalLB {#先安装-metallb}
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.15.3/config/manifests/metallb-native.yaml
@@ -93,7 +93,7 @@ speaker-nbvwc                1/1     Running   0          14h
 speaker-qtpgk                1/1     Running   0          14h
 ```
 
-看到 `controller` 和 `speaker` 都起来了，才算真正进入下一步。
+确认 `controller` 和 `speaker` 都已启动，再配置地址池。
 
 ## 配置地址池
 
@@ -127,7 +127,7 @@ spec:
 kubectl apply -f metallb-config.yaml
 ```
 
-## 验证地址池是否生效
+## 验证地址池与宣告配置 {#验证地址池是否生效}
 
 ```bash
 kubectl get ipaddresspools.metallb.io -n metallb-system
@@ -144,7 +144,7 @@ NAME           IPADDRESSPOOLS   IPADDRESSPOOL SELECTORS   INTERFACES
 istio-advert   ["istio-pool"]
 ```
 
-这一步如果没问题，就说明 IP 池和宣告策略已经挂好了。
+确认查询结果中能看到 IP 池和宣告策略后，再检查 Service 分配结果。
 
 ## 检查 EXTERNAL-IP
 
@@ -163,7 +163,7 @@ knative-local-gateway   ClusterIP      10.98.2.124    <none>         80/TCP,443/
 
 只要你看到 `LoadBalancer` 类型的服务成功拿到了 `EXTERNAL-IP`，这套配置基本就已经跑通了。
 
-## L2 模式适合什么场景
+## L2 模式的适用场景 {#l2-模式适合什么场景}
 
 `L2` 模式的优点是简单，特别适合：
 
@@ -178,7 +178,7 @@ knative-local-gateway   ClusterIP      10.98.2.124    <none>         80/TCP,443/
 
 如果你的网络规模更大、路由控制更细，后面也可以考虑 BGP 模式。但对多数入门场景来说，L2 已经很好用了。
 
-## 结语
+## LoadBalancer 配置要点 {#结语}
 
 `MetalLB` 让裸金属 Kubernetes 集群可以正常使用 `LoadBalancer`。  
 引入它之后，`EXTERNAL-IP` 分配和集群入口管理都会更清晰。

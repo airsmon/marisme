@@ -1,5 +1,5 @@
 ---
-title: "DHCP 协议入门：DORA 流程、报文结构与 dhcpd/dnsmasq 对比"
+title: "DHCP 入门：DORA 流程、报文结构与服务选型"
 slug: "dhcp-protocol-dora-packet-dhcpd-dnsmasq"
 date: 2026-05-29T10:51:27+08:00
 author:
@@ -40,9 +40,9 @@ searchHidden: false
 mermaid: true
 ---
 
-`DHCP` 全称是 `Dynamic Host Configuration Protocol`，中文一般叫“动态主机配置协议”。名字听起来很像一位中年网络管理员，但它干的事其实非常接地气：自动给终端分配 IP 地址、子网掩码、默认网关、DNS 服务器，顺手再告诉你“租期多久，别住太久”。
+`DHCP` 全称是 `Dynamic Host Configuration Protocol`，中文通常叫“动态主机配置协议”。它自动向终端分配 IP 地址、子网掩码、默认网关、DNS 服务器等参数，并规定租期。
 
-如果没有 DHCP，办公室里每来一台新电脑、手机、打印机、摄像头，网管都要手动填 IP。那画面并不叫运维自动化，那叫《局域网手抄本》。
+没有 DHCP 时，办公室新增电脑、手机、打印机和摄像头，都需要手动配置 IP。
 
 按照 [RFC 2131](https://datatracker.ietf.org/doc/html/rfc2131) 和 [Wikipedia DHCP](https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol) 的描述，DHCP 是建立在 UDP 之上的应用层协议，典型端口如下：[^dhcp-rfc]
 
@@ -72,7 +72,7 @@ sequenceDiagram
   Note over C: 配置 IP，启动租约计时器
 ```
 
-## DHCP 到底解决了什么问题
+## DHCP 下发的网络配置参数 {#dhcp-到底解决了什么问题}
 
 DHCP 的核心价值不是“分配一个 IP”这么简单，而是把一整套主机初始化参数自动发下去。
 
@@ -99,11 +99,11 @@ DHCP 的核心价值不是“分配一个 IP”这么简单，而是把一整套
 
 “工位在这，门卡在这，打印机在那，DNS 别填错，租期先给你八小时。”
 
-## DHCP 报文交互过程
+## DORA 地址申请流程 {#dhcp-报文交互过程}
 
 最常见的 DHCPv4 申请流程如下：
 
-### 1. DHCPDISCOVER
+### DHCPDISCOVER：寻找服务器 {#1-dhcpdiscover}
 
 客户端刚上线时，没有 IP 地址，因此通常会以广播方式发送 `DHCPDISCOVER`，目标地址常见是 `255.255.255.255`，用于寻找网络中的 DHCP 服务器。
 
@@ -111,7 +111,7 @@ DHCP 的核心价值不是“分配一个 IP”这么简单，而是把一整套
 
 “有人吗？谁能给我一个能上网的身份？”
 
-### 2. DHCPOFFER
+### DHCPOFFER：提供地址与租约 {#2-dhcpoffer}
 
 DHCP 服务器收到请求后，会从地址池中挑一个可用地址，并返回 `DHCPOFFER`，告诉客户端：
 
@@ -121,16 +121,16 @@ DHCP 服务器收到请求后，会从地址池中挑一个可用地址，并返
 - DNS 是谁
 - 租约多久
 
-如果网络里不止一台 DHCP 服务器，客户端甚至可能会同时收到多个 `Offer`。这就有点像校招现场，多个公司都发了意向书，但你最后只能签一家。
+网络中存在多台 DHCP 服务器时，客户端可能收到多个 `Offer`，随后从中选择一个。
 
-### 3. DHCPREQUEST
+### DHCPREQUEST：选择并请求地址 {#3-dhcprequest}
 
 客户端从多个 `Offer` 中选择一个，然后发送 `DHCPREQUEST`，广播告诉全网：
 
 - 我决定接受哪台服务器的配置
 - 其他服务器先别激动
 
-### 4. DHCPACK
+### DHCPACK：确认租约 {#4-dhcpack}
 
 最终，目标 DHCP 服务器返回 `DHCPACK`，正式确认租约，客户端据此完成网络配置并开始使用这个 IP。
 
@@ -177,7 +177,7 @@ DHCPv4 报文继承自 BOOTP 格式，常见字段如下：
 | `file` | Boot File Name | PXE/网络启动场景常见 |
 | `options` | DHCP 选项区 | 真正放网关、DNS、租期、消息类型等信息 |
 
-### 一个简化版 DHCP 报文示意
+### DHCP 报文结构示例 {#一个简化版-dhcp-报文示意}
 
 ```text
 +--------------------------------------------------+
@@ -205,9 +205,9 @@ DHCPv4 报文继承自 BOOTP 格式，常见字段如下：
 +--------------------------------------------------+
 ```
 
-## 抓包时最值得看的 DHCP 选项
+## 抓包排障中的 DHCP 选项 {#抓包时最值得看的-dhcp-选项}
 
-真正让 DHCP “有灵魂”的，不是固定报文头，而是 `options`。
+除了固定报文头，排障时还需关注 `options` 中的配置参数。
 
 在实际排障里，最常见也最值得关注的选项有：
 
@@ -238,7 +238,7 @@ DHCPv4 报文继承自 BOOTP 格式，常见字段如下：
 
 这时候 DHCP 就不是“没工作”，而是“工作了，但没完全往正确方向工作”。
 
-## 开源 DHCP 软件举例
+## 开源 DHCP 服务选型 {#开源-dhcp-软件举例}
 
 说到 DHCP 服务，实验环境、企业内网、路由器设备里最常见的几类实现，通常绕不开这些名字：
 
@@ -256,7 +256,7 @@ DHCPv4 报文继承自 BOOTP 格式，常见字段如下：
 | `dnsmasq` | 轻量级 DNS + DHCP 一体化服务 | 体积小、配置简单、常见于路由器和小型网络 | 大规模复杂场景下功能和管理能力有限 | 家庭网络、小型办公室、实验室、虚拟化宿主机 |
 | `Kea DHCP` | ISC 新一代 DHCP 方案 | 模块化更强、现代化、API/扩展性更好 | 学习和部署复杂度高于 `dnsmasq` | 中大型网络、云环境、自动化平台 |
 
-### 再看一眼：`dhcpd` 和 `dnsmasq` 怎么选
+### `dhcpd` 与 `dnsmasq` 选型对比 {#再看一眼dhcpd-和-dnsmasq-怎么选}
 
 | 维度 | `ISC dhcpd` | `dnsmasq` |
 | --- | --- | --- |
@@ -272,7 +272,7 @@ DHCPv4 报文继承自 BOOTP 格式，常见字段如下：
 - `dhcpd` 像一位资深老工程师，经验足，但文档和配置里自带年代感。
 - `dnsmasq` 像一把瑞士军刀，小巧顺手，开箱就能解决很多小网络问题。
 
-## 企业和实验环境里的典型用法
+## 按网络规模选择 DHCP 服务 {#企业和实验环境里的典型用法}
 
 ### 小型网络
 
@@ -305,7 +305,7 @@ DHCPv4 报文继承自 BOOTP 格式，常见字段如下：
 
 那通常会进一步考虑 `Kea DHCP` 这类更现代的实现。
 
-## DHCP 的常见排障点
+## 地址分配与网络参数排障 {#dhcp-的常见排障点}
 
 实际网络里，DHCP 故障经常并不是“服务器没开”，而是一些更隐蔽的问题：
 
@@ -333,7 +333,7 @@ DHCPv4 报文继承自 BOOTP 格式，常见字段如下：
 3. [ISC DHCP 4.4 Manual Pages - dhcpd](https://kb.isc.org/docs/isc-dhcp-44-manual-pages-dhcpd)
 4. [dnsmasq Documentation](https://dnsmasq.org/doc.html)
 
-如果你后面准备继续写这一组协议文章，我会很建议把下一篇接在：
+进一步学习时，可以关注：
 
 - DHCP Relay
 - DHCP Snooping

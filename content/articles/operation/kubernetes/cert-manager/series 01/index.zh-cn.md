@@ -1,5 +1,5 @@
 ---
-title: "Kubernetes cert-manager 入门：自动签发与续期 TLS 证书的实战笔记"
+title: "Kubernetes cert-manager：TLS 证书签发与自动续期"
 slug: "kubernetes-cert-manager-getting-started"
 date: 2026-06-01T11:10:00+08:00
 author:
@@ -46,7 +46,7 @@ mermaid: true
 
 {{< github repo="cert-manager/cert-manager" />}}
 
-## cert-manager 到底帮我们做了什么
+## cert-manager 的证书管理流程 {#cert-manager-到底帮我们做了什么}
 
 当你在集群里创建一个 `Certificate` 资源后，`cert-manager` 会自动完成一整套证书申请动作：
 
@@ -71,7 +71,7 @@ flowchart LR
   CH --> S["Secret"]
 ```
 
-## 先安装 cert-manager
+## 安装 cert-manager {#先安装-cert-manager}
 
 安装命令：
 
@@ -94,9 +94,9 @@ cert-manager-cainjector-7f9fdd5dd5-44drh   1/1     Running   0          3h21m
 cert-manager-webhook-769f6b94cb-cdkbk      1/1     Running   0          3h21m
 ```
 
-看到三大件都 `Running`，说明它已经不是“理论上装好了”，而是真的在干活。
+三个组件均显示 `Running` 后，再继续检查 Issuer 和业务证书状态。
 
-## 选择验证方式：HTTP-01 还是 DNS-01
+## HTTP-01 与 DNS-01 验证方式 {#选择验证方式http-01-还是-dns-01}
 
 常见 ACME 验证方式有两种：
 
@@ -109,9 +109,9 @@ cert-manager-webhook-769f6b94cb-cdkbk      1/1     Running   0          3h21m
 - 需要签发多个子域名
 - 后续想配合 Ingress / Gateway 自动续期
 
-## 用 Cloudflare 配置 ClusterIssuer
+## 配置 Cloudflare DNS-01 ClusterIssuer {#用-cloudflare-配置-clusterissuer}
 
-### 第一步：创建 Cloudflare 凭据 Secret
+### 创建 Cloudflare 凭据 Secret {#第一步创建-cloudflare-凭据-secret}
 
 先准备 `secret.yaml`：
 
@@ -132,7 +132,7 @@ stringData:
 kubectl apply -f secret.yaml
 ```
 
-### 第二步：创建 ClusterIssuer
+### 创建 ClusterIssuer {#第二步创建-clusterissuer}
 
 ```yaml
 apiVersion: cert-manager.io/v1
@@ -160,7 +160,7 @@ spec:
 kubectl apply -f cluster-issuer.yaml
 ```
 
-### 第三步：检查 Issuer 状态
+### 检查 Issuer 状态 {#第三步检查-issuer-状态}
 
 ```bash
 kubectl get secrets -n cert-manager
@@ -181,7 +181,7 @@ letsencrypt-cloudflare   True    158m
 
 看到 `READY=True`，说明这一层已经通了。
 
-## 申请一张业务证书
+## 创建业务 Certificate {#申请一张业务证书}
 
 例如为 `gitlab.artoio.com` 创建证书：
 
@@ -228,9 +228,9 @@ NAME                      STATE   AGE
 gitlab-cert-1-298491017   valid   161m
 ```
 
-## 排障顺序很重要
+## 按证书资源依赖关系排障 {#排障顺序很重要}
 
-证书不下来时，别上来就怀疑宇宙。按这条链路查最快：
+证书未签发时，按资源依赖关系逐层检查：
 
 1. 先看 `Certificate`
 2. 再看 `CertificateRequest`
@@ -260,11 +260,11 @@ kubectl describe challenge <name>
 - 域名填错
 - Namespace / Secret 名字对不上
 
-## 结语
+## 证书签发与续期要点 {#结语}
 
 `cert-manager` 很适合做 Kubernetes 集群里的证书自动化中枢。你只需要把 `Issuer` 配好，后面的申请、签发、写入 `Secret`、续期，基本都可以交给它。
 
-如果说手工证书管理像“每 90 天提醒自己别忘了换锁芯”，那 `cert-manager` 更像是给门锁装上了自动保养系统。
+`cert-manager` 将重复的证书申请和续期步骤自动化，减少手工维护。
 
 
 

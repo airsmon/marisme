@@ -1,0 +1,87 @@
+:root {
+    --h-accent: #5e5ce6;
+    --h-muted: #8a8f9c;
+}
+
+:root[data-theme="dark"] {
+    --h-accent: #8c8aff;
+    --h-muted: #9aa0ad;
+}
+
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4,
+.post-content h5,
+.post-content h6 {
+    position: relative;
+    line-height: 1.35;
+    letter-spacing: 0.02em;
+    scroll-margin-top: 80px;
+    color: var(--primary);
+}
+
+.post-content {
+    counter-reset: c2;
+}
+
+.post-content h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.6em;
+}
+
+.post-content h2 {
+    counter-increment: c2;
+    counter-reset: c3;
+    font-size: 1.65rem;
+    font-weight: 700;
+    margin: 2.8em 0 0.9em;
+    padding-top: 1em;
+    border-top: 1px solid var(--border);
+}
+
+.post-content h2::before {
+    content: counter(c2, decimal-leading-zero);
+    display: block;
+    font: 500 0.72rem ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: 0.22em;
+    color: var(--h-accent);
+    margin-bottom: 0.5em;
+}
+
+.post-content h3 {
+    counter-increment: c3;
+    font-size: 1.25rem;
+    font-weight: 620;
+    margin: 2.1em 0 0.7em;
+}
+
+.post-content h3::before {
+    content: counter(c2) "." counter(c3);
+    font: 500 0.68em ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--h-accent);
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+}
+
+.post-content h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 1.7em 0 0.6em;
+}
+
+.post-content h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 1.5em 0 0.5em;
+    color: var(--secondary);
+}
+
+.post-content h6 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 1.5em 0 0.5em;
+    color: var(--h-muted);
+    letter-spacing: 0.08em;
+}

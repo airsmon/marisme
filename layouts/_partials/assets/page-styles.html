@@ -1,0 +1,20 @@
+{{- $styles := slice -}}
+{{- if and (eq .Kind "taxonomy") (eq .Section "tags") -}}
+  {{- $styles = $styles | append "02-tags-page.css" -}}
+{{- end -}}
+{{- if and .IsSection (eq .Section "leisure") -}}
+  {{- $styles = $styles | append "18-leisure-shelf.css" "19-leisure-filter.css" -}}
+{{- end -}}
+{{- if eq .Kind "404" -}}
+  {{- $styles = $styles | append "22-404.css" -}}
+{{- end -}}
+{{- if eq .Layout "go" -}}
+  {{- $styles = $styles | append "26-external-link-gate.css" -}}
+{{- end -}}
+{{- if eq .Layout "about" -}}
+  {{- $styles = $styles | append "30-about.css" -}}
+{{- end -}}
+{{- range $styles -}}
+  {{- $style := resources.Get (printf "css/pages/%s" .) | minify | fingerprint -}}
+  <link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}" crossorigin="anonymous">
+{{- end -}}

@@ -1,5 +1,5 @@
 ---
-title: "30 分钟定制 Ubuntu 安装镜像：从 squashfs 解压到 xorriso 构建可引导 ISO 的全流程"
+title: "Ubuntu 安装镜像定制：修改 squashfs 并构建可引导 ISO"
 slug: "custom-ubuntu-iso-with-xorriso"
 date: 2026-05-27T16:15:48+08:00
 author:
@@ -60,7 +60,7 @@ usageNoticeText: "请确认系统镜像、预装软件和分发方式符合对�
 
 ---
 
-## 镜像架构与原理
+## ISO 结构与构建组件 {#镜像架构与原理}
 
 ### ISO 分区结构
 
@@ -92,14 +92,14 @@ LBA: 0                           64                6345803        6345804       
 
 ## 环境准备
 
-### 1. 安装依赖包
+### 安装依赖包 {#1-安装依赖包}
 
 ```bash
 apt update
 apt install -y squashfs-tools gnupg xorriso rsync
 ```
 
-### 2. 创建工作目录
+### 创建工作目录 {#2-创建工作目录}
 
 ```bash
 mkdir -p /opt/live
@@ -107,9 +107,9 @@ mkdir -p /opt/live
 
 ---
 
-## 基础镜像处理
+## 处理官方 ISO 与根文件系统 {#基础镜像处理}
 
-### 1. 挂载并复制官方镜像
+### 挂载并复制官方镜像 {#1-挂载并复制官方镜像}
 
 ```bash
 # 挂载官方 ISO
@@ -120,7 +120,7 @@ rsync -av /mnt/ /opt/live/
 umount /mnt
 ```
 
-### 2. 解压 squashfs 根文件系统
+### 解压 squashfs 根文件系统 {#2-解压-squashfs-根文件系统}
 
 ```bash
 cd /opt/live/casper/
@@ -142,7 +142,7 @@ created 8 devices
 
 ## chroot 环境配置
 
-### 1. 挂载虚拟文件系统
+### 挂载虚拟文件系统 {#1-挂载虚拟文件系统}
 
 ```bash
 cd /opt/live/casper/
@@ -153,14 +153,14 @@ mount -t devpts devpts squashfs-root/dev/pts
 mount -o bind /run squashfs-root/run
 ```
 
-### 2. 配置 DNS 解析
+### 配置 DNS 解析 {#2-配置-dns-解析}
 
 ```bash
 rm -rf squashfs-root/etc/resolv.conf
 cp /etc/resolv.conf squashfs-root/etc/resolv.conf
 ```
 
-### 3. 进入 chroot 环境
+### 进入 chroot 环境 {#3-进入-chroot-环境}
 
 ```bash
 chroot squashfs-root
@@ -172,14 +172,14 @@ chroot squashfs-root
 
 ## 系统定制
 
-### 方案一：预拷贝安装（推荐离线环境）
+### 方案一：预拷贝安装包用于离线安装 {#方案一预拷贝安装推荐离线环境}
 
 ```bash
 # 在 chroot 之前，将 .deb 包拷贝到 squashfs-root 目录
 dpkg -i /path/to/package.deb
 ```
 
-### 方案二：在线安装（需要网络访问）
+### 方案二：联网安装软件包 {#方案二在线安装需要网络访问}
 
 ```bash
 # 测试仓库连通性
@@ -213,7 +213,7 @@ apt-mark showhold
 update-initramfs -u -k all
 ```
 
-### 清理环境（减小镜像体积）
+### 清理安装缓存与临时文件 {#清理环境减小镜像体积}
 
 ```bash
 apt-get clean
@@ -236,14 +236,14 @@ exit
 
 ## squashfs 重新打包
 
-### 1. 删除旧 squashfs 文件
+### 删除旧 squashfs 文件 {#1-删除旧-squashfs-文件}
 
 ```bash
 cd /opt/live/casper/
 rm -rf ubuntu-server-minimal.squashfs
 ```
 
-### 2. 重新打包
+### 重新打包根文件系统 {#2-重新打包}
 
 ```bash
 mksquashfs squashfs-root/ ubuntu-server-minimal.squashfs \
@@ -255,7 +255,7 @@ mksquashfs squashfs-root/ ubuntu-server-minimal.squashfs \
 
 ## 签名与清单更新
 
-### 1. 生成 GPG 密钥（首次需要）
+### 首次生成 GPG 密钥 {#1-生成-gpg-密钥首次需要}
 
 ```bash
 gpg --gen-key
@@ -266,7 +266,7 @@ gpg --gen-key
 - Email address: `it@artoio.com`
 - 密码：手动输入 2 次
 
-### 2. 签名 squashfs 文件
+### 签名 squashfs 文件 {#2-签名-squashfs-文件}
 
 ```bash
 gpg --armor --detach-sign \
@@ -274,20 +274,20 @@ gpg --armor --detach-sign \
   ubuntu-server-minimal.squashfs
 ```
 
-### 3. 更新软件包清单
+### 更新软件包清单 {#3-更新软件包清单}
 
 ```bash
 chroot squashfs-root/ dpkg-query -W > ubuntu-server-minimal.manifest
 ```
 
-### 4. 更新大小记录
+### 更新大小记录 {#4-更新大小记录}
 
 ```bash
 printf "$(du -sx --block-size=1 squashfs-root | cut -f1)\n" \
   > ubuntu-server-minimal.size
 ```
 
-### 5. 清理工作目录
+### 清理工作目录 {#5-清理工作目录}
 
 ```bash
 rm -rf squashfs-root
@@ -348,9 +348,9 @@ dd if=ubuntu-22.04.5-live-server-amd64.iso bs=512 skip=4162948 count=10072 of=/t
 
 ---
 
-## 验证
+## 验证引导参数与分区结构 {#验证}
 
-### 1. 镜像引导参数对比
+### 对比镜像引导参数 {#1-镜像引导参数对比}
 
 ```bash
 xorriso -indev ubuntu-22.04.5-live-server-oem-amd64.iso \
@@ -363,7 +363,7 @@ xorriso -indev ubuntu-22.04.5-live-server-oem-amd64.iso \
 - partition_offset
 - iso_mbr_part_type
 
-### 2. 分区结构验证
+### 验证分区结构 {#2-分区结构验证}
 
 ```bash
 fdisk -l ubuntu-22.04.5-live-server-oem-amd64.iso
@@ -373,7 +373,7 @@ fdisk -l ubuntu-22.04.5-live-server-oem-amd64.iso
 
 ---
 
-## 最佳实践
+## 镜像维护与安全建议 {#最佳实践}
 
 ### 版本控制建议
 
@@ -384,7 +384,7 @@ fdisk -l ubuntu-22.04.5-live-server-oem-amd64.iso
 | 构建脚本 | 将上述命令整理为可重复执行的脚本 |
 | 版本命名 | ISO 文件名包含构建日期和版本号，如 `ubuntu-22.04.5-oem-20260312-amd64.iso` |
 
-### 镜像优化技巧
+### 镜像体积优化 {#镜像优化技巧}
 
 1. **精简软件包**：`apt-get clean` + 删除 `/var/cache/apt/archives`
 2. **日志清理**：`rm -rf /var/log/*` 但保留目录结构
@@ -411,9 +411,9 @@ fdisk -l ubuntu-22.04.5-live-server-oem-amd64.iso
 
 ---
 
-## 总结
+## ISO 定制与构建要点 {#总结}
 
-Ubuntu ISO 自定义构建是运维自动化的重要环节，核心流程可归纳为：
+Ubuntu ISO 定制的主要流程是：
 
 1. **标准提取**：挂载官方 ISO，复制到工作目录
 2. **根系统定制**：解压 squashfs → chroot 环境 → 安装驱动/软件 → 清理 → 重新打包

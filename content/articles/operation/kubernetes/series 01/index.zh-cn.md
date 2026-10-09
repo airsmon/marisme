@@ -1,5 +1,5 @@
 ---
-title: "Kubernetes 入门：从 Pod、Deployment 到 Service 的核心工作流"
+title: "Kubernetes 入门：Pod、Deployment 与 Service 的协作流程"
 slug: "kubernetes-core-workflow-pod-deployment-service"
 date: 2026-05-27T16:15:22+08:00
 author:
@@ -49,13 +49,13 @@ mermaid: true
 - YAML 很多
 - 看完一圈之后，脑子里只剩一句：“所以这个 Pod 到底归谁管？”
 
-这篇文章不打算把 Kubernetes 讲成一本砖头书，而是先把最核心的三件事讲明白：
+本文先介绍 Kubernetes 的三个核心对象：
 
 1. `Pod` 是最小运行单元。
 2. `Deployment` 负责管理 Pod 的副本与更新。
 3. `Service` 负责把“不稳定的 Pod”变成“稳定可访问的服务入口”。
 
-## 总体图
+## Pod、Deployment 与 Service 的关系 {#总体图}
 
 ```mermaid
 flowchart LR
@@ -79,7 +79,7 @@ flowchart LR
 
 员工会换，经理会补人，但总机号码最好别天天改，不然调用方会疯。
 
-## Pod：Kubernetes 里真正跑应用的地方
+## Pod：应用运行单元 {#podkubernetes-里真正跑应用的地方}
 
 `Pod` 是 Kubernetes 调度的最小单位。一个 Pod 里通常会有：
 
@@ -90,7 +90,7 @@ flowchart LR
 
 最常见的情况，是一个 Pod 跑一个应用容器。
 
-### 一个最小 Pod 示例
+### 最小 Pod 配置示例 {#一个最小-pod-示例}
 
 ```yaml
 apiVersion: v1
@@ -122,7 +122,7 @@ kubectl get pods -o wide
 
 裸 Pod 更像“手工启动一个进程”，适合测试，不太适合正式服务。
 
-## Deployment：真正适合跑业务的控制器
+## Deployment：副本与更新管理 {#deployment真正适合跑业务的控制器}
 
 `Deployment` 的价值，在于它不是“创建一个 Pod”，而是“声明你希望有多少个 Pod 按照什么模板一直活着”。
 
@@ -130,7 +130,7 @@ kubectl get pods -o wide
 
 “我不关心你怎么做，我只关心最后保持成这个状态。”
 
-### 一个 Deployment 示例
+### Deployment 配置示例 {#一个-deployment-示例}
 
 ```yaml
 apiVersion: apps/v1
@@ -175,7 +175,7 @@ kubectl get pods
 
 Pod 的 IP 是会变的。  
 今天是 `10.244.1.15`，明天重建后就可能变成 `10.244.2.31`。  
-如果业务方每次都追着 Pod IP 跑，那整个平台很快会变成“分布式捉迷藏”。
+调用方如果依赖 Pod IP，就需要在 Pod 重建后更新目标地址。
 
 这就是 `Service` 存在的意义：提供一个稳定的访问入口，再把流量转发给后端符合标签选择器的 Pod。
 
@@ -211,7 +211,7 @@ kubectl describe svc nginx-web
 | `LoadBalancer` | 对接云厂商负载均衡 | 公网服务 |
 | `ExternalName` | 映射外部 DNS 名称 | 引用外部服务 |
 
-## 一次完整工作流示例
+## 应用部署与访问流程 {#一次完整工作流示例}
 
 最常见的一套最小上线流程，通常是：
 
@@ -236,7 +236,7 @@ kubectl logs deploy/nginx-web
 
 我更推荐用下面这个顺序排查：
 
-### 1. 先看 Deployment
+### 检查 Deployment {#1-先看-deployment}
 
 ```bash
 kubectl get deploy
@@ -249,7 +249,7 @@ kubectl describe deploy nginx-web
 - 镜像是否拉取成功
 - 是否有滚动更新失败
 
-### 2. 再看 Pod
+### 检查 Pod {#2-再看-pod}
 
 ```bash
 kubectl get pods -o wide
@@ -263,7 +263,7 @@ kubectl logs <pod-name>
 - 是否 `CrashLoopBackOff`
 - Readiness/Liveness 探针是否异常
 
-### 3. 再看 Service
+### 检查 Service {#3-再看-service}
 
 ```bash
 kubectl get svc
@@ -313,10 +313,10 @@ selector:
 | `Deployment` | 管理副本与发布 | 否 | 是 |
 | `Service` | 提供稳定访问入口 | 是 | 否 |
 
-## 务实结论
+## 三个核心对象的使用要点 {#务实结论}
 
 如果你刚开始接触 Kubernetes，先别急着背所有资源对象。  
-先把下面这句记住，就已经赢过不少“YAML 写了很多但脑图还没连起来”的阶段了：
+先理解这三个对象的职责：
 
 `Deployment` 负责“让应用一直在”，`Service` 负责“让别人稳定找到它”，`Pod` 负责“真正干活”。
 

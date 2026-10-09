@@ -1,0 +1,46 @@
+{
+  "skills": [
+    {
+      "repo": "jnMetaCode/superpowers-zh",
+      "path": "skills/chinese-documentation",
+      "commit": "2daf57c0fb157521de24c62ac9c3254630eefbed",
+      "files": {
+        "SKILL.md": "58323397177b6343bd3234f9e4acd8891d58f08cf8076b26fd98296308203a0a",
+        "LICENSE": "ee3b113466709345fc841c18a24245e9eb815ad5bb556aceaeb927094655e6c1"
+      },
+      "licenses": [
+        "LICENSE"
+      ],
+      "name": "chinese-documentation",
+      "source": "https://github.com/jnMetaCode/superpowers-zh/blob/2daf57c0fb157521de24c62ac9c3254630eefbed/skills/chinese-documentation/SKILL.md"
+    },
+    {
+      "repo": "op7418/Humanizer-zh",
+      "path": ".",
+      "commit": "f4518a8eab97b8bfebc66a89d34320a89bef6930",
+      "files": {
+        "SKILL.md": "95627fd4437d886f98032ccc62d79136e6310f1fc04e354bb86431795ff206df",
+        "LICENSE": "aa00e74769e1b9d8e7fa7094dbfcca9b129a0ded6dce1cf4da050b99146d2fa7"
+      },
+      "licenses": [
+        "LICENSE"
+      ],
+      "name": "humanizer-zh",
+      "source": "https://github.com/op7418/Humanizer-zh/blob/f4518a8eab97b8bfebc66a89d34320a89bef6930/SKILL.md"
+    },
+    {
+      "repo": "Mindrally/skills",
+      "path": "technical-writing",
+      "commit": "7682ca77710e0971eab4e0ae5dddfa281aea0ba5",
+      "files": {
+        "SKILL.md": "978efb8b24344fffff7f912496d41f6f1c6c1d2966dff455158820a6652d625d",
+        "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+      },
+      "licenses": [
+        "LICENSE"
+      ],
+      "name": "technical-writing",
+      "source": "https://github.com/Mindrally/skills/blob/7682ca77710e0971eab4e0ae5dddfa281aea0ba5/technical-writing/SKILL.md"
+    }
+  ]
+}

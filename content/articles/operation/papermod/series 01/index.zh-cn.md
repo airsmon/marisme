@@ -1,5 +1,5 @@
 ---
-title: "Hugo【PaperMod】入门部署"
+title: "Hugo 与 PaperMod 入门：建站、配置与本地预览"
 slug: hugo-papermod-deploy
 date: 2026-05-27T16:16:07+08:00
 author:
@@ -37,7 +37,7 @@ searchHidden: false
 mermaid: true
 ---
 
-如果你想搭一个维护成本低、发布速度快、内容结构清晰的个人站点，`Hugo + PaperMod` 依然是非常稳妥的组合。它的价值不在于“功能最多”，而在于你可以很快把写作、发布、归档和搜索这几件事同时跑起来。
+`Hugo + PaperMod` 可以用于搭建个人博客和知识站点，支持写作、发布、归档和搜索。本文介绍如何从创建项目开始，跑通本地预览与静态文件构建。
 
 本文按“先跑通，再细化”的顺序整理一套入门流程，适合第一次接触 Hugo 的读者直接照着搭建。
 
@@ -45,13 +45,13 @@ mermaid: true
 
 - [PaperMod GitHub 仓库](https://github.com/adityatelange/hugo-PaperMod)
 
-## 核心结论
+## 建站方式与配置建议 {#核心结论}
 
 - `Hugo` 负责把 Markdown 内容编译成静态页面。
 - `PaperMod` 提供一套成熟的博客主题、搜索页和文章元信息展示能力。
 - 对个人博客而言，最重要的不是先把主题改得多花，而是先把内容生产、预览和部署流程跑顺。
 
-## 先理解这套组合在做什么
+## Hugo 与 PaperMod 的职责 {#先理解这套组合在做什么}
 
 ```mermaid
 flowchart LR
@@ -94,9 +94,9 @@ flowchart LR
 
 ## 环境准备
 
-### 为什么要装 Hugo Extended
+### Hugo 版本与 Extended 选择 {#为什么要装-hugo-extended}
 
-PaperMod 依赖 Hugo Extended 处理 SCSS 资源[^papermod-extended]。如果安装的是普通版本，站点不一定会直接报错，但样式链路通常会不完整，后续排查也很浪费时间。
+本文选用 Hugo Extended，方便后续扩展资源处理能力。PaperMod 本身使用 CSS，并不因主题样式而要求 Extended；如果自定义样式需要 Sass/SCSS 转换，再按所用编译器准备环境[^papermod-extended]。
 
 ### 安装 Hugo
 
@@ -111,11 +111,11 @@ sudo apt install hugo
 hugo version
 ```
 
-如果输出里没有 `extended` 字样，再安装 Extended 版本：
+如需 Extended，请先检查 `hugo version` 的输出和安装包类型。macOS 按 Homebrew 官方 Formula 安装 Hugo：
 
 ```bash
 # macOS
-brew install hugo-extended
+brew install hugo
 ```
 
 建议同时确认两件事：
@@ -125,7 +125,7 @@ brew install hugo-extended
 
 ## 从零创建站点
 
-### Step 1：初始化项目目录
+### 初始化项目目录 {#step-1初始化项目目录}
 
 ```bash
 hugo new site marisme.com
@@ -135,11 +135,11 @@ git init
 
 执行完后，你会得到一个 Hugo 站点骨架。此时能看到目录，但还没有主题，也没有真正可用的页面结构。
 
-### Step 2：安装 PaperMod 主题
+### 安装 PaperMod 主题 {#step-2安装-papermod-主题}
 
 最常见的三种方式如下。
 
-#### 方式一：Git Submodule
+#### 方式一：使用 Git Submodule {#方式一git-submodule}
 
 适合希望跟踪主题版本、后续继续更新的人，通常也是更稳妥的方式。
 
@@ -148,7 +148,7 @@ git submodule add --depth=1 https://github.com/adityatelange/hugo-PaperMod.git t
 git submodule update --init --recursive
 ```
 
-#### 方式二：直接 Clone
+#### 方式二：直接克隆主题 {#方式二直接-clone}
 
 适合先验证效果、快速试跑的场景。
 
@@ -156,7 +156,7 @@ git submodule update --init --recursive
 git clone https://github.com/adityatelange/hugo-PaperMod.git themes/PaperMod --depth=1
 ```
 
-#### 方式三：Hugo Module
+#### 方式三：使用 Hugo Module {#方式三hugo-module}
 
 适合已经在用 Go 模块化工作流，或者想让主题依赖管理更规范的场景。
 
@@ -168,7 +168,7 @@ hugo mod init github.com/airsmon/marisme.com
 
 ## 最小可用配置
 
-### Step 3：先写一份能工作的 `hugo.yml`
+### 编写基础 `hugo.yml` {#step-3先写一份能工作的-hugoyml}
 
 下面这份配置不追求“全部功能都打开”，而是优先覆盖个人博客最常见的需要：基础 SEO、目录、搜索、导航和文章元信息。
 
@@ -263,9 +263,9 @@ rss:
 
 如果你后面想继续做 Mermaid、页脚扩展和代码高亮增强，可以在现有基础上逐步加，不需要一开始全部堆进去。
 
-## 创建第一篇文章并验证链路
+## 创建文章并验证构建流程 {#创建第一篇文章并验证链路}
 
-### Step 4：生成首篇内容
+### 生成首篇文章 {#step-4生成首篇内容}
 
 ```bash
 hugo new articles/my-first-article.zh-cn.md
@@ -273,7 +273,7 @@ hugo new articles/my-first-article.zh-cn.md
 
 然后编辑 `content/articles/my-first-article.zh-cn.md`：
 
-```markdown
+````markdown
 ---
 title: "我的第一篇文章"
 date: 2026-04-21
@@ -294,7 +294,7 @@ cover:
 ```bash
 echo "Hello Hugo + PaperMod!"
 ```
-```
+````
 
 这一步的目的不是写出一篇完整文章，而是验证三件事：
 
@@ -302,7 +302,7 @@ echo "Hello Hugo + PaperMod!"
 - Markdown 与代码块是否能正常渲染；
 - 列表页和文章页是否都能顺利生成。
 
-### Step 5：本地预览
+### 启动本地预览 {#step-5本地预览}
 
 ```bash
 hugo server -D
@@ -315,7 +315,7 @@ hugo server -D
 
 如果这一步能顺利打开，你的本地站点就已经具备继续写内容的基础了。
 
-### Step 6：构建静态文件
+### 构建静态文件 {#step-6构建静态文件}
 
 ```bash
 hugo --minify
@@ -323,9 +323,9 @@ hugo --minify
 
 执行后会生成 `public/` 目录。后续无论是部署到 GitHub Pages、Vercel、Cloudflare Pages，还是同步到自己的服务器，最终交付的基本都是这里面的静态文件。
 
-## 这时建议顺手补齐的三个能力
+## 搜索、导航与文章摘要 {#这时建议顺手补齐的三个能力}
 
-### 1. 搜索页
+### 配置搜索页 {#1-搜索页}
 
 ```bash
 hugo new search.zh-cn.md
@@ -342,7 +342,7 @@ placeholder: "搜索文章..."
 ---
 ```
 
-### 2. 文章目录与上一篇下一篇
+### 配置目录与文章导航 {#2-文章目录与上一篇下一篇}
 
 如果你希望长文更好读，建议在站点参数里保留：
 
@@ -355,7 +355,7 @@ params:
 
 这三个能力对技术文章特别有帮助，能明显改善系列内容的可导航性。
 
-### 3. 封面图和摘要
+### 配置封面与摘要 {#3-封面图和摘要}
 
 虽然不是必须，但建议在文章 front matter 中逐步统一这些字段：
 
@@ -373,7 +373,7 @@ cover:
 
 统一元信息以后，站点列表页、分享卡片和搜索结果的整体体验会稳定很多。
 
-## 推荐的目录结构
+## 站点目录组织 {#推荐的目录结构}
 
 ```text
 marisme.com/
@@ -406,15 +406,15 @@ marisme.com/
 
 更稳妥的节奏是：先让站点上线，再逐步优化搜索、图表、代码高亮和视觉细节。
 
-## 下一步建议
+## 后续部署与定制 {#下一步建议}
 
 如果你已经把站点在本地跑起来，下一篇最值得看的就是部署选型。不同托管方式决定了你后面的维护成本、自动发布流程和访问体验。
 
 可以继续阅读：
 
-- [Hugo【PaperMod】部署方案：GitHub Pages、Vercel、Cloudflare 与自托管对比](/articles/ops/papermod/series%2002/)
+- [Hugo 与 PaperMod 部署：GitHub Pages、Vercel、Cloudflare Pages 与自托管](/articles/ops/papermod/series%2002/)
 
-[^papermod-extended]: PaperMod 依赖 Hugo Extended 处理 SCSS / SASS 资源；如果安装的是普通版 Hugo，部分样式链路会失效。
+[^papermod-extended]: PaperMod 的样式构建使用 CSS 合并与压缩，见 [主题模板](https://github.com/adityatelange/hugo-PaperMod/blob/master/layouts/_partials/head.html)。Hugo 的 Sass 转换方式见 [css.Sass 文档](https://gohugo.io/functions/css/sass/)，macOS 安装命令见 [Homebrew Hugo Formula](https://formulae.brew.sh/formula/hugo)。
 
 ## 参考资料
 
