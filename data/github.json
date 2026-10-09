@@ -1,0 +1,299 @@
+{
+  "adityatelange/hugo-papermod": {
+    "html_url": "https://github.com/adityatelange/hugo-PaperMod",
+    "description": " A fast, clean, responsive Hugo theme.",
+    "language": "HTML",
+    "stargazers_count": 13984,
+    "topics": [
+      "blog",
+      "blog-theme",
+      "clean",
+      "fast",
+      "feature-rich",
+      "grayscale",
+      "high-performance",
+      "hugo",
+      "hugo-blog-theme",
+      "hugo-theme",
+      "mit-license",
+      "multilingual",
+      "papermod",
+      "portfolio",
+      "theme",
+      "well-documented"
+    ],
+    "license": {
+      "spdx_id": "MIT"
+    }
+  },
+  "cert-manager/cert-manager": {
+    "html_url": "https://github.com/cert-manager/cert-manager",
+    "description": "Automatically provision and manage TLS certificates in Kubernetes",
+    "language": "Go",
+    "stargazers_count": 14107,
+    "topics": [
+      "certificate",
+      "crd",
+      "hacktoberfest",
+      "kubernetes",
+      "letsencrypt",
+      "tls"
+    ],
+    "license": {
+      "spdx_id": "Apache-2.0"
+    }
+  },
+  "gnachman/iterm2": {
+    "html_url": "https://github.com/gnachman/iTerm2",
+    "description": "iTerm2 is a terminal emulator for Mac OS X that does amazing things.",
+    "language": "Swift",
+    "stargazers_count": 18134,
+    "topics": [],
+    "license": {
+      "spdx_id": "GPL-2.0"
+    }
+  },
+  "henrygd/beszel": {
+    "html_url": "https://github.com/henrygd/beszel",
+    "description": "Lightweight server monitoring with historical data, docker stats, and alerts.",
+    "language": "Go",
+    "stargazers_count": 26045,
+    "topics": [
+      "homelab",
+      "monitoring",
+      "self-hosted"
+    ],
+    "license": {
+      "spdx_id": "MIT"
+    }
+  },
+  "junhoyeo/tokscale": {
+    "html_url": "https://github.com/junhoyeo/tokscale",
+    "description": "🛰️ Track token usage across AI coding agents from your terminal. 🏅 Global leaderboard with trillions of tokens tracked.",
+    "language": "Rust",
+    "stargazers_count": 5643,
+    "topics": [
+      "ai",
+      "ai-agents",
+      "ampcode",
+      "claude",
+      "claude-code",
+      "clawdbot",
+      "codex",
+      "cursor",
+      "cursor-ide",
+      "droid",
+      "gemini",
+      "gemini-cli",
+      "gpt",
+      "hermes",
+      "moltbot",
+      "oh",
+      "openclaw",
+      "opencode",
+      "opentui",
+      "token-usage"
+    ],
+    "license": {
+      "spdx_id": "MIT"
+    }
+  },
+  "metacubex/mihomo": {
+    "html_url": "https://github.com/MetaCubeX/mihomo",
+    "description": "A simple Python Pydantic model for Honkai: Star Rail parsed data from the Mihomo API.",
+    "language": "Python",
+    "stargazers_count": 34741,
+    "topics": [
+      "honkai-star-rail",
+      "mihomo",
+      "python",
+      "star-rail-api"
+    ],
+    "license": {
+      "spdx_id": "MIT"
+    }
+  },
+  "metallb/metallb": {
+    "html_url": "https://github.com/metallb/metallb",
+    "description": "A network load-balancer implementation for Kubernetes using standard routing protocols",
+    "language": "Go",
+    "stargazers_count": 8373,
+    "topics": [
+      "arp",
+      "bare-metal",
+      "bgp",
+      "frr",
+      "hacktoberfest",
+      "keepalived",
+      "kubernetes",
+      "load-balancer",
+      "vrrp"
+    ],
+    "license": {
+      "spdx_id": "Apache-2.0"
+    }
+  },
+  "nordtheme/iterm2": {
+    "html_url": "https://github.com/nordtheme/iterm2",
+    "description": "An arctic, north-bluish clean and elegant iTerm2 color scheme.",
+    "language": "JavaScript",
+    "stargazers_count": 1023,
+    "topics": [
+      "bash",
+      "cli",
+      "color-scheme",
+      "colorscheme",
+      "hacktoberfest",
+      "iterm",
+      "iterm2",
+      "mac",
+      "macos",
+      "macosx",
+      "nord",
+      "osx",
+      "shell",
+      "terminal",
+      "zsh"
+    ],
+    "license": {
+      "spdx_id": "MIT"
+    }
+  },
+  "nordtheme/vim": {
+    "html_url": "https://github.com/nordtheme/vim",
+    "description": "An arctic, north-bluish clean and elegant Vim theme.",
+    "language": "Vim Script",
+    "stargazers_count": 2581,
+    "topics": [
+      "color",
+      "color-scheme",
+      "color-theme",
+      "colorscheme",
+      "hacktoberfest",
+      "nord",
+      "syntax-highlighting",
+      "syntax-theme",
+      "theme",
+      "ui-design",
+      "vim",
+      "vim-colors",
+      "vim-colorscheme"
+    ],
+    "license": {
+      "spdx_id": "MIT"
+    }
+  },
+  "ollama/ollama": {
+    "html_url": "https://github.com/ollama/ollama",
+    "description": "Get up and running with Kimi, GLM, MiniMax, DeepSeek, gpt-oss, Qwen, Gemma and other models.",
+    "language": "Go",
+    "stargazers_count": 182439,
+    "topics": [
+      "deepseek",
+      "gemma",
+      "gemma3",
+      "glm",
+      "go",
+      "golang",
+      "gpt-oss",
+      "llama",
+      "llama3",
+      "llm",
+      "llms",
+      "minimax",
+      "mistral",
+      "ollama",
+      "qwen"
+    ],
+    "license": {
+      "spdx_id": "MIT"
+    }
+  },
+  "open-webui/open-webui": {
+    "html_url": "https://github.com/open-webui/open-webui",
+    "description": "User-friendly AI Interface (Supports Ollama, OpenAI API, ...)",
+    "language": "Python",
+    "stargazers_count": 154082,
+    "topics": [
+      "ai",
+      "llm",
+      "llm-ui",
+      "llm-webui",
+      "llms",
+      "mcp",
+      "ollama",
+      "ollama-webui",
+      "open-webui",
+      "openai",
+      "openapi",
+      "rag",
+      "self-hosted",
+      "ui",
+      "webui"
+    ],
+    "license": {
+      "spdx_id": "NOASSERTION"
+    }
+  },
+  "rclone/rclone": {
+    "html_url": "https://github.com/rclone/rclone",
+    "description": "\"rsync for cloud storage\" - Google Drive, S3, Dropbox, Backblaze B2, One Drive, Swift, Hubic, Wasabi, Google Cloud Storage, Azure Blob, Azure Files, Yandex Files",
+    "language": "Go",
+    "stargazers_count": 60189,
+    "topics": [
+      "azure-blob",
+      "azure-blob-storage",
+      "azure-files",
+      "backblaze-b2",
+      "cloud-storage",
+      "dropbox",
+      "encryption",
+      "ftp",
+      "fuse-filesystem",
+      "go",
+      "golang",
+      "google-cloud-storage",
+      "google-drive",
+      "onedrive",
+      "openstack-swift",
+      "rclone",
+      "s3",
+      "sftp",
+      "sync",
+      "webdav"
+    ],
+    "license": {
+      "spdx_id": "MIT"
+    }
+  },
+  "vim/vim": {
+    "html_url": "https://github.com/vim/vim",
+    "description": "The official Vim repository",
+    "language": "Vim Script",
+    "stargazers_count": 41157,
+    "topics": [
+      "c",
+      "cross-platform",
+      "text-editor",
+      "vim"
+    ],
+    "license": {
+      "spdx_id": "Vim"
+    }
+  },
+  "ytti/oxidized": {
+    "html_url": "https://github.com/ytti/oxidized",
+    "description": "Oxidized is a network device configuration backup tool. It's a RANCID replacement!",
+    "language": "Ruby",
+    "stargazers_count": 3602,
+    "topics": [
+      "backup",
+      "network",
+      "nms",
+      "rancid"
+    ],
+    "license": {
+      "spdx_id": "Apache-2.0"
+    }
+  }
+}

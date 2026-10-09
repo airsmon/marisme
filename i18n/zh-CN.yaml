@@ -46,3 +46,6 @@
 
 - id: code_copied
   translation: "已复制！"
+
+- id: code_copy_failed
+  translation: "复制失败，请重试"

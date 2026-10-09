@@ -150,32 +150,45 @@
 
         const copybutton = document.createElement('button');
         copybutton.classList.add('copy-code');
+        copybutton.setAttribute('aria-live', 'polite');
         copybutton.innerHTML = '{{- i18n "code_copy" | default "copy" }}';
 
-        function copyingDone() {
-            copybutton.innerHTML = '{{- i18n "code_copied" | default "copied!" }}';
-            setTimeout(() => {
+        let feedbackTimer;
+        function showCopyFeedback(success) {
+            clearTimeout(feedbackTimer);
+            copybutton.textContent = success
+                ? '{{- i18n "code_copied" | default "copied!" }}'
+                : '{{- i18n "code_copy_failed" | default "Copy failed; try again" }}';
+            feedbackTimer = setTimeout(() => {
                 copybutton.innerHTML = '{{- i18n "code_copy" | default "copy" }}';
             }, 2000);
         }
 
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
-
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
+        copybutton.addEventListener('click', async () => {
+            clearTimeout(feedbackTimer);
+            copybutton.disabled = true;
+            copybutton.textContent = '{{- i18n "code_copy" | default "copy" }}';
             try {
-                document.execCommand('copy');
-                copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
+                if (navigator.clipboard?.writeText) {
+                    await navigator.clipboard.writeText(codeblock.textContent);
+                    showCopyFeedback(true);
+                } else {
+                    const range = document.createRange();
+                    range.selectNodeContents(codeblock);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    try {
+                        showCopyFeedback(document.execCommand('copy'));
+                    } finally {
+                        selection.removeAllRanges();
+                    }
+                }
+            } catch (error) {
+                showCopyFeedback(false);
+            } finally {
+                copybutton.disabled = false;
+            }
         });
 
         if (container.classList.contains("highlight")) {

@@ -1,0 +1,2 @@
+{{- $script := partialCached "assets/script-resource.html" .name .name -}}
+<script src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity }}" crossorigin="anonymous"{{ if .module }} type="module"{{ else }} defer{{ end }}></script>
