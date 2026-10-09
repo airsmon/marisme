@@ -1,5 +1,5 @@
 ---
-title: "Kubernetes 排障笔记：kubectl 常用命令与故障定位顺序"
+title: "Kubernetes 排障：kubectl 命令与故障定位顺序"
 slug: "kubernetes-troubleshooting-kubectl-workflow"
 date: 2026-05-27T16:15:38+08:00
 author:
@@ -54,10 +54,9 @@ Kubernetes 出问题时，最怕的不是错误本身，而是信息太多。
 - Service
 - Endpoints
 
-每个都像线索，每个都像烟雾弹。  
-所以排障最重要的，不是“多会几个命令”，而是“按什么顺序看”。
+这些信息分布在不同资源中，排障时需要先确定检查顺序。
 
-## 排障思路
+## 按故障环节组织排查 {#排障思路}
 
 我更推荐按下面这条链路去查：
 
@@ -78,11 +77,11 @@ flowchart LR
 3. 再确认是不是网络转发没打通
 
 这样比一上来就 `kubectl get all` 要更有效。  
-`get all` 的问题不是不能看，而是它像把办公室所有抽屉同时拉开，信息很多，帮助不一定成正比。
+`get all` 会汇集多类资源，仍需按故障环节进一步缩小范围。
 
-## 第一层：先看资源对象状态
+## 检查资源对象状态 {#第一层先看资源对象状态}
 
-### 看 Deployment
+### 检查 Deployment {#看-deployment}
 
 ```bash
 kubectl get deploy -A
@@ -98,7 +97,7 @@ kubectl describe deploy <deployment-name> -n <namespace>
 
 如果 Deployment 本身就没有达到期望副本数，后面很多排查都可以先暂停。
 
-### 看 Pod
+### 检查 Pod {#看-pod}
 
 ```bash
 kubectl get pods -A
@@ -115,7 +114,7 @@ kubectl get pods -n <namespace> -o wide
 | `ImagePullBackOff` | 镜像拉取失败 | 镜像地址错、仓库认证问题 |
 | `Completed` | 任务已完成 | 常见于 Job |
 
-## 第二层：`describe` 是最便宜的情报来源
+## 使用 `describe` 查看资源事件 {#第二层describe-是最便宜的情报来源}
 
 很多问题，甚至不用进日志就能发现。
 
@@ -132,7 +131,7 @@ kubectl describe pod <pod-name> -n <namespace>
 - `Readiness`
 - `Liveness`
 
-### 一个很典型的事件示例
+### 调度失败事件示例 {#一个很典型的事件示例}
 
 ```text
 Warning  FailedScheduling  2m    default-scheduler  0/3 nodes are available: 3 Insufficient memory.
@@ -140,9 +139,9 @@ Warning  Failed            90s   kubelet            Error: ImagePullBackOff
 Warning  Unhealthy         20s   kubelet            Readiness probe failed
 ```
 
-如果事件里已经清清楚楚写着 “`Insufficient memory`”，那我们就没必要再演一出“是否是宇宙射线导致的容器漂移”。
+如果事件已写明 `Insufficient memory`，就先检查内存需求和节点可用资源。
 
-## 第三层：日志才是真正看业务的地方
+## 通过容器日志定位应用问题 {#第三层日志才是真正看业务的地方}
 
 ### 查看当前日志
 
@@ -165,7 +164,7 @@ kubectl logs <pod-name> --previous -n <namespace>
 这个 `--previous` 很重要，尤其在 `CrashLoopBackOff` 时。  
 不然你看到的可能只是“容器刚重启后还没来得及报错”的安静现场。
 
-## 第四层：探针问题经常看起来像“服务抽风”
+## 检查探针与应用启动时间 {#第四层探针问题经常看起来像服务抽风}
 
 很多服务实际上已经启动了，但因为探针配置不合理，被 Kubernetes 持续判定为不健康。
 
@@ -175,7 +174,7 @@ kubectl logs <pod-name> --previous -n <namespace>
 - `readinessProbe`
 - `startupProbe`
 
-### 一个简单示例
+### 探针配置示例 {#一个简单示例}
 
 ```yaml
 livenessProbe:
@@ -199,9 +198,9 @@ readinessProbe:
 - 端口是否一致
 - 启动预热时间是否太短
 
-有些 Java 服务冷启动要 40 秒，你却给了 5 秒探针，那它就会一边努力启动，一边被系统礼貌地反复处决。
+例如 Java 服务冷启动需要 40 秒，探针却只留出 5 秒，就可能在完成启动前被反复判定失败。
 
-## 第五层：服务不通时，看 Service 和 Endpoints
+## 检查 Service 与 Endpoints 连通性 {#第五层服务不通时看-service-和-endpoints}
 
 业务说“页面打不开”，很多人第一反应是 Pod 挂了。  
 但其实也有不少情况是：
@@ -211,21 +210,21 @@ readinessProbe:
 - Service 也在
 - 就是流量没有转发到正确后端
 
-### 先看 Service
+### 检查 Service {#先看-service}
 
 ```bash
 kubectl get svc -n <namespace>
 kubectl describe svc <service-name> -n <namespace>
 ```
 
-### 再看 Endpoints
+### 检查 Endpoints {#再看-endpoints}
 
 ```bash
 kubectl get endpoints -n <namespace>
 kubectl describe endpoints <service-name> -n <namespace>
 ```
 
-### 最常见问题
+### Service 与 Endpoints 常见问题 {#最常见问题}
 
 | 现象 | 原因 |
 | --- | --- |
@@ -233,7 +232,7 @@ kubectl describe endpoints <service-name> -n <namespace>
 | Endpoints 有值但访问失败 | 容器端口、探针、应用监听地址问题 |
 | NodePort 打不开 | 节点防火墙、安全组、网络策略限制 |
 
-## 第六层：发布失败时看 rollout
+## 通过 rollout 检查发布状态 {#第六层发布失败时看-rollout}
 
 滚动更新异常时，这组命令很实用：
 
@@ -245,7 +244,7 @@ kubectl rollout undo deploy/<deployment-name> -n <namespace>
 
 在版本发布现场，这基本属于“止血三件套”。
 
-## 第七层：节点与资源层问题
+## 检查节点状态与资源不足 {#第七层节点与资源层问题}
 
 如果 Pod 连调度都上不去，通常就要往节点层看了。
 
@@ -263,7 +262,7 @@ kubectl top pods -A
 - 是否有 `taints`
 - 磁盘是否打满
 
-## 一份高频命令备忘
+## kubectl 常用命令速查 {#一份高频命令备忘}
 
 | 命令 | 用途 |
 | --- | --- |
@@ -275,7 +274,7 @@ kubectl top pods -A
 | `kubectl rollout status deploy/<name>` | 看滚动发布进度 |
 | `kubectl get events --sort-by=.lastTimestamp` | 按时间看事件 |
 
-## 排障结论
+## 故障定位顺序要点 {#排障结论}
 
 Kubernetes 排障最怕两件事：
 
@@ -289,8 +288,7 @@ Kubernetes 排障最怕两件事：
 - 再确认日志
 - 最后才深入网络、节点和基础设施
 
-很多问题并不神秘，只是信息分散。  
-而 `kubectl` 真正的价值，也不是命令多，而是它把这些分散线索重新摆回了你面前。
+排障时按资源状态、事件和日志逐层检查，用 `kubectl` 将分散的线索对应到具体故障环节。
 
 
 

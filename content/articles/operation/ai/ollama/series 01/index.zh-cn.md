@@ -1,5 +1,5 @@
 ---
-title: "Ollama 入门：在 Docker 中部署本地大模型服务"
+title: "Ollama Docker 部署：本地模型服务与数据持久化"
 slug: "ollama-getting-started-docker"
 date: 2026-06-16T14:58:15+08:00
 author:
@@ -45,7 +45,7 @@ usageNoticeText: "请同时遵守项目许可证、模型服务条款、账号�
 
 {{< github repo="ollama/ollama" />}}
 
-## 基础环境
+## 运行环境要求 {#基础环境}
 
 部署前建议先确认这些依赖：
 
@@ -59,14 +59,14 @@ usageNoticeText: "请同时遵守项目许可证、模型服务条款、账号�
 
 ## 部署步骤
 
-### 第一步：准备目录和 Compose 文件
+### 准备部署目录与配置文件 {#第一步准备目录和-compose-文件}
 
 ```bash
 mkdir /usr/local/src/ollama
 touch /usr/local/src/ollama/compose.yml
 ```
 
-### 第二步：编写 Compose
+### 编写 Docker Compose 配置 {#第二步编写-compose}
 
 ```yaml
 services:
@@ -95,15 +95,15 @@ networks:
     external: true
 ```
 
-### 第三步：启动容器
+### 启动 Ollama 容器 {#第三步启动容器}
 
 ```bash
 docker compose up -d
 ```
 
-## 数据持久化不是可选项
+## 模型数据持久化 {#数据持久化不是可选项}
 
-这一点需要单独说明。
+模型数据需要单独持久化：
 
 ```yaml
 volumes:
@@ -117,7 +117,7 @@ volumes:
 - 模型要重新拉
 - 你会重新体会一次“下载几十 GB 到底有多漫长”
 
-## Traefik 反向代理：可选，但很常见
+## 可选：Traefik 反向代理 {#traefik-反向代理可选但很常见}
 
 如果你想通过域名对外访问，可以加上类似这样的 label：
 
@@ -140,9 +140,9 @@ labels:
 - 可以直接接入 HTTPS
 - 后续接 Open WebUI 这类前端也更方便
 
-## 结语
+## 部署要点 {#结语}
 
-Ollama 本身并不复杂，它更像本地大模型世界里的“统一服务入口”。  
+Ollama 为本地模型提供统一服务入口。\
 只要 GPU 运行环境准备好，Compose 写清楚，再把 `.ollama` 目录持久化，这套服务就会稳定很多。
 
 如果后续还需要浏览器界面，可以继续接入 `Open WebUI`。

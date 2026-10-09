@@ -1,5 +1,5 @@
 ---
-title: "mihomo 入门：多 VLAN 场景下的 Docker 部署与代理验证"
+title: "Mihomo Docker 部署：多 VLAN 网络配置与代理验证"
 slug: "mihomo-getting-started-macvlan"
 date: 2026-06-01T09:02:34+08:00
 author:
@@ -46,7 +46,7 @@ usageNoticeText: "请仅在合法授权的网络调试、旁路代理与实验�
 
 {{< github repo="MetaCubeX/mihomo" />}}
 
-## 要解决什么问题
+## 多 VLAN 代理接入需求 {#要解决什么问题}
 
 本文关注的是一个比较实战的场景：
 
@@ -55,7 +55,7 @@ usageNoticeText: "请仅在合法授权的网络调试、旁路代理与实验�
 - Docker 通过 `macvlan` 接到不同子网
 - 最终让不同网段的主机都能把它当作统一代理出口
 
-## 网络思路
+## VLAN 与容器网络拓扑 {#网络思路}
 
 整体结构可以理解成这样：
 
@@ -70,7 +70,7 @@ flowchart LR
   C --> I["外部网络 / 代理目标"]
 ```
 
-## 第一步：创建 Linux VLAN 子接口
+## 创建 Linux VLAN 子接口 {#第一步创建-linux-vlan-子接口}
 
 宿主机上先准备 Trunk 接口，例如 `ens224`。
 
@@ -88,9 +88,9 @@ ip link set ens224.1169 up
 ip -d link show ens224.1169
 ```
 
-这一步相当于先把不同 VLAN 的门牌号从宿主机侧分出来。
+这一步在宿主机上区分不同 VLAN 的网络接口。
 
-## 第二步：创建 Docker macvlan 网络
+## 创建 Docker macvlan 网络 {#第二步创建-docker-macvlan-网络}
 
 分别为两个 VLAN 创建 `macvlan` 网络：
 
@@ -101,7 +101,7 @@ docker network create -d macvlan --subnet 10.64.69.0/24 --gateway 10.64.69.1 -o 
 
 这样做的好处是：容器可以像网络里的独立主机一样，直接出现在对应子网中。
 
-## 第三步：编写 Compose 文件
+## 编写 Docker Compose 配置 {#第三步编写-compose-文件}
 
 ```yaml
 services:
@@ -194,7 +194,7 @@ curl -I https://github.com
 
 如果百度和 GitHub 都能按预期访问，说明从子网到容器再到代理出口这条链路已经通了。
 
-## 策略路由：可选，但值得知道
+## 可选：配置策略路由 {#策略路由可选但值得知道}
 
 如果你想更细地控制多网卡容器的出接口，可以参考这套策略路由示例。即使不配置，在不少场景下也能完成基本流量路由：
 
@@ -220,7 +220,7 @@ ip route add 10.64.69.0/24 dev $VLAN1169_DEV scope link table 200
 ip route add default via $VLAN1168_GW dev $VLAN1168_DEV
 ```
 
-## 结语
+## 网络路径与代理验证要点 {#结语}
 
 `mihomo` 部署本身不算难，真正的重点是把：
 
@@ -232,7 +232,7 @@ ip route add default via $VLAN1168_GW dev $VLAN1168_DEV
 
 这几层顺起来。
 
-只要网络路径理清楚，后面的体验其实非常丝滑；反过来，如果网络设计没想明白，容器再健康，也很容易变成一个“看起来在线、实际上不干活”的摆设。
+容器状态正常并不等于网络连通。应沿着 VLAN、容器网络、代理规则和出口逐层验证。
 
 
 

@@ -1,5 +1,5 @@
 ---
-title: "Proxmox 虚拟机提示 Display output is not active：一次 ARM64 启动黑屏排查实录"
+title: "Proxmox ARM64 启动黑屏：Display output is not active 排查"
 slug: "proxmox-display-output-is-not-active-arm64"
 date: 2026-06-01T08:33:28+08:00
 author:
@@ -46,7 +46,7 @@ mermaid: true
 
 ---
 
-## 问题现象
+## 启动后无显示输出 {#问题现象}
 
 在国产 ARM 服务器或者 `aarch64` 平台上部署 `Proxmox VE` 后，创建虚拟机并启动，结果控制台里不是安装界面，而是一句很冷酷的话：
 
@@ -70,7 +70,7 @@ Display output is not active
 
 ![Proxmox ARM64 控制台提示 Display output is not active](https://img.marisme.com/blog/2025/09/26/proxmox_kunpeng920_202407191731725.png)
 
-## 我的环境
+## 本次排障环境 {#我的环境}
 
 这次出问题的环境大致如下：
 
@@ -83,7 +83,7 @@ Display output is not active
 
 如果你也是在 ARM 平台上用默认配置一路点点点创建虚拟机，那么踩中这个坑的概率并不低。默认配置在 x86 世界里很常见，但到了 ARM64，这套组合有时候就会变成“理论上能开机，实际上不给你画面”。
 
-## 原因分析
+## ARM64 固件与引导方式 {#原因分析}
 
 简单理解就是一句话：
 
@@ -114,14 +114,14 @@ flowchart TD
     I --> J["进入系统引导界面"]
 ```
 
-## 处理思路
+## 检查固件并调整 UEFI 引导 {#处理思路}
 
-修复这类问题，不需要十八般武艺，核心就两步：
+处理时先检查固件，再调整引导方式：
 
 1. 确认 ARM64 的 UEFI 固件是否存在
 2. 将虚拟机引导方式改为 `UEFI`
 
-## 步骤一：检查 UEFI 固件是否已经安装
+## 检查 ARM64 UEFI 固件 {#步骤一检查-uefi-固件是否已经安装}
 
 先看看 Proxmox 主机上有没有 ARM64 对应的固件文件：
 
@@ -130,9 +130,9 @@ ls -l /usr/share/pve-edk2-firmware
 ```
 
 如果你看到 ARM64 相关的 `AAVMF` 文件，说明固件大概率已经在了。  
-如果没有，别急，这不是世界末日，只是包还没装。
+如果没有找到对应文件，再安装固件包。
 
-## 步骤二：安装 ARM64 UEFI 固件
+## 安装 ARM64 UEFI 固件 {#步骤二安装-arm64-uefi-固件}
 
 在 Proxmox 宿主机执行：
 
@@ -147,11 +147,11 @@ apt install pve-edk2-firmware-aarch64
 ls -l /usr/share/pve-edk2-firmware
 ```
 
-这一步的目的很明确：让 `Proxmox` 拥有 ARM64 虚拟机所需的 `AAVMF` 固件。没有它，后面的 `UEFI` 配置就像给空房子配门牌，看着挺完整，实际上没人住。
+安装后，`Proxmox` 才能使用 ARM64 虚拟机所需的 `AAVMF` 固件，为后续 `UEFI` 引导配置提供支持。
 
 ![ARM64 UEFI 固件安装后的文件示意](https://img.marisme.com/blog/2025/09/26/proxmox_arm_uefi_202408051738085.png)
 
-## 步骤三：创建虚拟机时改用 UEFI
+## 将虚拟机引导方式改为 UEFI {#步骤三创建虚拟机时改用-uefi}
 
 重点来了。
 
@@ -168,9 +168,9 @@ ls -l /usr/share/pve-edk2-firmware
 
 改完之后，再启动虚拟机，通常就能正常进入系统引导或安装界面。
 
-## 排查清单
+## 固件与虚拟机配置检查清单 {#排查清单}
 
-如果你不想每次都从怀疑人生开始，可以按这个顺序检查：
+遇到同类问题，可以按这个顺序检查：
 
 1. 确认宿主机架构是不是 `ARM64`
 2. 确认虚拟机 BIOS 不是 `SeaBIOS`
@@ -180,7 +180,7 @@ ls -l /usr/share/pve-edk2-firmware
 
 如果前 3 项都没问题，基本就已经绕开最常见的坑了。
 
-## 补充说明
+## ARM64 引导与显示输出的区别 {#补充说明}
 
 在 `Proxmox VE 8.x` 里，ARM64 虚拟化支持本身就不是最“傻瓜式”的那一档，因此一些在 x86 平台上默认成立的经验，到了 ARM64 不一定还能直接套用。
 
@@ -191,7 +191,7 @@ ls -l /usr/share/pve-edk2-firmware
 
 也就是说，虚拟机已经启动，并不代表图形输出链路已经恢复正常。
 
-## 结语
+## 启动黑屏排查要点 {#结语}
 
 `Display output is not active` 这个报错看起来像显示问题，实际往往是 **ARM64 虚拟机固件与引导方式不匹配**。
 
@@ -200,7 +200,7 @@ ls -l /usr/share/pve-edk2-firmware
 - 安装 `pve-edk2-firmware-aarch64`
 - 将虚拟机 BIOS 改为 `UEFI`
 
-如果你正在 Proxmox 上折腾 ARM64 虚拟化，这个坑大概率早晚会来敲门。好消息是，它虽然吓人，但不算难修；坏消息是，它非常擅长让人先白忙半小时。
+再次遇到同类报错时，可先核对 ARM64 固件和引导配置，再继续检查显示输出。
 
 
 

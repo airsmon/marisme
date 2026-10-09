@@ -1,5 +1,5 @@
 ---
-title: "Python 示例笔记一：用 Requests 调 GitHub API"
+title: "Python 示例：使用 Requests 获取 GitHub 用户信息"
 slug: "python-requests-github-api-example"
 date: 2026-05-26T17:41:02+08:00
 author:
@@ -43,9 +43,9 @@ mermaid: true
 
 ---
 
-## 核心观点
+## PaperMod 排版示例与 GitHub API 请求 {#核心观点}
 
-PaperMod 是 Hugo 生态中最受欢迎的主题之一，具有以下 *特点*：
+本页用于展示 Python 代码、列表和链接的排版。下面的 PaperMod 介绍列表是样式示例，后面的代码演示如何用 Requests 获取 GitHub 用户的公开信息。
 - **极致性能**：页面加载快，SEO 友好
 - **简约美观**：默认配置即可获得干净的阅读体验
 - **功能丰富**：支持搜索、归档、标签、多语言、深色模式等
@@ -94,14 +94,14 @@ if __name__ == "__main__":
         print(result)
 ```
 
-## 相关链接
+## Hugo 与 PaperMod 相关链接 {#相关链接}
 
 - [Hugo 官方文档](https://gohugo.io/)
 - [PaperMod 主题仓库](https://github.com/adityatelange/hugo-PaperMod)
 - [PaperMod 示例站点](https://adityatelange.github.io/hugo-PaperMod/)
 - [Hugo 主题仓库](https://themes.gohugo.io/)
 
-## 备注
+## 主题配置备注 {#备注}
 
 - 建议使用 Git Submodule 管理主题，方便更新
 - 多语言站点时可配置 `defaultContentLanguage`

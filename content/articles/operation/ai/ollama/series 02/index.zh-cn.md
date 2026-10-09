@@ -1,5 +1,5 @@
 ---
-title: "Open WebUI 部署实战：给 Ollama 配一个顺手的浏览器界面"
+title: "Open WebUI 部署：连接 Ollama 与配置浏览器界面"
 slug: "open-webui-for-ollama"
 date: 2026-06-01T08:59:26+08:00
 author:
@@ -45,7 +45,7 @@ usageNoticeText: "请同时遵守项目许可证、模型服务条款、账号�
 
 {{< github repo="open-webui/open-webui" />}}
 
-## 为什么要接 Open WebUI
+## Open WebUI 与 Ollama 的职责 {#为什么要接-open-webui}
 
 纯命令行用 Ollama 没问题，但很多时候我们更需要：
 
@@ -56,7 +56,7 @@ usageNoticeText: "请同时遵守项目许可证、模型服务条款、账号�
 
 这正是 `Open WebUI` 擅长的部分。
 
-## 基础环境
+## 运行环境要求 {#基础环境}
 
 - Docker
 - Docker Compose
@@ -66,14 +66,14 @@ usageNoticeText: "请同时遵守项目许可证、模型服务条款、账号�
 
 ## 部署步骤
 
-### 第一步：创建目录
+### 创建部署目录 {#第一步创建目录}
 
 ```bash
 mkdir /usr/local/src/open-webui
 touch /usr/local/src/open-webui/compose.yml
 ```
 
-### 第二步：编写 Compose 文件
+### 编写 Docker Compose 配置 {#第二步编写-compose-文件}
 
 ```yaml
 services:
@@ -102,7 +102,7 @@ networks:
     external: true
 ```
 
-### 第三步：启动
+### 启动 Open WebUI {#第三步启动}
 
 ```bash
 docker compose up -d
@@ -135,10 +135,9 @@ volumes:
   - /usr/local/src/open-webui/data:/app/backend/data
 ```
 
-这部分建议保留。  
-否则容器重建后，界面层的数据、配置和历史内容可能会丢失。
+建议保留这部分持久化配置，否则容器重建后，界面层的数据、配置和历史内容可能会丢失。
 
-## 反向代理：优化访问方式
+## 配置域名与反向代理 {#反向代理优化访问方式}
 
 如果你已经在用 Traefik，可以直接配置域名访问：
 
@@ -155,12 +154,12 @@ labels:
   - "traefik.http.routers.oi.middlewares=chaitin@file"
 ```
 
-这样做之后，整体体验会从“本地容器页面”升级到“正经可用的内部 AI 门户”。
+配置反向代理后，可以通过域名访问这套内部 AI 界面。
 
-## 结语
+## 部署要点 {#结语}
 
 如果你已经部署了 Ollama，那么 `Open WebUI` 基本就是最自然的下一步。  
-它不负责跑模型，但非常负责让你更舒服地使用模型。
+它提供模型交互界面，模型运行仍由后端服务负责。
 
 
 

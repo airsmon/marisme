@@ -1,5 +1,5 @@
 ---
-title: "Cloudflare Pages 部署博客：把构建和发布这两件事拆开看"
+title: "Cloudflare Pages 博客部署：平台构建与 GitHub Actions 构建对比"
 slug: "cloudflare-pages-blog-deploy"
 date: 2026-06-16T15:57:01+08:00
 author:
@@ -40,7 +40,7 @@ searchHidden: false
 mermaid: true
 ---
 
-## 先拆开构建与部署
+## 构建与部署的职责 {#先拆开构建与部署}
 
 很多人第一次接触 `Cloudflare Pages` 时，会把“构建”和“部署”混成一件事。  
 实际上它更像两段流水线：
@@ -50,7 +50,7 @@ mermaid: true
 
 所以常见路线大致有两种：
 
-## 方案一：All in Cloudflare
+## 方案一：Cloudflare Pages 构建与部署 {#方案一all-in-cloudflare}
 
 这条路线最省心：
 
@@ -107,7 +107,7 @@ flowchart LR
 - 平台更多一层
 - 配置项也会多一点
 
-## 如何做部署选型
+## 按构建与发布需求选型 {#如何做部署选型}
 
 如果你是个人博客或小型内容站：
 
@@ -122,7 +122,7 @@ flowchart LR
 - 想省事，用 Cloudflare 一条龙
 - 想掌控细节，用 GitHub Actions + Cloudflare Pages
 
-## 适合哪些站点
+## 适用站点类型 {#适合哪些站点}
 
 它特别适合：
 
@@ -135,12 +135,11 @@ flowchart LR
 
 也就是说，只要你的站点最终能产出一份静态文件目录，Cloudflare Pages 基本都能接得住。
 
-## 结语
+## 构建与发布选择要点 {#结语}
 
-Cloudflare Pages 的优势不只是“能部署”，而是它把全球分发、HTTPS、边缘网络这些原本挺重的事，压缩成了一个非常轻的发布入口。
+Cloudflare Pages 在静态文件部署之外，还提供全球分发、HTTPS 和边缘网络能力。
 
-对博客来说，真正值得先想清楚的不是“按钮在哪”，而是：  
-你想把构建交给谁，把发布交给谁。想清楚这件事，整套部署路线就顺了。
+选择博客部署路线时，先确定由谁负责构建、由谁负责发布，再配置相应流程。
 
 
 

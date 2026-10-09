@@ -1,5 +1,5 @@
 ---
-title: "Linux Bond 配置实战：用 nmcli 搞定链路冗余与聚合"
+title: "Linux Bond 配置：使用 nmcli 设置链路冗余与聚合"
 slug: "linux-bond-with-nmcli"
 date: 2026-06-01T15:02:51+08:00
 author:
@@ -41,7 +41,7 @@ searchHidden: false
 mermaid: false
 ---
 
-## Bond 是什么
+## Bond 的链路冗余与聚合作用 {#bond-是什么}
 
 Bond 的作用可以简单分成两类：
 
@@ -50,7 +50,7 @@ Bond 的作用可以简单分成两类：
 
 所以它不是简单的“多网卡捆绑”，而是让多个物理接口表现成一个逻辑接口，同时根据模式决定行为。
 
-## 常见模式
+## Bond 常见工作模式 {#常见模式}
 
 | ID | 模式 | 特性 | 交换机要求 | 适合场景 |
 | --- | --- | --- | --- | --- |
@@ -62,7 +62,7 @@ Bond 的作用可以简单分成两类：
 | 5 | balance-tlb | TX 负载均衡 | 无要求 | 老场景 |
 | 6 | balance-alb | TX/RX 负载均衡 | 无要求 | 无法配置交换机时的折中方案 |
 
-## `xmit_hash_policy` 是什么
+## `xmit_hash_policy` 的流量分配策略 {#xmit_hash_policy-是什么}
 
 这个参数主要和 `mode 2`、`mode 4` 搭配使用。
 
@@ -79,32 +79,32 @@ Bond 的作用可以简单分成两类：
 
 在 RHEL 9 / Rocky 9 / CentOS 9 里，直接用 `nmcli` 是很自然的方式。
 
-### 1. 创建 bond0
+### 创建 bond0 {#1-创建-bond0}
 
 ```bash
 nmcli connection add type bond ifname bond0 con-name bond0 mode active-backup
 ```
 
-### 2. 修改 Bond 参数
+### 配置 Bond 参数 {#2-修改-bond-参数}
 
 ```bash
 nmcli connection modify bond0 bond.options "mode=802.3ad,xmit_hash_policy=layer3+4,miimon=100"
 ```
 
-### 3. 配置 IP
+### 配置 IP 地址 {#3-配置-ip}
 
 ```bash
 nmcli connection modify bond0 ipv4.method manual ipv4.addresses "192.168.10.15/24"
 ```
 
-### 4. 添加物理接口
+### 添加物理接口 {#4-添加物理接口}
 
 ```bash
 nmcli connection add type ethernet ifname ens146f0 con-name ens146f0 master bond0
 nmcli connection add type ethernet ifname ens146f1 con-name ens146f1 master bond0
 ```
 
-### 5. 启动连接
+### 启动 Bond 连接 {#5-启动连接}
 
 ```bash
 nmcli connection up bond0
@@ -114,13 +114,13 @@ nmcli connection up ens146f1
 
 这里要写成 `connection`，不要误写成 `connectionc`，否则命令会直接报错。
 
-### 6. 查看状态
+### 查看连接状态 {#6-查看状态}
 
 ```bash
 nmcli connection show
 ```
 
-## 如何验证配置是否生效
+## 验证 Bond 状态与带宽 {#如何验证配置是否生效}
 
 ### 查看带宽信息
 
@@ -146,16 +146,15 @@ cat /proc/net/bonding/bond0
 
 都能在这里暴露出来。
 
-## 结语
+## 链路配置与验证要点 {#结语}
 
-Bond 配置并不神秘，真正关键的是：
+配置 Bond 时，重点确认：
 
 - 明确你要冗余还是聚合
 - 模式和交换机侧配置一致
 - 验证别只看“接口起来了”，还要看 `/proc/net/bonding/bond0`
 
-一句话总结：  
-把网卡绑起来很容易，把它们绑得既稳定又高效，才是真正的活。
+完成配置后，还需结合交换机设置和链路状态验证冗余或聚合效果。
 
 
 

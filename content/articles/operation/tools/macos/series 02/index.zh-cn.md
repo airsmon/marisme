@@ -1,5 +1,5 @@
 ---
-title: "macOS 工具配置（二）：iTerm2 的 Nord 配色、字体与常用设置"
+title: "macOS 工具配置（二）：iTerm2 配色、字体与会话设置"
 slug: "macos-iterm2-nord-configuration"
 date: 2026-08-04T11:10:00+08:00
 author:
@@ -38,7 +38,7 @@ mermaid: false
 usageNoticeText: "执行配置前请保留现有 Profile 或导出设置；远程主机和共享设备上的 Shell Integration、历史记录持久化应按实际安全要求启用。"
 ---
 
-iTerm2 的选项很多，但真正影响日常体验的只有几组：配色、字体、Profile、窗口与标签页、终端兼容性，以及可选的 Shell Integration。
+本文重点配置 iTerm2 的配色、字体、Profile、窗口与标签页、终端兼容性，以及可选的 Shell Integration。
 
 本文以 macOS 和 iTerm2 `3.6.11` 为验证环境。后续版本的按钮名称或位置可能略有变化，但 Profile 的配置思路不依赖某个小版本。
 
@@ -174,7 +174,7 @@ iTerm2 的窗口、标签页和 pane 是三个层级：一个窗口可以有多�
 
 一套固定布局可以通过 `Window > Arrangements > Save Window Arrangement` 保存，再从同一菜单恢复。只偶尔开两三个会话时，标签页和分屏已经足够，不必一开始就引入复杂的窗口布局。
 
-## Shell Integration：按需开启
+## 按需启用 Shell Integration {#shell-integration按需开启}
 
 Shell Integration 能让 iTerm2 识别提示符、命令边界、退出状态、当前目录、主机名和命令历史。它会带来命令 mark、最近目录、命令历史以及长命令完成提醒等能力，但不是 Nord 配色或分屏的前置条件。
 
@@ -254,7 +254,7 @@ printf '中文  箭头→  对勾✓  Powerline  Git\n'
 
 确认 Profile 使用受支持的 Shell，并检查是否同时启用了自动加载和 `.zshrc` 手工 source。自定义提示符会重写集成所需的 prompt 钩子时，应按 iTerm2 官方文档为该提示符单独配置，而不是重复加载脚本。
 
-## 结语
+## iTerm2 配色与会话配置要点 {#结语}
 
 一套稳定的 iTerm2 配置不需要堆很多插件：用独立 Profile 承载设置，导入官方 Nord 配色，选一款字符完整的等宽字体，保持 UTF-8 与 `xterm-256color`，再熟悉标签页和分屏快捷键，就已经足够应付本地开发与大多数远程运维场景。
 
