@@ -27,6 +27,15 @@ function initLeisureFilter() {
 
   if (!tabs.length || !items.length) return;
 
+  // Clear the loading title once a cover has actually rendered.
+  document.querySelectorAll('.leisure-shelf-item__cover-shell[data-title] img').forEach(function (image) {
+    const markLoaded = function () {
+      image.parentElement.classList.add('is-loaded');
+    };
+    if (image.complete && image.naturalWidth > 0) markLoaded();
+    else image.addEventListener('load', markLoaded, { once: true });
+  });
+
   const allowedFilters = new Set(['all', 'book', 'movie']);
   const pageSize = Number(pageRoot && pageRoot.dataset.leisurePageSize) || 20;
   const allPageHrefs = new Map();
