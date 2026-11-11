@@ -151,9 +151,6 @@
     {{- end }}
 </article>
 
-{{- with resources.Get "js/tags-page.js" }}
-    {{- $tagsScript := . | minify | fingerprint }}
-    <script src="{{ $tagsScript.RelPermalink }}" integrity="{{ $tagsScript.Data.Integrity }}" defer></script>
-{{- end }}
+{{- partialCached "assets/script.html" (dict "name" "tags-page.js") "tags-page.js" }}
 
 {{- end }}
