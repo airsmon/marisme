@@ -14,33 +14,49 @@ hidePostLicense: true
 hideUsageNotice: true
 hideFollowProfiles: true
 draft: false
+about:
+  handle: "@airsmon · Infrastructure · Cloud Native · SRE"
+  statement: "做基础设施和排障的人。这里记录系统怎么工作、问题怎么被定位，也留一点阅读和生活的碎片。"
+  links:
+    - label: "GitHub"
+      url: "https://github.com/airsmon"
+    - label: "Email"
+      url: "mailto:airsmon@gmail.com"
+  featured:
+    - ref: "/series/操作系统导论"
+      kicker: "系列"
+      desc: "从进程调度读到虚拟内存，理解系统如何分配资源。"
+    - ref: "/articles/security/domain/series 03"
+      desc: "拆开讲清 HTTPS、证书链、密钥协商之间的真实分工。"
+    - ref: "/articles/operation/ai/ollama/series 01"
+      desc: "GPU 运行环境、Docker Compose 与数据持久化。"
+  now:
+    - label: "在做"
+      text: "打磨博客的标签页与关于页"
+      hue: "orange"
+    - label: "在读"
+      text: "《操作系统导论》，配合写系列笔记"
+      hue: "teal"
+    - label: "在玩"
+      text: "本地模型与 AI 网关"
+      hue: "purple"
+  projects:
+    - name: "marisme"
+      language: "Hugo · CSS"
+      url: "https://github.com/airsmon/marisme"
+      hue: "orange"
+    - name: "charts"
+      language: "Helm"
+      url: "https://github.com/airsmon/charts"
+      hue: "blue"
+    - name: "safeline_exporter"
+      language: "Go"
+      url: "https://github.com/airsmon/safeline_exporter"
+      hue: "teal"
+    - name: "qiniu_exporter"
+      language: "Go"
+      url: "https://github.com/airsmon/qiniu_exporter"
+      hue: "teal"
 ---
 
-{{< activity-grid >}}
-
-<div class="about-columns">
-  <section class="about-section" aria-labelledby="interests-title">
-    <h2 id="interests-title" class="about-section__title">兴趣侧写</h2>
-    <dl class="about-interests">
-      <div class="about-interest"><dt>系统与排障</dt><dd>配置、分析与排除法</dd></div>
-      <div class="about-interest"><dt>阅读与独处</dt><dd>看书、安静待着和发呆</dd></div>
-      <div class="about-interest"><dt>动漫</dt><dd>治愈与冒险题材</dd></div>
-      <div class="about-interest"><dt>家庭</dt><dd>陪女儿玩耍和成长</dd></div>
-    </dl>
-  </section>
-
-  <section class="about-section" aria-labelledby="projects-title">
-    <h2 id="projects-title" class="about-section__title">GitHub 项目</h2>
-    <div class="about-projects">
-      <a class="about-project" href="https://github.com/airsmon/marisme" rel="noopener noreferrer"><span class="about-project__name">marisme</span><span class="about-project__language">Hugo · CSS</span></a>
-      <a class="about-project" href="https://github.com/airsmon/charts" rel="noopener noreferrer"><span class="about-project__name">charts</span><span class="about-project__language">Helm</span></a>
-      <a class="about-project" href="https://github.com/airsmon/safeline_exporter" rel="noopener noreferrer"><span class="about-project__name">safeline_exporter</span><span class="about-project__language">Go</span></a>
-      <a class="about-project" href="https://github.com/airsmon/qiniu_exporter" rel="noopener noreferrer"><span class="about-project__name">qiniu_exporter</span><span class="about-project__language">Go</span></a>
-    </div>
-  </section>
-</div>
-
-<section class="about-section about-section--closing" aria-labelledby="site-title">
-  <h2 id="site-title" class="about-section__title">关于这里</h2>
-  <p class="about-closing">这个站点主要写技术、排障和学习记录，也会夹杂一点生活、阅读与胡思乱想。如果你也喜欢安静一点的内容，欢迎随便看看。</p>
-</section>
+这个站点主要写技术、排障和学习记录，也会夹杂一点生活、阅读与胡思乱想。如果你也喜欢安静一点的内容，欢迎随便看看。

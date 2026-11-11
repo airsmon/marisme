@@ -1,0 +1,21 @@
+/* Shared topic hues for the tags and about pages. Neutral surfaces stay on PaperMod tokens. */
+
+:root {
+  --hue-blue: #4f78b0;
+  --hue-teal: #4f8f7a;
+  --hue-purple: #8a62a8;
+  --hue-orange: #c9763f;
+  --hue-rose: #b9587a;
+  --hue-olive: #8d7a2a;
+  --hue-soft: 12%;
+}
+
+:root[data-theme="dark"] {
+  --hue-blue: #7fa6dc;
+  --hue-teal: #7cc4a8;
+  --hue-purple: #c09ae0;
+  --hue-orange: #eba073;
+  --hue-rose: #e08fae;
+  --hue-olive: #d1bd6a;
+  --hue-soft: 18%;
+}
