@@ -2,131 +2,121 @@
   const root = document.querySelector("[data-tags-page]");
   if (!root) return;
 
-  const searchInput = root.querySelector("#tag-search-input");
-  const clearButton = root.querySelector(".tags-search__clear");
-  const shortcut = root.querySelector(".tags-search__shortcut");
-  const status = root.querySelector(".tags-search__status");
-  const popular = root.querySelector("[data-tags-popular]");
-  const index = root.querySelector("[data-tags-index]");
+  const input = root.querySelector("[data-tags-input]");
+  if (!input) return;
+
+  const clearButton = root.querySelector("[data-tags-clear]");
+  const status = root.querySelector("[data-tags-status]");
   const emptyState = root.querySelector("[data-tags-empty]");
   const resetButton = root.querySelector("[data-tags-reset]");
-  const filterButtons = [...root.querySelectorAll("[data-tag-filter]")];
-  const sortButtons = [...root.querySelectorAll("[data-tag-sort]")];
+  const groups = [...root.querySelectorAll("[data-tag-group]")];
   const items = [...root.querySelectorAll("[data-tag-item]")];
-  const total = Number(root.dataset.tagTotal || 0);
-  let activeFilter = "all";
-  let activeSort = "count";
-
-  if (!searchInput || !index) return;
+  const jumps = [...root.querySelectorAll("[data-jump]")];
+  const totalTags = Number(root.dataset.tagTotal || 0);
+  const totalArticles = Number(root.dataset.articleTotal || 0);
 
   const normalize = (value) => value.trim().toLocaleLowerCase("zh-CN");
 
-  const escapeHtml = (value) => value.replace(/[&<>"']/g, (character) => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    "\"": "&quot;",
-    "'": "&#039;"
-  })[character]);
-
-  const highlight = (label, query) => {
-    if (!query) return escapeHtml(label);
-    const normalizedLabel = label.toLocaleLowerCase("zh-CN");
-    const matchIndex = normalizedLabel.indexOf(query);
-    if (matchIndex < 0) return escapeHtml(label);
-
-    return `${escapeHtml(label.slice(0, matchIndex))}<mark>${escapeHtml(label.slice(matchIndex, matchIndex + query.length))}</mark>${escapeHtml(label.slice(matchIndex + query.length))}`;
+  const renderLabel = (item, query) => {
+    const target = item.querySelector("[data-tag-text]");
+    const label = item.dataset.tagLabel || "";
+    const start = query ? label.toLocaleLowerCase("zh-CN").indexOf(query) : -1;
+    if (start < 0) {
+      target.textContent = label;
+      return;
+    }
+    const mark = document.createElement("mark");
+    mark.textContent = label.slice(start, start + query.length);
+    target.replaceChildren(
+      document.createTextNode(label.slice(0, start)),
+      mark,
+      document.createTextNode(label.slice(start + query.length))
+    );
   };
 
-  const sortItems = () => {
-    const collator = new Intl.Collator("zh-CN", { numeric: true, sensitivity: "base" });
-    const sorted = [...items].sort((left, right) => {
-      if (activeSort === "name") {
-        return collator.compare(left.dataset.tagLabel, right.dataset.tagLabel);
-      }
-
-      const countDifference = Number(right.dataset.tagCount) - Number(left.dataset.tagCount);
-      return countDifference || collator.compare(left.dataset.tagLabel, right.dataset.tagLabel);
-    });
-
-    const fragment = document.createDocumentFragment();
-    sorted.forEach((item) => fragment.appendChild(item));
-    index.appendChild(fragment);
-    index.dataset.activeSort = activeSort;
-  };
-
-  const update = () => {
-    const query = normalize(searchInput.value);
-    let visibleCount = 0;
+  const applyFilter = () => {
+    const query = normalize(input.value);
+    let matches = 0;
 
     items.forEach((item) => {
-      const matchesQuery = !query || item.dataset.tagName.includes(query);
-      const matchesFilter = activeFilter === "all" || item.dataset.tagGroup === activeFilter;
-      const visible = matchesQuery && matchesFilter;
+      const visible = !query || item.dataset.tagName.includes(query);
       item.hidden = !visible;
-      if (visible) visibleCount += 1;
-
-      const label = item.querySelector("[data-tag-text]");
-      if (label) label.innerHTML = highlight(item.dataset.tagLabel, query);
+      renderLabel(item, visible ? query : "");
+      if (visible) matches += 1;
     });
 
-    popular.hidden = Boolean(query) || activeFilter !== "all";
-    emptyState.hidden = visibleCount > 0;
-    index.hidden = visibleCount === 0;
-    clearButton.hidden = !query;
-    shortcut.hidden = Boolean(query);
-    const resultText = query || activeFilter !== "all"
-      ? `找到 <strong>${visibleCount}</strong> 个标签`
-      : `共 <strong>${total}</strong> 个标签`;
-    const sortText = activeSort === "name" ? "按名称排列" : "按热度排列";
-    status.innerHTML = `${resultText}<span class="tags-search__sort-status"> · ${sortText}</span>`;
+    groups.forEach((group) => {
+      group.hidden = !group.querySelector("[data-tag-item]:not([hidden])");
+    });
+
+    if (clearButton) clearButton.hidden = !input.value;
+    if (emptyState) emptyState.hidden = matches > 0;
+    if (status) {
+      status.textContent = query
+        ? `匹配 ${matches} 个标签`
+        : `共 ${totalTags} 个标签 · ${totalArticles} 篇文章`;
+    }
   };
 
-  const reset = () => {
-    searchInput.value = "";
-    activeFilter = "all";
-    filterButtons.forEach((button) => {
-      button.setAttribute("aria-pressed", String(button.dataset.tagFilter === "all"));
-    });
-    update();
-    searchInput.focus();
+  const resetSearch = () => {
+    input.value = "";
+    applyFilter();
+    input.focus();
   };
 
-  searchInput.addEventListener("input", update);
-  searchInput.addEventListener("search", update);
-  clearButton.addEventListener("click", reset);
-  resetButton?.addEventListener("click", reset);
-
-  filterButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      activeFilter = button.dataset.tagFilter;
-      filterButtons.forEach((candidate) => {
-        candidate.setAttribute("aria-pressed", String(candidate === button));
-      });
-      update();
-    });
-  });
-
-  sortButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      activeSort = button.dataset.tagSort;
-      sortButtons.forEach((candidate) => {
-        candidate.setAttribute("aria-pressed", String(candidate === button));
-      });
-      sortItems();
-      update();
-    });
-  });
+  input.addEventListener("input", applyFilter);
+  clearButton?.addEventListener("click", resetSearch);
+  resetButton?.addEventListener("click", resetSearch);
 
   document.addEventListener("keydown", (event) => {
-    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
-      event.preventDefault();
-      searchInput.focus();
-    }
+    const isEditable = event.target instanceof HTMLElement
+      && (event.target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName));
+    const shortcut = (event.key === "/" && !isEditable)
+      || ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k");
 
-    if (event.key === "Escape" && document.activeElement === searchInput) reset();
+    if (shortcut) {
+      event.preventDefault();
+      input.focus();
+      input.select();
+    } else if (event.key === "Escape" && document.activeElement === input) {
+      input.value = "";
+      applyFilter();
+      input.blur();
+    }
   });
 
-  sortItems();
-  update();
+  // Inline article preview. Buttons start hidden so the page works without JavaScript.
+  items.forEach((item) => {
+    const toggle = item.querySelector(".tags-item__toggle");
+    const preview = item.querySelector(".tags-item__preview");
+    if (!toggle || !preview || !preview.querySelector("a")) return;
+
+    toggle.hidden = false;
+    toggle.addEventListener("click", () => {
+      const open = toggle.getAttribute("aria-expanded") !== "true";
+      toggle.setAttribute("aria-expanded", String(open));
+      preview.hidden = !open;
+    });
+  });
+
+  // Highlight the topic currently in view.
+  const setCurrent = (id) => {
+    jumps.forEach((link) => {
+      if (link.dataset.jump === id) link.setAttribute("aria-current", "true");
+      else link.removeAttribute("aria-current");
+    });
+  };
+
+  jumps.forEach((link) => {
+    link.addEventListener("click", () => setCurrent(link.dataset.jump));
+  });
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) setCurrent(entry.target.dataset.tagGroup);
+      });
+    }, { rootMargin: "-120px 0px -65% 0px" });
+    groups.forEach((group) => observer.observe(group));
+  }
 })();

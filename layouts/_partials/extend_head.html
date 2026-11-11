@@ -10,7 +10,7 @@
 {{- end }}
 
 {{- if .Params.mermaid }}
-{{- partial "assets/script.html" (dict "name" "mermaid-theme.js" "module" true) }}
+{{- partialCached "assets/script.html" (dict "name" "mermaid-theme.js" "module" true) "mermaid-theme.js" }}
 {{- end }}
 
 {{ if or .Params.math .Site.Params.math }}

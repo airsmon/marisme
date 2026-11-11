@@ -1,7 +1,7 @@
 {{- define "main" }}
 
 {{- $entries := .RegularPages.ByDate.Reverse -}}
-{{- $pageSize := 20 -}}
+{{- $pageSize := 30 -}}
 {{- $paginator := .Paginate $entries $pageSize -}}
 {{- $currentPage := $paginator.PageNumber -}}
 {{- $startIndex := mul (sub $currentPage 1) $pageSize -}}
@@ -120,7 +120,7 @@
     {{- $summary := .Params.summary | default (.Summary | plainify | htmlUnescape) | default "暂无简介" -}}
     <article class="leisure-shelf-item" data-media-type="{{ $mediaType }}"{{ if not $isInitiallyVisible }} hidden{{ end }}>
       {{- if $url }}<a class="leisure-shelf-item__link" href="{{ $url }}"{{ if $externalUrl }} target="_blank" rel="noopener noreferrer"{{ end }} aria-label="Open {{ $title }}">{{ end }}
-        <div class="leisure-shelf-item__cover-shell">
+        <div class="leisure-shelf-item__cover-shell"{{ if $cover }} data-title="{{ $title }}"{{ end }}>
           {{- with $cover }}
           <img
             class="leisure-shelf-item__cover"
@@ -141,6 +141,12 @@
           <div class="leisure-shelf-item__cover leisure-shelf-item__cover--placeholder" aria-hidden="true">
             <span>{{ slicestr $title 0 1 }}</span>
           </div>
+          {{- end }}
+        </div>
+        <div class="leisure-shelf-item__caption" aria-hidden="true">
+          <span class="leisure-shelf-item__caption-title">{{ $title }}</span>
+          {{- with $rating }}
+          <span class="leisure-shelf-item__caption-rating">{{ . }} · {{ $source }}</span>
           {{- end }}
         </div>
         <div class="leisure-shelf-item__expand" aria-hidden="true">

@@ -1,0 +1,16 @@
+{{- /* Search index. Uses a local slice instead of the theme's page Scratch, which
+       accumulated duplicate entries across `hugo server` rebuilds. */ -}}
+{{- $index := slice -}}
+{{- range site.RegularPages -}}
+    {{- if and (not .Params.searchHidden) (ne .Layout `archives`) (ne .Layout `search`) -}}
+        {{- $index = $index | append (dict
+            "title" .Title
+            "permalink" .Permalink
+            "summary" (.Params.summary | default .Description | default (.Summary | plainify | htmlUnescape))
+            "tags" (.Params.tags | default slice)
+            "categories" (.Params.categories | default slice)
+            "date" (.Date.Format "2006-01-02")
+            "content" .Plain) -}}
+    {{- end -}}
+{{- end -}}
+{{- $index | jsonify -}}

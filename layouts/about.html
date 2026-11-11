@@ -1,0 +1,71 @@
+{{- define "main" }}
+{{- $about := .Params.about | default dict }}
+{{- $hues := slice "blue" "teal" "purple" }}
+<article class="post-single about-page">
+  <header class="about-hero">
+    {{- with resources.Get "avatar/avatar.webp" }}
+    {{- $avatar := .Fill "152x152 center" }}
+    <img class="about-hero__avatar" src="{{ $avatar.RelPermalink }}" width="76" height="76" alt="" decoding="async">
+    {{- end }}
+    <h1 class="about-hero__name">{{ site.Params.author | default .Title }}</h1>
+    {{- with $about.handle }}<p class="about-hero__handle">{{ . }}</p>{{ end }}
+    {{- with $about.statement }}<p class="about-hero__statement">{{ . }}</p>{{ end }}
+    <nav class="about-hero__links" aria-label="个人链接">
+      {{- range $about.links }}
+      <a href="{{ .url }}"{{ if hasPrefix .url "http" }} rel="noopener noreferrer"{{ end }}>{{ .label }}</a>
+      {{- end }}
+      {{- with site.Home.OutputFormats.Get "rss" }}
+      <a href="{{ .RelPermalink }}">RSS</a>
+      {{- end }}
+    </nav>
+  </header>
+
+  <div class="about-activity">
+    {{- partial "activity-grid.html" . }}
+  </div>
+
+  {{- with $about.featured }}
+  <section class="about-section" aria-labelledby="about-reading">
+    <h2 class="about-section__title" id="about-reading">从这里开始读</h2>
+    {{- range $i, $item := . }}
+      {{- with site.GetPage $item.ref }}
+      <a class="about-read" data-hue="{{ index $hues (mod $i 3) }}" href="{{ .RelPermalink }}">
+        <span class="about-read__kicker">{{ printf "%02d" (add $i 1) }} · {{ $item.kicker | default (.Date.Format "2006-01") }}</span>
+        <strong class="about-read__title">{{ .LinkTitle }}</strong>
+        <span class="about-read__desc">{{ $item.desc | default .Description }}</span>
+      </a>
+      {{- end }}
+    {{- end }}
+  </section>
+  {{- end }}
+
+  {{- with $about.now }}
+  <section class="about-section" aria-labelledby="about-now">
+    <h2 class="about-section__title" id="about-now">现在</h2>
+    <dl class="about-now">
+      {{- range . }}
+      <div data-hue="{{ .hue | default "blue" }}"><dt>{{ .label }}</dt><dd>{{ .text }}</dd></div>
+      {{- end }}
+    </dl>
+  </section>
+  {{- end }}
+
+  {{- with $about.projects }}
+  <section class="about-section" aria-labelledby="about-projects">
+    <h2 class="about-section__title" id="about-projects">开源项目</h2>
+    <div class="about-projects">
+      {{- range . }}
+      <a class="about-project" data-hue="{{ .hue | default "blue" }}" href="{{ .url }}" rel="noopener noreferrer">
+        <span class="about-project__name">{{ .name }}</span>
+        <span class="about-project__language">{{ .language }}</span>
+      </a>
+      {{- end }}
+    </div>
+  </section>
+  {{- end }}
+
+  {{- with .Content }}
+  <div class="about-closing">{{ . }}</div>
+  {{- end }}
+</article>
+{{- end }}

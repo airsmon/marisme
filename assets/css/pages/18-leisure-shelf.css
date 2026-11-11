@@ -174,6 +174,29 @@ html.has-leisure-reveal .leisure-shelf-item.is-visible {
   transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
+/* Title shown on the cover slot until the image has loaded (needs JS to clear). */
+html.has-leisure-reveal .leisure-shelf-item__cover-shell[data-title]:not(.is-loaded)::before {
+  content: attr(data-title);
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: 0.75rem;
+  overflow: hidden;
+  color: var(--secondary);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  text-align: center;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+
+/* Caption is only needed where the hover panel is unavailable (see 760px rule). */
+.leisure-shelf-item__caption {
+  display: none;
+}
+
 .leisure-shelf-item__cover--placeholder {
   display: grid;
   place-items: center;
@@ -434,6 +457,32 @@ html.has-leisure-reveal .leisure-shelf-item.is-visible {
   .leisure-shelf-item__expand {
     display: none;
   }
+
+  .leisure-shelf-item__caption {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin-top: 0.5rem;
+    min-width: 0;
+  }
+
+  .leisure-shelf-item__caption-title {
+    display: -webkit-box;
+    overflow: hidden;
+    color: var(--primary);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.4;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .leisure-shelf-item__caption-rating {
+    color: var(--secondary);
+    font-size: 0.6875rem;
+    line-height: 1.4;
+    font-variant-numeric: tabular-nums;
+  }
 }
 
 @media (max-width: 600px) {
@@ -487,6 +536,10 @@ html.has-leisure-reveal .leisure-shelf-item.is-visible {
     width: 100%;
     height: auto;
     aspect-ratio: 5 / 7;
+  }
+
+  .leisure-shelf-item {
+    aspect-ratio: auto;
   }
 
   .leisure-shelf-page + .page-footer,
