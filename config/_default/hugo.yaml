@@ -200,12 +200,21 @@ params:
   fuseOpts:
     isCaseSensitive: false
     shouldSort: true
-    location: 0
-    distance: 1000
-    threshold: 0.35
-    minMatchCharLength: 2
+    ignoreLocation: true
+    threshold: 0.3
+    minMatchCharLength: 1
     limit: 10
-    keys: ["title", "permalink", "summary", "tags", "categories"]
+    keys:
+      - name: title
+        weight: 3
+      - name: tags
+        weight: 2
+      - name: categories
+        weight: 1.5
+      - name: summary
+        weight: 1.5
+      - name: content
+        weight: 0.5
   
   mainSections:
     - "articles"
