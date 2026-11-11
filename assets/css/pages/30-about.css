@@ -148,6 +148,36 @@
 
 .about-activity .activity-panel__months { text-align: left; }
 
+/* Snake animation (assets/js/activity-snake.js) */
+
+.about-activity .activity-panel__cell { transition: background-color .25s ease; }
+
+.about-activity .activity-panel__cell.is-eaten { background: var(--activity-empty); }
+
+.about-activity .activity-panel__cell.is-snake {
+  background: color-mix(in srgb, var(--hue-purple) 70%, transparent);
+  transition: none;
+}
+
+.about-activity .activity-panel__cell.is-snake-head { background: var(--hue-orange); }
+
+.about-activity__replay {
+  margin-top: 12px;
+  padding: 3px 14px;
+  color: var(--secondary);
+  font: inherit;
+  font-size: 12px;
+  background: none;
+  border: 1px solid var(--tertiary);
+  border-radius: 99px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+
+.about-activity__replay:hover { color: var(--hue-teal); border-color: var(--hue-teal); }
+
+.about-activity__replay[hidden] { display: none; }
+
 /* ---------- reading path ---------- */
 
 .about-read {

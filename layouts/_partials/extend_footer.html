@@ -13,37 +13,40 @@
 {{- $hasFollowProfiles := and $isSingle (not (.Param "hideFollowProfiles")) $followProfiles.enabled (gt (len $followProfiles.items) 0) -}}
 
 {{- if $hasToc }}
-{{- partial "assets/script.html" (dict "name" "toc-active.js") }}
+{{- partialCached "assets/script.html" (dict "name" "toc-active.js") "toc-active.js" }}
 {{- end }}
 {{- if $isSingle }}
-{{- partial "assets/script.html" (dict "name" "reading-progress.js") }}
+{{- partialCached "assets/script.html" (dict "name" "reading-progress.js") "reading-progress.js" }}
 {{- end }}
 {{- if $hasTable }}
-{{- partial "assets/script.html" (dict "name" "table-preview.js") }}
+{{- partialCached "assets/script.html" (dict "name" "table-preview.js") "table-preview.js" }}
 {{- end }}
 {{- if $hasMedia }}
-{{- partial "assets/script.html" (dict "name" "media-card-reveal.js") }}
+{{- partialCached "assets/script.html" (dict "name" "media-card-reveal.js") "media-card-reveal.js" }}
 {{- end }}
 {{- if $hasLeisure }}
-{{- partial "assets/script.html" (dict "name" "leisure-filter.js") }}
-{{- partial "assets/script.html" (dict "name" "leisure-reveal.js") }}
+{{- partialCached "assets/script.html" (dict "name" "leisure-filter.js") "leisure-filter.js" }}
+{{- partialCached "assets/script.html" (dict "name" "leisure-reveal.js") "leisure-reveal.js" }}
 {{- end }}
 {{- if eq .Layout "archives" }}
-{{- partial "assets/script.html" (dict "name" "archive-infinite.js") }}
+{{- partialCached "assets/script.html" (dict "name" "archive-infinite.js") "archive-infinite.js" }}
+{{- end }}
+{{- if eq .Layout "about" }}
+{{- partialCached "assets/script.html" (dict "name" "activity-snake.js") "activity-snake.js" }}
 {{- end }}
 {{- if eq .Layout "go" }}
-{{- partial "assets/script.html" (dict "name" "external-link-gate.js") }}
-{{- partial "assets/script.html" (dict "name" "external-link-gate-lottie.js" "module" true) }}
+{{- partialCached "assets/script.html" (dict "name" "external-link-gate.js") "external-link-gate.js" }}
+{{- partialCached "assets/script.html" (dict "name" "external-link-gate-lottie.js" "module" true) "external-link-gate-lottie.js" }}
 {{- end }}
 {{- if $hasCardLottie }}
-{{- partial "assets/script.html" (dict "name" "card-lottie.js" "module" true) }}
+{{- partialCached "assets/script.html" (dict "name" "card-lottie.js" "module" true) "card-lottie.js" }}
 {{- end }}
 {{- if not site.Params.disableScrollToTop }}
-{{- partial "assets/script.html" (dict "name" "top-link-lottie.js" "module" true) }}
+{{- partialCached "assets/script.html" (dict "name" "top-link-lottie.js" "module" true) "top-link-lottie.js" }}
 {{- end }}
 
 {{- if $hasZoom }}
-{{- partial "assets/script.html" (dict "name" "medium-zoom.min.js") }}
+{{- partialCached "assets/script.html" (dict "name" "medium-zoom.min.js") "medium-zoom.min.js" }}
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     if (typeof mediumZoom === 'function') {
@@ -58,107 +61,9 @@
 {{- end }}
 
 {{- if $hasFollowProfiles }}
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const items = document.querySelectorAll('.follow-profile');
-    const mobileQuery = window.matchMedia('(max-width: 640px)');
-
-    function closeItem(item) {
-      item.classList.remove('is-open');
-      const trigger = item.querySelector('.follow-profile-trigger');
-      if (trigger) trigger.setAttribute('aria-expanded', 'false');
-    }
-
-    function closeAll() {
-      items.forEach(closeItem);
-    }
-
-    items.forEach((item) => {
-      const trigger = item.querySelector('.follow-profile-trigger');
-      if (!trigger) return;
-
-      trigger.addEventListener('click', function (event) {
-        if (!mobileQuery.matches) return;
-        event.preventDefault();
-        const isOpen = item.classList.contains('is-open');
-
-        closeAll();
-
-        if (!isOpen) {
-          item.classList.add('is-open');
-          trigger.setAttribute('aria-expanded', 'true');
-        } else {
-          trigger.blur();
-        }
-      });
-
-      trigger.addEventListener('focus', function () {
-        if (!mobileQuery.matches) trigger.setAttribute('aria-expanded', 'true');
-      });
-
-      trigger.addEventListener('blur', function () {
-        if (!mobileQuery.matches) trigger.setAttribute('aria-expanded', 'false');
-      });
-    });
-
-    document.addEventListener('click', function (event) {
-      items.forEach((item) => {
-        if (item.contains(event.target)) return;
-        closeItem(item);
-      });
-    });
-
-    mobileQuery.addEventListener('change', function () {
-      closeAll();
-      const active = document.activeElement;
-      if (active && active.classList.contains('follow-profile-trigger')) active.blur();
-    });
-
-    document.addEventListener('keydown', function (event) {
-      if (event.key !== 'Escape') return;
-      closeAll();
-      const active = document.activeElement;
-      if (active && active.classList.contains('follow-profile-trigger')) active.blur();
-    });
-  });
-</script>
+{{- partialCached "assets/script.html" (dict "name" "follow-profiles.js") "follow-profiles.js" }}
 {{- end }}
 
 {{- if gt (len site.Menus.main) 0 }}
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const toggle = document.getElementById('mobile-menu-toggle');
-    const menu = document.getElementById('menu');
-    const mobileMenuQuery = window.matchMedia('(max-width: 800px)');
-
-    if (!toggle || !menu) return;
-
-    function closeMenu() {
-      menu.classList.remove('show');
-      document.body.classList.remove('menu-open');
-      document.body.style.overflow = '';
-      toggle.setAttribute('aria-expanded', 'false');
-    }
-
-    toggle.addEventListener('click', function (event) {
-      event.stopPropagation();
-      const isOpen = menu.classList.toggle('show');
-      document.body.classList.toggle('menu-open', isOpen);
-      document.body.style.overflow = isOpen ? 'hidden' : '';
-      toggle.setAttribute('aria-expanded', String(isOpen));
-    });
-
-    document.addEventListener('click', function (event) {
-      if (!menu.contains(event.target) && event.target !== toggle) closeMenu();
-    });
-
-    document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape') closeMenu();
-    });
-
-    mobileMenuQuery.addEventListener('change', function (event) {
-      if (!event.matches) closeMenu();
-    });
-  });
-</script>
+{{- partialCached "assets/script.html" (dict "name" "mobile-menu.js") "mobile-menu.js" }}
 {{- end }}
