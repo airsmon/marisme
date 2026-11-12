@@ -142,11 +142,6 @@
   color: var(--primary);
 }
 
-.github-card__action-icon {
-  font-size: 0.86rem;
-  line-height: 1;
-}
-
 .github-card__desc {
   margin-top: 0.78rem;
   max-width: 58rem;

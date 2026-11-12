@@ -28,10 +28,6 @@
     {{- if $shouldRewrite }} data-external-link="true"{{ end -}}
   >
     {{- with .Text }}{{ . }}{{ end -}}
-    {{- if $shouldRewrite -}}
-      <span class="external-link-mark" aria-hidden="true">↗</span>
-      <span class="external-link-note">（外部链接，将先进入确认页面）</span>
-    {{- end -}}
   </a>
 {{- else -}}
   {{- with .Text }}{{ . }}{{ end -}}

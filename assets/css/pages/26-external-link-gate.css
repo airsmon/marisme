@@ -1,32 +1,3 @@
-.post-content a[data-external-link="true"] .external-link-mark,
-.md-content a[data-external-link="true"] .external-link-mark {
-  display: inline-block;
-  margin-inline-start: 0.18em;
-  color: color-mix(in srgb, #7168d9 72%, var(--secondary));
-  font-size: 0.76em;
-  line-height: 1;
-  text-decoration: none;
-  vertical-align: 0.12em;
-  transition: color 160ms ease, transform 160ms ease;
-}
-
-.post-content a[data-external-link="true"]:hover .external-link-mark,
-.md-content a[data-external-link="true"]:hover .external-link-mark {
-  color: color-mix(in srgb, #7168d9 86%, var(--primary));
-  transform: translate(0.08em, -0.08em);
-}
-
-.external-link-note {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
 html:has(.external-link-gate) {
   overflow-y: auto;
 }
@@ -439,14 +410,11 @@ html:has(.external-link-gate) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .external-link-mark,
   .external-link-gate__button {
     transition: none;
   }
 
-  .external-link-gate__button:hover,
-  .post-content a[data-external-link="true"]:hover .external-link-mark,
-  .md-content a[data-external-link="true"]:hover .external-link-mark {
+  .external-link-gate__button:hover {
     transform: none;
   }
 
