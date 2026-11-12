@@ -1,5 +1,5 @@
 {{- $styles := slice -}}
-{{- if and (eq .Kind "taxonomy") (eq .Section "tags") -}}
+{{- if and (eq .Kind "taxonomy") (in (slice "tags" "categories" "series") .Section) -}}
   {{- $styles = $styles | append "02-tags-page.css" -}}
 {{- end -}}
 {{- if and .IsSection (eq .Section "leisure") -}}

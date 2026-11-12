@@ -22,6 +22,8 @@ body.list:has(.tags-page) { background: var(--theme); }
 .tags-page [data-group="leisure"] { --gc: var(--hue-rose); }
 .tags-page [data-group="thinking-life"] { --gc: var(--hue-olive); }
 .tags-page [data-group="other"] { --gc: var(--secondary); }
+.tags-page [data-group="terms-categories"] { --gc: var(--hue-blue); }
+.tags-page [data-group="terms-series"] { --gc: var(--hue-teal); }
 
 .tags-page [hidden] { display: none !important; }
 
@@ -248,6 +250,10 @@ body.list:has(.tags-page) { background: var(--theme); }
 }
 
 .tags-group:last-child { border-bottom: 0; }
+
+/* Flat taxonomies (categories, series) have a single list and no side heading. */
+.tags-group--solo { grid-template-columns: minmax(0, 1fr); padding-top: 26px; }
+.tags-group--solo .tags-group__more { grid-column: 1; }
 
 .tags-group__head {
   position: sticky;

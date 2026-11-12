@@ -14,6 +14,7 @@
   const jumps = [...root.querySelectorAll("[data-jump]")];
   const totalTags = Number(root.dataset.tagTotal || 0);
   const totalArticles = Number(root.dataset.articleTotal || 0);
+  const unit = root.dataset.tagUnit || "标签";
 
   const normalize = (value) => value.trim().toLocaleLowerCase("zh-CN");
 
@@ -59,7 +60,7 @@
       });
       button.hidden = !overflow;
       button.setAttribute("aria-expanded", String(expanded));
-      button.textContent = expanded ? "收起" : `展开全部 ${visible.length} 个标签`;
+      button.textContent = expanded ? "收起" : `展开全部 ${visible.length} 个${unit}`;
     };
 
     button.addEventListener("click", () => {
@@ -92,8 +93,8 @@
     if (emptyState) emptyState.hidden = matches > 0;
     if (status) {
       status.textContent = query
-        ? `匹配 ${matches} 个标签`
-        : `共 ${totalTags} 个标签 · ${totalArticles} 篇文章`;
+        ? `匹配 ${matches} 个${unit}`
+        : `共 ${totalTags} 个${unit} · ${totalArticles} 篇文章`;
     }
   };
 
