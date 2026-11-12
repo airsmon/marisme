@@ -5,6 +5,9 @@
   max-width: calc(var(--tags-content-width) + var(--gap) * 2);
 }
 
+/* PaperMod paints list pages with --code-bg; keep this page on --theme so the sticky toolbar blends in. */
+body.list:has(.tags-page) { background: var(--theme); }
+
 .tags-page {
   --tags-serif: ui-serif, "Songti SC", "STSong", "Noto Serif CJK SC", serif;
   --tags-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -124,6 +127,7 @@
   padding: 10px 0 0;
   background: var(--theme);
   border-bottom: 1px solid var(--border);
+  box-shadow: 0 -12px 0 var(--theme);
 }
 
 .tags-search {
@@ -227,7 +231,7 @@
 
 .tags-status {
   min-height: 20px;
-  margin: 14px 0 0;
+  margin: 8px 0 8px;
   color: var(--secondary);
   font-size: 12.5px;
 }
@@ -306,6 +310,8 @@
 }
 
 .tags-item { margin: 0; padding: 0; border-bottom: 1px dotted var(--tertiary); }
+
+.tags-item.is-collapsed { display: none; }
 
 .tags-item--lead {
   grid-column: 1 / -1;
@@ -413,6 +419,23 @@
 
 .tags-item__preview .tags-item__all { justify-content: flex-start; padding-top: 7px; color: var(--gc); }
 
+.tags-group__more {
+  grid-column: 2;
+  justify-self: start;
+  margin-top: -14px;
+  padding: 4px 0;
+  color: var(--gc);
+  font: inherit;
+  font-size: 13px;
+  background: none;
+  border: 0;
+  border-bottom: 1.5px solid transparent;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+
+.tags-group__more:hover { border-bottom-color: var(--gc); }
+
 .tags-page mark {
   color: inherit;
   background: color-mix(in srgb, var(--gc, var(--accent)) 22%, transparent);
@@ -448,6 +471,7 @@
   .tags-group { grid-template-columns: 1fr; gap: 16px; padding: 26px 0; }
   .tags-group__head { position: static; }
   .tags-list { grid-template-columns: 1fr; }
+  .tags-group__more { grid-column: 1; margin-top: -8px; }
   .tags-search kbd { display: none; }
   .tags-dist__labels a:nth-child(n + 4) { display: none; }
 }

@@ -95,9 +95,8 @@
             <a href="#g-{{ .id }}" data-jump="{{ .id }}" data-group="{{ .id }}">{{ .title }}<small>{{ len .items }}</small></a>
             {{- end }}
         </nav>
+        <p class="tags-status" data-tags-status aria-live="polite">共 {{ $totalTags }} 个标签 · {{ $totalArticles }} 篇文章</p>
     </div>
-
-    <p class="tags-status" data-tags-status aria-live="polite">共 {{ $totalTags }} 个标签 · {{ $totalArticles }} 篇文章</p>
 
     <div id="tags-groups">
         {{- range $gi, $section := $sections }}

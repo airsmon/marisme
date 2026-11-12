@@ -16,6 +16,11 @@
   display: none;
 }
 
+/* Topic hues shared with the tags page (32-hues.css). */
+.leisure-filter__tab { --tc: var(--hue-blue); }
+.leisure-filter__tab[data-leisure-filter="book"] { --tc: var(--hue-teal); }
+.leisure-filter__tab[data-leisure-filter="movie"] { --tc: var(--hue-rose); }
+
 .leisure-filter__tab {
   position: relative;
   display: inline-flex;
@@ -34,15 +39,25 @@
   transition: color 0.18s ease;
 }
 
+.leisure-filter__tab::before {
+  content: "";
+  align-self: center;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.1rem;
+  border-radius: 50%;
+  background: var(--tc);
+}
+
 .leisure-filter__tab::after {
   content: "";
   position: absolute;
   left: 0;
-  width: 2em;
+  right: 0;
   bottom: -1px;
   height: 2px;
   border-radius: 999px;
-  background: var(--primary);
+  background: var(--tc);
   opacity: 0;
   transform: scaleX(0.4);
   transform-origin: left center;
@@ -51,12 +66,12 @@
 
 .leisure-filter__tab:hover,
 .leisure-filter__tab.is-active {
-  color: var(--primary);
+  color: var(--tc);
 }
 
 .leisure-filter__tab:focus-visible {
-  color: var(--primary);
-  outline: 2px solid var(--primary);
+  color: var(--tc);
+  outline: 2px solid var(--tc);
   outline-offset: 3px;
 }
 
@@ -68,7 +83,8 @@
 }
 
 .leisure-filter__count {
-  color: var(--tertiary);
+  color: var(--secondary);
+  opacity: 0.7;
   font-size: 0.78rem;
   font-weight: 500;
 }
