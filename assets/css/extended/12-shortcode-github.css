@@ -7,7 +7,9 @@
   --github-card-muted-surface: color-mix(in srgb, var(--code-bg) 70%, var(--theme));
 
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  min-height: 177px;
   margin: 1.45rem 0;
   padding: 1rem 1.05rem 0.98rem;
   overflow: hidden;
@@ -49,7 +51,18 @@
   outline-offset: 3px;
 }
 
+/* Accent follows the repository language; shared hues live in 32-hues.css. */
+:root:not(.x) :is(.post-content, .md-content) .github-card[data-hue="blue"] { --github-card-accent: var(--hue-blue); }
+:root:not(.x) :is(.post-content, .md-content) .github-card[data-hue="teal"] { --github-card-accent: var(--hue-teal); }
+:root:not(.x) :is(.post-content, .md-content) .github-card[data-hue="purple"] { --github-card-accent: var(--hue-purple); }
+:root:not(.x) :is(.post-content, .md-content) .github-card[data-hue="orange"] { --github-card-accent: var(--hue-orange); }
+:root:not(.x) :is(.post-content, .md-content) .github-card[data-hue="rose"] { --github-card-accent: var(--hue-rose); }
+:root:not(.x) :is(.post-content, .md-content) .github-card[data-hue="olive"] { --github-card-accent: var(--hue-olive); }
+
 .github-card__main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   min-width: 0;
 }
 
@@ -154,7 +167,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 0.86rem;
+  margin-top: auto;
+  padding-top: 0.86rem;
 }
 
 .github-card__pill {

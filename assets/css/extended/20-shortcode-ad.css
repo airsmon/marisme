@@ -147,7 +147,8 @@
   justify-content: center;
   gap: 0.28rem;
   min-height: 2rem;
-  padding: 0 0.68rem;
+  /* CJK glyphs sit ~0.6px high in a line-height:1 box; 1px top padding centers the ink. */
+  padding: 1px 0.68rem 0;
   border: 1px solid color-mix(in srgb, var(--ad-card-accent) 28%, var(--border));
   border-radius: 999px;
   background: color-mix(in srgb, var(--ad-card-accent) 10%, var(--theme));
@@ -288,10 +289,10 @@
   min-height: 1.75rem;
   max-width: 100%;
   padding: 0.18rem 0.58rem;
-  border: 1px solid color-mix(in srgb, var(--border) 86%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ad-card-accent) 20%, var(--border));
   border-radius: 999px;
-  background: var(--ad-card-muted-surface);
-  color: var(--secondary);
+  background: color-mix(in srgb, var(--ad-card-accent) 7%, transparent);
+  color: color-mix(in srgb, var(--ad-card-accent) 38%, var(--secondary));
   font-size: 0.78rem;
   line-height: 1.2;
 }
