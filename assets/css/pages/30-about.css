@@ -35,7 +35,6 @@
 
 .about-hero__name {
   margin: 0;
-  font-family: var(--about-serif);
   font-size: 42px;
   font-weight: 600;
   line-height: 1.1;

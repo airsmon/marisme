@@ -51,8 +51,15 @@
     {{- $postTags := $.GetTerms $tags -}}
     {{- with $postTags }}
     <ul class="post-tags" aria-label="{{ i18n "post_tags" }}">
+      {{- $groups := hugo.Data.tag_groups.groups | default slice }}
       {{- range . }}
-      <li><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></li>
+      {{- $key := .Data.Term | default .LinkTitle | lower }}
+      {{- $group := "other" }}
+      {{- range $groups }}
+        {{- $id := .id }}
+        {{- range .tags }}{{ if eq (lower (string .)) $key }}{{ $group = $id }}{{ end }}{{ end }}
+      {{- end }}
+      <li><a href="{{ .Permalink }}" data-group="{{ $group }}">{{ .LinkTitle }}</a></li>
       {{- end }}
     </ul>
     {{- end }}

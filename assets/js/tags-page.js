@@ -34,6 +34,44 @@
     );
   };
 
+  // Collapse long groups to 7 rows (2 columns on desktop, 1 on mobile).
+  const ROWS = 7;
+  const narrow = window.matchMedia("(max-width: 680px)");
+  const collapsers = groups.map((group) => {
+    const list = group.querySelector(".tags-list");
+    const entries = [...group.querySelectorAll("[data-tag-item]")];
+    const hasLead = entries.some((item) => item.classList.contains("tags-item--lead"));
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "tags-group__more";
+    button.hidden = true;
+    list.after(button);
+    let expanded = false;
+
+    const render = () => {
+      const cols = narrow.matches ? 1 : 2;
+      const limit = ROWS * cols - (hasLead ? cols - 1 : 0);
+      const searching = Boolean(input.value.trim());
+      const visible = entries.filter((item) => !item.hidden);
+      const overflow = !searching && visible.length > limit;
+      visible.forEach((item, index) => {
+        item.classList.toggle("is-collapsed", overflow && !expanded && index >= limit);
+      });
+      button.hidden = !overflow;
+      button.setAttribute("aria-expanded", String(expanded));
+      button.textContent = expanded ? "收起" : `展开全部 ${visible.length} 个标签`;
+    };
+
+    button.addEventListener("click", () => {
+      expanded = !expanded;
+      render();
+      if (!expanded) group.scrollIntoView({ block: "nearest" });
+    });
+    return render;
+  });
+  const renderCollapse = () => collapsers.forEach((render) => render());
+  narrow.addEventListener("change", renderCollapse);
+
   const applyFilter = () => {
     const query = normalize(input.value);
     let matches = 0;
@@ -49,6 +87,7 @@
       group.hidden = !group.querySelector("[data-tag-item]:not([hidden])");
     });
 
+    renderCollapse();
     if (clearButton) clearButton.hidden = !input.value;
     if (emptyState) emptyState.hidden = matches > 0;
     if (status) {
@@ -64,6 +103,7 @@
     input.focus();
   };
 
+  renderCollapse();
   input.addEventListener("input", applyFilter);
   clearButton?.addEventListener("click", resetSearch);
   resetButton?.addEventListener("click", resetSearch);
