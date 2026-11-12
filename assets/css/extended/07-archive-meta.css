@@ -84,3 +84,23 @@
         transition: none;
     }
 }
+
+/* Narrow screens: the month label becomes a quiet sub-heading so titles lead, and
+   entries line up with the headings instead of being indented by their padding. */
+@media (max-width: 768px) {
+    .archive-month {
+        padding: 4px 0 8px;
+    }
+
+    .archive-month-header {
+        width: auto;
+        margin: 16px 0 2px;
+        font-size: 15px;
+        letter-spacing: .04em;
+    }
+
+    .archive-entry {
+        margin: 6px 0;
+        padding: 5px 0;
+    }
+}
