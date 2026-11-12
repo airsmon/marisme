@@ -68,11 +68,20 @@
   {{- $topics = slice $topic -}}
 {{- end -}}
 
+{{- /* Language hue only drives the accent color; card layout is unchanged. */ -}}
+{{- $hues := dict
+    "go" "teal" "shell" "teal" "bash" "teal" "rust" "orange" "swift" "orange" "html" "orange" "css" "orange"
+    "javascript" "olive" "typescript" "blue" "python" "blue" "helm" "blue" "dockerfile" "blue" "yaml" "blue"
+    "java" "rose" "ruby" "rose" "kotlin" "purple" "c++" "purple" "c" "purple" "c#" "purple" "php" "purple"
+  -}}
+{{- $hue := index $hues (lower ($lang | default "")) | default "blue" -}}
+
 {{- $title := cond (and $owner $name) (printf "%s / %s" $owner $name) (or $repo $name "GitHub Repository") -}}
 {{- $repoLabel := or $repo $title -}}
 
 <a
   class="github-card"
+  data-hue="{{ $hue }}"
   href="{{ $url }}"
   target="_blank"
   rel="noopener noreferrer"
