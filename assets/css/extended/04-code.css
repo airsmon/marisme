@@ -19,3 +19,15 @@
   color: #a89ce8;
   background: rgba(168, 156, 232, 0.12);
 }
+
+/* Shell commands: Chroma leaves these plain, so shell-highlight.js adds the Nord colors. */
+.post-content pre code .sh-cmd,
+.md-content pre code .sh-cmd { color: #88c0d0; font-weight: 600; }
+.post-content pre code .sh-sub,
+.md-content pre code .sh-sub { color: #81a1c1; }
+.post-content pre code .sh-flag,
+.md-content pre code .sh-flag { color: #ebcb8b; }
+.post-content pre code .sh-path,
+.md-content pre code .sh-path { color: #8fbcbb; }
+.post-content pre code .sh-num,
+.md-content pre code .sh-num { color: #b48ead; }

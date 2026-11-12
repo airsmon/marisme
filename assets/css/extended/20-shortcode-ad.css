@@ -168,11 +168,6 @@
   color: color-mix(in srgb, var(--ad-card-accent) 72%, var(--primary));
 }
 
-.ad-card__action-icon {
-  font-size: 0.86rem;
-  line-height: 1;
-}
-
 .ad-card__desc {
   display: -webkit-box;
   overflow: hidden;
